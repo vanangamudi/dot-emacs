@@ -56,7 +56,30 @@ git clone --depth 1 https://github.com/hlissner/doom-emacs ~/emacs/doom.d
 ~/emacs/doom.d/bin/doom install
 #+END_SRC
 
-#+RESULTS:
+* org based init file for `emacs` flavor
+from: https://xvrdm.github.io/2017/05/29/a-minimal-emacs-setup-with-orgmode/
+init.el vanilla emacs setup
+#+NAME: init.el
+#+BEGIN_SRC emacs-lisp
+;; add MELPA package server
+(require 'package)
+(package-initialize)
+
+
+(add-to-list 'package-archives
+  '("melpa" . "https://melpa.org/packages/"))
+
+(unless package-archive-contents
+  (package-refresh-contents))
+
+;; if not yet installed, install package use-package
+(unless (package-installed-p 'use-package)
+  (package-install 'use-package))
+
+;; load org package and our emacs-config.org file
+(require 'org)
+(org-babel-load-file "~/emacs/emacs.d/config.org")
+#+END_SRC
 
 * Emacs daemon
 from: https://www.emacswiki.org/emacs/EmacsAsDaemon
@@ -80,6 +103,7 @@ WantedBy=default.target
 #+END_SRC
 
 And add the following to .bashrc in linux
+from: https://emacs.stackexchange.com/questions/24095/bashrc-script-to-automatically-create-emacs-server-session-on-startup
 #+BEGIN_SRC bash
 export ALTERNATE_EDITOR=""
 export VISUAL='emacsclient --alternate-editor='
