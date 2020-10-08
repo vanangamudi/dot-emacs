@@ -171,7 +171,12 @@ update-desktop-database ~/.local/share/applications/
 
 #+END_SRC
 
-#+RESULTS:
+Org-capture bookmarklet for firefox, add this to bookmark toolbar on firefox
+#+BEGIN_SRC html
+javascript:location.href='org-protocol://capture://l/'+encodeURIComponent(location.href)+'/'+encodeURIComponent(document.title)+'/'+encodeURIComponent(window.getSelection())
+
+#+END_SRC
+
 
 ** mac
 https://www.reddit.com/r/emacs/comments/6lzyg2/heres_how_to_do_emacsclient_global_orgcapture/
