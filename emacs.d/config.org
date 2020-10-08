@@ -1,0 +1,9 @@
+#+TITLE: Config
+
+* Remove startup welcome screen
+The code block below toggle off the welcome startup screen.
+
+#+BEGIN_SRC emacs-lisp
+(custom-set-variables
+  '(inhibit-startup-screen t))
+#+END_SRC

@@ -1,0 +1,59 @@
+* Emacs setup
+** directories
+*** .emacs.d/
+- install chemacs here
+
+*** emacs/
+**** emacs.d
+vanilla emacs setip
+**** doom/
+- clone doom emacs to this directory
+
+*** kadal/aalar/emacs
+- This is where this org files lives
+- .emacs-profiles.el and .emacs-profile
+**** .emacs.profile.el
+#+BEGIN_SRC emacs-lisp
+("emacs" . ((user-emacs-directory . "~/emacs/emacs.d"))
+ "doom"  . ((user-emacs-directory . "~/emacs/doom.d")
+           (env . (("DOOMDIR" . "~/kadal/aalar/emacs/doom.d")))))
+#+END_SRC
+**** .emacs-profile
+#+BEGIN_SRC txt
+emacs
+#+END_SRC
+**** doom.d
+- doom config
+- setup DOOMDIR to this directory before invoking `doom install`
+
+* Install emacs
+
+#+BEGIN_SRC bash
+sudo apt-get install emacs
+
+[ -d ~/.emacs.d ] && mv ~/.emacs.d ~/.emacs.default
+[ -f ~/.emacs ] && mv ~/.emacs ~/.emacs.bak
+
+#+END_SRC
+
+* install chemacs2
+#+BEGIN_SRC bash
+git clone https://github.com/plexus/chemacs2.git ~/.emacs.d
+#+END_SRC
+
+* Link emacs profiles
+#+BEGIN_SRC bash
+ln -s ~/kadal/aalar/emacs/emacs-profiles.el ~/.emacs-profiles.el
+ln -s ~/kadal/aalar/emacs/emacs-profile ~/.emacs-profile
+#+END_SRC
+
+#+RESULTS:
+
+* Install doom-emacs
+#+BEGIN_SRC bash
+export DOOMDIR=~/kadal/aalar/emacs/doom.d
+git clone --depth 1 https://github.com/hlissner/doom-emacs ~/emacs/doom.d
+~/emacs/doom.d/bin/doom install
+#+END_SRC
+
+#+RESULTS:

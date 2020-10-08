@@ -1,0 +1,10 @@
+*
+.DS_Store
+.idea
+*.log
+tmp/
+
+config.el
+!config.org
+!.gitignore
+!init.el
