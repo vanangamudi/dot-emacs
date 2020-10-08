@@ -6,7 +6,7 @@
 *** emacs/
 **** emacs.d
 vanilla emacs setip
-**** doom/
+**** doom.d/
 - clone doom emacs to this directory
 
 *** kadal/aalar/emacs
@@ -57,3 +57,124 @@ git clone --depth 1 https://github.com/hlissner/doom-emacs ~/emacs/doom.d
 #+END_SRC
 
 #+RESULTS:
+
+* Emacs daemon
+from: https://www.emacswiki.org/emacs/EmacsAsDaemon
+Systemd is the supported method of running applications at startup on most Linux distributions. The following configuration file emacs.service will be included in the standard Emacs installation as of 26.1. All you need to do is copy this to ~/.config/systemd/user/emacs.service .
+#+BEGIN_SRC systemd
+
+[Unit]
+Description=Emacs text editor
+Documentation=info:emacs man:emacs(1) https://gnu.org/software/emacs/
+
+[Service]
+Type=forking
+ExecStart=/usr/bin/emacs --daemon
+ExecStop=/usr/bin/emacsclient --eval "(kill-emacs)"
+Environment=SSH_AUTH_SOCK=%t/keyring/ssh
+Restart=on-failure
+
+[Install]
+WantedBy=default.target
+
+#+END_SRC
+
+And add the following to .bashrc in linux
+#+BEGIN_SRC bash
+export ALTERNATE_EDITOR=""
+export VISUAL='emacsclient --alternate-editor='
+export EDITOR='emacsclient --alternate-editor='
+
+#+END_SRC
+
+For windows add the following into .emacs
+#+BEGIN_SRC emacs-lisp
+
+(load "server")
+(unless (server-running-p) (server-start))
+
+#+END_SRC
+
+** Note:
+Note that ~/.bashrc runs every time you open a terminal, not when you log in. On normal Unix systems, the file that runs when you log in is ~/.profile (or ~/.bash_profile, ~/.profile, etc. depending on your login shell), but OSX does things differently (and actually runs ~/.bash_profile or ~/.profile and not ~/.bashrc when you open a terminal due to a combination of bad design in OSX and bad design in bash: OSX opens a login shell in each terminal and bash doesn't load .bashrc in login shells — see https://unix.stackexchange.com/questions/110998/missing-source-bashrc-mac-terminal-profile).
+
+* org-capture
+
+** linux
+both of them working now.
+*** Method One
+- bind the following script to a shortcut
+- no capture from browser
+
+#+BEGIN_SRC bash
+#!/bin/bash
+emacsclient --create-frame \
+            --socket-name 'capture' \
+            --alternate-editor='' \
+            --frame-parameters='(quote (name . "capture"))' \
+            --no-wait \
+            --eval "(my/org-capture-frame)"
+
+#+END_SRC
+
+For opening and closing a separate frame for the capture
+#+BEGIN_SRC emacs-lisp
+
+(defun my/delete-capture-frame (&rest _)
+  "Delete frame with its name frame-parameter set to \"capture\"."
+  (if (equal "capture" (frame-parameter nil 'name))
+      (delete-frame)))
+(advice-add 'org-capture-finalize :after #'my/delete-capture-frame)
+
+(defun my/org-capture-frame ()
+  "Run org-capture in its own frame."
+  (interactive)
+  (require 'cl-lib)
+  (select-frame-by-name "capture")
+  (delete-other-windows)
+  (cl-letf (((symbol-function 'switch-to-buffer-other-window) #'switch-to-buffer))
+    (condition-case err
+        (org-capture)
+      ;; "q" signals (error "Abort") in `org-capture'
+      ;; delete the newly created frame in this scenario.
+      (user-error (when (string= (cadr err) "Abort")
+                    (delete-frame))))))
+
+#+END_SRC
+
+*** Method 2
+- can capture from browser
+**** create a desktop file
+from: https://github.com/zv/dotfile z
+~/kadal/aalar/local/share/applications/org-protcol
+#+BEGIN_SRC  conf
+[Desktop Entry]
+Name=org-protocol
+Exec=emacsclient --create-frame \
+            --socket-name 'capture' \
+            --alternate-editor='' \
+            --frame-parameters='(quote (name . "capture"))' \
+            --no-wait \
+            --eval "(my/org-capture-frame)"
+Type=Application
+Terminal=false
+Categories=System;
+MimeType=x-scheme-handler/org-protocol;
+#+END_SRC
+
+And run the following
+
+#+BEGIN_SRC bash
+chmod a+x ~/kadal/aalar/emacs/org-protocol.desktop
+ln -s ~/kadal/aalar/emacs/org-protocol.desktop ~/.local/share/applications/
+update-desktop-database ~/.local/share/applications/
+
+#+END_SRC
+
+#+RESULTS:
+
+** mac
+https://www.reddit.com/r/emacs/comments/6lzyg2/heres_how_to_do_emacsclient_global_orgcapture/
+
+** windows
+https://sachachua.com/blog/2015/11/capturing-links-quickly-with-emacsclient-org-protocol-and-chrome-shortcut-manager-on-microsoft-windows-8/
