@@ -8,6 +8,32 @@ The code block below toggle off the welcome startup screen.
   '(inhibit-startup-screen t))
 #+END_SRC
 
+* interface tweaks
+#+BEGIN_SRC emacs-lisp
+(setq inhibit-startup-message t)
+(tool-bar-mode -1)
+(fset 'yes-or-no-p 'y-or-n-p)
+(global-set-key (kbd "<f5>") 'revert-buffer)
+(add-hook 'text-mode-hook 'turn-on-visual-line-mode)
+(add-hook 'org-mode-hook 'turn-on-visual-line-mode)
+
+#+END_SRC
+
+* try
+#+BEGIN_SRC emacs-lisp
+(use-package try
+	:ensure t)
+#+END_SRC
+
+* which key
+  Brings up some help
+  #+BEGIN_SRC emacs-lisp
+    (use-package which-key
+      :ensure t
+      :config
+      (which-key-mode))
+
+#+END_SRC
 * Org capture
 from : https://gist.github.com/progfolio/af627354f87542879de3ddc30a31adc1
 #+BEGIN_SRC emacs-lisp
@@ -34,3 +60,20 @@ from : https://gist.github.com/progfolio/af627354f87542879de3ddc30a31adc1
 
 
 #+END_SRC
+
+** Org-capture templates
+#+BEGIN_SRC emacs-lisp
+(require 'org-protocol)
+(global-set-key (kbd "C-c c") 'org-capture)
+
+(setq org-protocol-default-template-key "l")
+(setq org-capture-templates
+ '(("t" "Todo" entry (file+headline "~/kuri/notes.org" "Tasks")
+        "* TODO %?\n  %i\n  %a")
+   ("l" "Link" entry (file+olp "~/kuri/notes.org" "Web Links")
+        "* %a\n %?\n %i")
+   ("j" "Journal" entry (file+datetree "~/kuri/journal.org")
+        "* %?\nEntered on %U\n  %i\n  %a")))
+
+#+END_SRC
+

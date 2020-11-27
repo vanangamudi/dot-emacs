@@ -1,10 +1,31 @@
 * Emacs setup
+#+BEGIN_SRC
+export EMACSDIR=~/kadal/aalar/emacs
+#+END_SRC
+
+#+BEGIN_SRC bash
+  vanangamudi@karunthulai:~
+
+  $ ll .*emacs*
+  lrwxrwxrwx  .emacs.d              -> EMACSDIR/.emacs.d/
+  lrwxrwxrwx  .emacs-profile        -> EMACSDIR/emacs-profile
+  lrwxrwxrwx  .emacs-profiles.el    -> EMACSDIR/emacs-profiles.el
+
+  $ ll emacs*
+  drwxrwxr-x  doom.d/
+  lrwxrwxrwx  vannila.d             -> EMACSDIR/vannila.d/
+
+  $ ll .local/share/applications/
+  lrwxrwxrwx  org-protocol.desktop  -> EMACSDIR/org-protocol.desktop*
+
+#+END_SRC
+
 ** directories
 *** .emacs.d/
 - install chemacs here
 
 *** emacs/
-**** emacs.d
+**** vannila.d
 vanilla emacs setip
 **** doom.d/
 - clone doom emacs to this directory
@@ -14,7 +35,7 @@ vanilla emacs setip
 - .emacs-profiles.el and .emacs-profile
 **** .emacs.profile.el
 #+BEGIN_SRC emacs-lisp
-("emacs" . ((user-emacs-directory . "~/emacs/emacs.d"))
+("vanilla" . ((user-emacs-directory . "~/emacs/vanilla.d"))
  "doom"  . ((user-emacs-directory . "~/emacs/doom.d")
            (env . (("DOOMDIR" . "~/kadal/aalar/emacs/doom.d")))))
 #+END_SRC
@@ -38,22 +59,22 @@ sudo apt-get install emacs
 
 * install chemacs2
 #+BEGIN_SRC bash
-git clone https://github.com/plexus/chemacs2.git ~/.emacs.d
+git clone https://github.com/plexus/chemacs2.git $EMACSDIR/.emacs.d
 #+END_SRC
 
 * Link emacs profiles
 #+BEGIN_SRC bash
-ln -s ~/kadal/aalar/emacs/emacs-profiles.el ~/.emacs-profiles.el
-ln -s ~/kadal/aalar/emacs/emacs-profile ~/.emacs-profile
+ln -s ~/kadal/aalar/emacs/emacs-profiles.el $EMACSDIR/.emacs-profiles.el
+ln -s ~/kadal/aalar/emacs/emacs-profile $EMACSDIR/.emacs-profile
 #+END_SRC
 
 #+RESULTS:
 
 * Install doom-emacs
 #+BEGIN_SRC bash
-export DOOMDIR=~/kadal/aalar/emacs/doom.d
-git clone --depth 1 https://github.com/hlissner/doom-emacs ~/emacs/doom.d
-~/emacs/doom.d/bin/doom install
+export DOOMDIR=$EMACSDIR/doom.d
+git clone --depth 1 https://github.com/hlissner/doom-emacs $EMACSDIR/doom.d
+$EMACSDIR/doom.d/bin/doom install
 #+END_SRC
 
 * org based init file for `emacs` flavor
@@ -64,7 +85,6 @@ init.el vanilla emacs setup
 ;; add MELPA package server
 (require 'package)
 (package-initialize)
-
 
 (add-to-list 'package-archives
   '("melpa" . "https://melpa.org/packages/"))
@@ -78,7 +98,7 @@ init.el vanilla emacs setup
 
 ;; load org package and our emacs-config.org file
 (require 'org)
-(org-babel-load-file "~/emacs/emacs.d/config.org")
+(org-babel-load-file "~/emacs/vanilla.d/config.org")
 #+END_SRC
 
 * Emacs daemon
