@@ -1,4 +1,10 @@
 #+TITLE: Config
+* debug
+#+BEGIN_SRC emacs-lisp
+(setq debug-on-error t)
+#+END_SRC
+  
+
 
 * Remove startup welcome screen
 The code block below toggle off the welcome startup screen.
@@ -77,3 +83,21 @@ from : https://gist.github.com/progfolio/af627354f87542879de3ddc30a31adc1
 
 #+END_SRC
 
+
+
+* elfeed-org
+#+BEGIN_SRC elisp
+  ;; Load elfeed-org
+  (use-package elfeed-org
+	  :ensure t)
+
+  ;; Initialize elfeed-org
+  ;; This hooks up elfeed-org to read the configuration when elfeed
+  ;; is started with =M-x elfeed=
+  (elfeed-org)
+
+  ;; Optionally specify a number of files containing elfeed
+  ;; configuration. If not set then the location below is used.
+  ;; Note: The customize interface is also supported.
+  (setq rmh-elfeed-org-files (list "~/emacs/vanilla.d/elfeed.org"))
+#+END_SRC

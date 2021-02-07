@@ -21,7 +21,7 @@ export EMACSDIR=~/kadal/aalar/emacs
 #+END_SRC
 
 ** directories
-*** .emacs.d/
+*** $EMACSDIR/.emacs.d/
 - install chemacs here
 
 *** emacs/
@@ -37,11 +37,11 @@ vanilla emacs setip
 #+BEGIN_SRC emacs-lisp
 ("vanilla" . ((user-emacs-directory . "~/emacs/vanilla.d"))
  "doom"  . ((user-emacs-directory . "~/emacs/doom.d")
-           (env . (("DOOMDIR" . "~/kadal/aalar/emacs/doom.d")))))
+           (env . (("DOOMDIR" . "$EMACSDIR/doom.d")))))
 #+END_SRC
 **** .emacs-profile
 #+BEGIN_SRC txt
-emacs
+vanilla
 #+END_SRC
 **** doom.d
 - doom config
@@ -49,11 +49,12 @@ emacs
 
 * Install emacs
 
+ ** TODO this is the vannila config, shouldn't it be moved to $EMACSDIR
 #+BEGIN_SRC bash
 sudo apt-get install emacs
 
-[ -d ~/.emacs.d ] && mv ~/.emacs.d ~/.emacs.default
-[ -f ~/.emacs ] && mv ~/.emacs ~/.emacs.bak
+[ -d ~/.emacs.d ] && mv ~/.emacs.d $EMACSDIR/vanilla.d
+[ -f ~/.emacs ] && mv ~/.emacs $EMACSDIR
 
 #+END_SRC
 
@@ -64,8 +65,8 @@ git clone https://github.com/plexus/chemacs2.git $EMACSDIR/.emacs.d
 
 * Link emacs profiles
 #+BEGIN_SRC bash
-ln -s ~/kadal/aalar/emacs/emacs-profiles.el $EMACSDIR/.emacs-profiles.el
-ln -s ~/kadal/aalar/emacs/emacs-profile $EMACSDIR/.emacs-profile
+ln -s $EMACSDIR/.emacs-profiles.el ~/
+ln -s $EMACSDIR/.emacs-profile     ~/
 #+END_SRC
 
 #+RESULTS:
@@ -227,3 +228,45 @@ https://www.reddit.com/r/emacs/comments/6lzyg2/heres_how_to_do_emacsclient_globa
 
 ** windows
 https://sachachua.com/blog/2015/11/capturing-links-quickly-with-emacsclient-org-protocol-and-chrome-shortcut-manager-on-microsoft-windows-8/
+
+* elfeed
+** elfeed-org
+add this to emacs config, in this case config.org under ~/ko-pa-ni/aalar/emacs/vannila.d/config.org
+*** installation
+
+
+Download elfeed-org
+#+BEGIN_SRC bash
+
+cd ~/.emacs.d/lisp
+#wget https://github.com/remyhonig/elfeed-org/blob/master/elfeed-org.el
+wget https://raw.githubusercontent.com/remyhonig/elfeed-org/master/elfeed-org.el
+
+#+END_SRC
+
+#+RESULTS:
+
+Install the package in Emacs
+#+BEGIN_SRC
+
+C-x C-f ~/.emacs.d/lisp/elfeed-org.el <ENTER>
+M-x package-install-from-buffer <ENTER>
+
+#+END_SRC
+
+*** configuration
+#+BEGIN_SRC elisp
+;; Load elfeed-org
+(require 'elfeed-org)
+
+;; Initialize elfeed-org
+;; This hooks up elfeed-org to read the configuration when elfeed
+;; is started with =M-x elfeed=
+(elfeed-org)
+
+;; Optionally specify a number of files containing elfeed
+;; configuration. If not set then the location below is used.
+;; Note: The customize interface is also supported.
+(setq rmh-elfeed-org-files (list "~/.emacs.d/elfeed.org"))
+
+#+END_SRC
