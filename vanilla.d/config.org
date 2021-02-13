@@ -1,35 +1,156 @@
 #+TITLE: Config
+
+* Inspirations
+  - https://blog.sumtypeofway.com/posts/emacs-config.html
 * debug
-#+BEGIN_SRC emacs-lisp
-(setq debug-on-error t)
-#+END_SRC
+  #+BEGIN_SRC emacs-lisp
+    (setq debug-on-error nil)
+    (setq gc-cons-threshold 100000000)
+  #+END_SRC
   
+* package
 
+  #+BEGIN_SRC emacs-lisp
+    (setq use-package-always-ensure t)
+  #+END_SRC
 
-* Remove startup welcome screen
-The code block below toggle off the welcome startup screen.
+* text-encoding
+  #+BEGIN_SRC emacs-lisp
+    (set-charset-priority 'unicode)
+    (setq locale-coding-system 'utf-8)
+    (set-terminal-coding-system 'utf-8)
+    (set-keyboard-coding-system 'utf-8)
+    (set-selection-coding-system 'utf-8)
+    (prefer-coding-system 'utf-8)
+    (setq default-process-coding-system '(utf-8-unix . utf-8-unix))
+  #+END_SRC
 
-#+BEGIN_SRC emacs-lisp
-(custom-set-variables
-  '(inhibit-startup-screen t))
-#+END_SRC
+* recent files
+  #+BEGIN_SRC emacs-lisp
+
+    (require 'recentf)
+    (add-to-list 'recentf-exclude "\\elpa")
+    (recentf-mode 1)
+    (setq recentf-max-menu-items 25)
+    (setq recentf-max-saved-items 25)
+    (global-set-key "\C-x\ \C-r" 'recentf-open-files)
+    (run-at-time nil (* 5 60) 'recentf-save-list)
+  #+END_SRC
+* misc
+  #+BEGIN_SRC emacs-lisp
+
+    (setq
+     make-backup-files nil
+     auto-save-default nil
+     create-lockfiles nil)
+  #+END_SRC
+
+* remove startup welcome screen
+  The code block below toggle off the welcome startup screen.
+
+  #+BEGIN_SRC emacs-lisp
+    (custom-set-variables
+     '(inhibit-startup-screen t))
+  #+END_SRC
 
 * interface tweaks
-#+BEGIN_SRC emacs-lisp
-(setq inhibit-startup-message t)
-(tool-bar-mode -1)
-(fset 'yes-or-no-p 'y-or-n-p)
-(global-set-key (kbd "<f5>") 'revert-buffer)
-(add-hook 'text-mode-hook 'turn-on-visual-line-mode)
-(add-hook 'org-mode-hook 'turn-on-visual-line-mode)
+** window decorations
+   #+BEGIN_SRC emacs-lisp
+     (when (window-system)
+       (tool-bar-mode -1)
+       (scroll-bar-mode -1)
+       (tooltip-mode -1))
 
-#+END_SRC
+     (use-package all-the-icons
+       :ensure t)
 
+     (use-package all-the-icons-dired
+       :ensure t
+       :after all-the-icons
+       :hook (dired-mode . all-the-icons-dired-mode))
+
+     (use-package doom-modeline
+       :ensure t
+       :config (doom-modeline-mode))
+     (use-package diminish
+       :ensure t
+       :config (diminish 'eldoc-mode))
+   #+END_SRC
+       
+** inhibit startup message
+   #+BEGIN_SRC emacs-lisp
+     (setq inhibit-startup-message t)
+     (fset 'yes-or-no-p 'y-or-n-p)
+     (global-set-key (kbd "<f5>") 'revert-buffer)
+     (add-hook 'text-mode-hook 'turn-on-visual-line-mode)
+     (add-hook 'org-mode-hook 'turn-on-visual-line-mode)
+
+     (global-set-key [C-mouse-4] 'text-scale-increase)
+     (global-set-key [C-mouse-5] 'text-scale-decrease)
+   #+END_SRC
+** dim inactive buffer
+   #+BEGIN_SRC emacs-lisp
+     (use-package dimmer
+       :ensure t
+       :custom (dimmer-fraction 0.2)
+       :config (dimmer-mode))
+   #+END_SRC
+   
+** theme
+   #+BEGIN_SRC emacs-lisp
+     (use-package solarized-theme
+       :ensure t
+       :config
+       (load-theme 'solarized-light t))
+   #+END_SRC
+** paren matching
+   #+BEGIN_SRC emacs-lisp
+     (use-package smartparens-config
+       :ensure smartparens
+       :config
+       (progn (show-smartparens-global-mode t)
+	      ;; emacs regexp parens
+	      ;; (sp-pair "\\\\(" . "\\\\)")
+
+	      ;; latex literal braces in    math mode
+	      ;; (sp-pair "\\\\{"   . "\\\\}"  )
+
+	      ;; capture parens in regexp in various languages
+	      ;; (sp-pair "\\("   . "\\)"  )
+
+	      ;; escaped quotes in strings
+	      ;; (sp-pair "\\\""  . "\\\"" )
+
+	      ;; string double quotes
+	      ;; (sp-pair "\""    . "\""   )
+
+	      ;; string single quotes/character quotes
+	      ;; (sp-pair "'"     . "'"    )
+
+	      ;; parens (yay lisp)
+	      ;; (sp-pair "("     . ")"    )
+
+	      ;; brackets
+	      ;; (sp-pair "["     . "]"    )
+
+	      ;; braces (a.k.a. curly brackets)
+	      ;; (sp-pair "{"     . "}"    )
+
+	      ;; latex strings. tap twice for latex double quotes
+	      ;; (sp-pair "`"     . "`"    )
+
+	      (smartparens-global-mode t)
+	      )
+       )
+
+     (add-hook 'prog-mode-hook 'turn-on-smartparens-strict-mode)
+     (add-hook 'markdown-mode-hook 'turn-on-smartparens-strict-mode)
+   #+END_SRC 
 * try
-#+BEGIN_SRC emacs-lisp
-(use-package try
-	:ensure t)
-#+END_SRC
+  #+BEGIN_SRC emacs-lisp
+    (use-package try
+      :ensure t)
+  #+END_SRC
 
 * which key
   Brings up some help
@@ -37,67 +158,149 @@ The code block below toggle off the welcome startup screen.
     (use-package which-key
       :ensure t
       :config
-      (which-key-mode))
+      (which-key-mode)
+      (which-key-setup-side-window-bottom)
+      :custom (which-key-idle-delay 1.2))
 
-#+END_SRC
-* Org capture
-from : https://gist.github.com/progfolio/af627354f87542879de3ddc30a31adc1
-#+BEGIN_SRC emacs-lisp
+  #+END_SRC
+* completion
+** company
+   #+begin_src emacs-lisp
+     (use-package company
+       :ensure t
+       :diminish
+       :bind (("C-." . #'company-complete))
+       :hook (prog-mode . company-mode)
+       :custom
+       (company-dabbrev-downcase nil "Don't downcase returned candidates.")
+       (company-show-numbers t "Numbers are helpful.")
+       (company-tooltip-limit 20 "The more the merrier.")
+       (company-tooltip-idle-delay 0.4 "Faster!")
+       (company-async-timeout 20 "Some requests can take a long time. That's fine.")
+       :config
 
-(defun my/delete-capture-frame (&rest _)
-  "Delete frame with its name frame-parameter set to \"capture\"."
-  (if (equal "capture" (frame-parameter nil 'name))
-      (delete-frame)))
-(advice-add 'org-capture-finalize :after #'my/delete-capture-frame)
+       ;; Use the numbers 0-9 to select company completion candidates
+       (let ((map company-active-map))
+	 (mapc (lambda (x) (define-key map (format "%d" x)
+			     `(lambda () (interactive) (company-complete-number ,x))))
+	       (number-sequence 0 9))))
+   #+end_src
+* org
+  
+** org-agenda
+   #+begin_src emacs-lisp
+     (setq org-agenda-files
+	   '("~/org/todo/personal.org"
+	     "~/org/todo/work.org"))
 
-(defun my/org-capture-frame ()
-  "Run org-capture in its own frame."
-  (interactive)
-  (require 'cl-lib)
-  (select-frame-by-name "capture")
-  (delete-other-windows)
-  (cl-letf (((symbol-function 'switch-to-buffer-other-window) #'switch-to-buffer))
-    (condition-case err
-        (org-capture)
-      ;; "q" signals (error "Abort") in `org-capture'
-      ;; delete the newly created frame in this scenario.
-      (user-error (when (string= (cadr err) "Abort")
-                    (delete-frame))))))
+     (setq org-agenda-span 10
+	   org-agenda-start-on-weekday nil
+	   org-agenda-start-day "-3d")
+
+     (global-set-key (kbd "C-c a") 'org-agenda)
+
+   #+end_src
+** org-capture
+   
+*** org-capture templates
+    #+BEGIN_SRC emacs-lisp
+      (require 'org-protocol)
+      (global-set-key (kbd "C-c c") 'org-capture)
+
+      (setq org-protocol-default-template-key "l")
+      (setq org-capture-templates
+	    '(("t" "Todo" entry (file+headline "~/kuri/notes.org" "Tasks")
+	       "* TODO %?\n  %i\n  %a")
+	      ("l" "Link" entry (file+olp "~/kuri/notes.org" "Web Links")
+	       "* %a\n %?\n %i")
+	      ("j" "Journal" entry (file+datetree "~/kuri/journal.org")
+	       "* %?\nEntered on %U\n  %i\n  %a")))
+
+    #+END_SRC
 
 
-#+END_SRC
+*** for browser based interaction
+    from : https://gist.github.com/progfolio/af627354f87542879de3ddc30a31adc1
+    #+BEGIN_SRC emacs-lisp
 
-** Org-capture templates
-#+BEGIN_SRC emacs-lisp
-(require 'org-protocol)
-(global-set-key (kbd "C-c c") 'org-capture)
+      (defun my/delete-capture-frame (&rest _)
+	"Delete frame with its name frame-parameter set to \"capture\"."
+	(if (equal "capture" (frame-parameter nil 'name))
+	    (delete-frame)))
+      (advice-add 'org-capture-finalize :after #'my/delete-capture-frame)
 
-(setq org-protocol-default-template-key "l")
-(setq org-capture-templates
- '(("t" "Todo" entry (file+headline "~/kuri/notes.org" "Tasks")
-        "* TODO %?\n  %i\n  %a")
-   ("l" "Link" entry (file+olp "~/kuri/notes.org" "Web Links")
-        "* %a\n %?\n %i")
-   ("j" "Journal" entry (file+datetree "~/kuri/journal.org")
-        "* %?\nEntered on %U\n  %i\n  %a")))
+      (defun my/org-capture-frame ()
+	"Run org-capture in its own frame."
+	(interactive)
+	(require 'cl-lib)
+	(select-frame-by-name "capture")
+	(delete-other-windows)
+	(cl-letf (((symbol-function 'switch-to-buffer-other-window) #'switch-to-buffer))
+	  (condition-case err
+	      (org-capture)
+	    ;; "q" signals (error "Abort") in `org-capture'
+	    ;; delete the newly created frame in this scenario.
+	    (user-error (when (string= (cadr err) "Abort")
+			  (delete-frame))))))
 
-#+END_SRC
 
-
+    #+END_SRC
 
 * elfeed-org
-#+BEGIN_SRC elisp
-  ;; Load elfeed-org
-  (use-package elfeed-org
-	  :ensure t)
+  #+BEGIN_SRC elisp
+    ;; Load elfeed-org
+    (use-package elfeed-org
+      :ensure t)
 
-  ;; Initialize elfeed-org
-  ;; This hooks up elfeed-org to read the configuration when elfeed
-  ;; is started with =M-x elfeed=
-  (elfeed-org)
+    ;; Initialize elfeed-org
+    ;; This hooks up elfeed-org to read the configuration when elfeed
+    ;; is started with =M-x elfeed=
+    (elfeed-org)
 
-  ;; Optionally specify a number of files containing elfeed
-  ;; configuration. If not set then the location below is used.
-  ;; Note: The customize interface is also supported.
-  (setq rmh-elfeed-org-files (list "~/emacs/vanilla.d/elfeed.org"))
-#+END_SRC
+    ;; Optionally specify a number of files containing elfeed
+    ;; configuration. If not set then the location below is used.
+    ;; Note: The customize interface is also supported.
+    (setq rmh-elfeed-org-files (list "~/emacs/vanilla.d/elfeed.org"))
+  #+END_SRC
+
+
+* dired-subtree
+  #+BEGIN_SRC elisp
+    (use-package dired-subtree
+      :ensure t
+      :after dired
+      :bind (:map dired-mode-map
+		  ("TAB" . dired-subtree-toggle)))
+  #+END_SRC
+
+
+* magit
+  #+BEGIN_SRC elisp
+    (use-package magit
+      :ensure t
+      :bind (("C-c g" . #'magit-status)))
+
+    ;; (use-package libgit
+    ;;   :ensure t)
+
+    ;; (use-package magit-libgit
+    ;;  :ensure t
+    ;;  :after (magit libgit))
+  #+END_SRC
+
+
+  
+* programming languages
+  #+begin_src emacs-lisp
+    (use-package blacken
+      :hook ((python-mode . blacken-mode)))
+
+    (use-package typescript-mode)
+    (use-package csharp-mode)
+
+    (use-package yaml-mode)
+    (use-package dockerfile-mode)
+    (use-package toml-mode)
+  #+end_src
+* emacs
+** mu4e
