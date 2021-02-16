@@ -20,3 +20,5 @@
      The text will be ignored by elfeed.
 **** http://feeds.feedburner.com/eclipselive                         :ignore:
 **** http://www.fosslc.org/drupal/rss.xml                             :video:
+*****  misc
+******   https://matthieu.io/blog/feed/rss.xml
