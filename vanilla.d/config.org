@@ -6,6 +6,7 @@
   #+BEGIN_SRC emacs-lisp
     (setq debug-on-error nil)
     (setq gc-cons-threshold 100000000)
+    (setq find-file-visit-truename nil)
   #+END_SRC
   
 * package
