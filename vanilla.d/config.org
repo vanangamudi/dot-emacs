@@ -198,6 +198,10 @@
 	       (number-sequence 0 9))))
    #+end_src
 * org
+** basic
+  #+begin_src emacs-lisp
+    (setq org-cycle-separator-lines -1)
+  #+end_src
 ** org-bullets
    #+begin_src emacs-lisp
      (use-package org-bullets
@@ -208,8 +212,11 @@
 ** org-agenda
    #+begin_src emacs-lisp
      (setq org-agenda-files
-	   '("~/org/todo/personal.org"
-	     "~/org/todo/work.org"))
+	   '("~/org/personal.org"
+	     "~/org/work.org"))
+
+     (setq org-todo-keywords
+	   '((sequence "TODO" "NEXT" "PROJ" "WAIT" "SLEEP" "|" "DONE" "CANC")))
 
      (setq org-agenda-span 10
 	   org-agenda-start-on-weekday nil
