@@ -229,7 +229,7 @@
 
    
 ** org-gcal
-   #+begin_src emacs-lisp
+   #+begin_src 
      (use-package org-gcal
        :ensure t
        :config 
@@ -239,6 +239,7 @@
 				   ("selva.on.profession@gmail.com" .  "~/org/work.org")))
        )
    #+end_src
+   
 ** org-capture
    
 *** org-capture templates
