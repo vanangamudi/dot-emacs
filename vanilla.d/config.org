@@ -226,6 +226,20 @@
      (global-set-key (kbd "C-c a") 'org-agenda)
 
    #+end_src
+
+   
+** org-gcal
+   #+begin_src 
+     (use-package org-gcal
+       :ensure t
+       :config 
+       (setq org-gcal-client-id "691697679170-vfhv024f23jmjbpmoh891u9bt0mhe1nb.apps.googleusercontent.com"
+	     org-gcal-client-secret "kK9mdg6MK4g_zYkFBHcDRV0P"
+	     org-gcal-file-alist '(("selva.developer@gmail.com" .  "~/org/work.org")
+				   ("selva.on.profession@gmail.com" .  "~/org/work.org")))
+       )
+   #+end_src
+   
 ** org-capture
    
 *** org-capture templates
@@ -273,7 +287,7 @@
     #+END_SRC
 
 * elfeed-org
-  #+BEGIN_SRC elisp
+  #+BEGIN_SRC emacs-lisp
     ;; Load elfeed-org
     (use-package elfeed-org
       :ensure t)
@@ -288,10 +302,10 @@
     ;; Note: The customize interface is also supported.
     (setq rmh-elfeed-org-files (list "~/emacs/vanilla.d/elfeed.org"))
   #+END_SRC
-
-
+  
+  
 * dired-subtree
-  #+BEGIN_SRC elisp
+  #+BEGIN_SRC emacs-lisp
     (use-package dired-subtree
       :ensure t
       :after dired
@@ -301,7 +315,7 @@
 
 
 * magit
-  #+BEGIN_SRC elisp
+  #+BEGIN_SRC emacs-lisp
     (use-package magit
       :ensure t
       :bind (("C-c g" . #'magit-status)))
@@ -322,7 +336,7 @@
       :hook ((python-mode . blacken-mode)))
 
     (use-package typescript-mode)
-    (use-package csharp-mode)
+    ;(use-package csharp-mode)
 
     (use-package yaml-mode)
     (use-package dockerfile-mode)

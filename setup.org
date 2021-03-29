@@ -102,6 +102,14 @@ init.el vanilla emacs setup
 (org-babel-load-file "~/emacs/vanilla.d/config.org")
 #+END_SRC
 
+* org-gcal
+  - cannot setup in current emacs version which is
+    - "GNU Emacs 25.2.2 (x86_64-pc-linux-gnu, GTK+ Version 3.22.21) of 2017-09-23, 
+      modified by Debian"
+  - needs client id and secret which needs to be setup in google dev console
+  - needs calendar id which is usually your email id or can be copied from respective calendar
+** help
+   - [[https://cestlaz.github.io/posts/using-emacs-26-gcal/#.WIqBud9vGAk][cestlaz Using Emacs - 26 - Google Calendar, Org Agenda]]
 * Emacs daemon
 from: https://www.emacswiki.org/emacs/EmacsAsDaemon
 Systemd is the supported method of running applications at startup on most Linux distributions. The following configuration file emacs.service will be included in the standard Emacs installation as of 26.1. All you need to do is copy this to ~/.config/systemd/user/emacs.service .
