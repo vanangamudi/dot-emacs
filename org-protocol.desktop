@@ -1,6 +1,6 @@
 [Desktop Entry]
 Name=org-protocol
-Exec=emacsclient -c --alternate-editor='' %u
+Exec=emacsclient --create-frame --socket-name 'capture'  --alternate-editor='' --frame-parameters='(quote (name . "capture"))' --no-wait  --eval "(my/org-capture-frame)"
 Type=Application
 Terminal=false
 Categories=System;
