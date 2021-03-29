@@ -357,3 +357,13 @@
       
   #+begin_src emacs-lisp
   #+end_src
+
+
+* align-non-space
+  [[https://blog.lambda.cx/posts/emacs-align-columns/][Aligning columns in Emacs]]
+  #+begin_src emacs-lisp
+    (defun align-non-space (BEG END)
+      "Align non-space columns in region BEG END."
+      (interactive "r")
+      (align-regexp BEG END "\\(\\s-*\\)\\S-+" 1 1 t))
+  #+end_src
