@@ -235,11 +235,11 @@
 
       (setq org-protocol-default-template-key "l")
       (setq org-capture-templates
-	    '(("t" "Todo" entry (file+headline "~/kuri/notes.org" "Tasks")
+	    '(("t" "Todo" entry (file+headline "~/org/pidi.org" "Tasks")
 	       "* TODO %?\n  %i\n  %a")
-	      ("l" "Link" entry (file+olp "~/kuri/notes.org" "Web Links")
+	      ("l" "Link" entry (file+olp "~/org/pidi.org" "Web Links")
 	       "* %a\n %?\n %i")
-	      ("j" "Journal" entry (file+datetree "~/kuri/journal.org")
+	      ("j" "Journal" entry (file+datetree "~/org/pidi.org" "Journal")
 	       "* %?\nEntered on %U\n  %i\n  %a")))
 
     #+END_SRC
