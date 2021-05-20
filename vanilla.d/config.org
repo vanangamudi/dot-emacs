@@ -109,11 +109,9 @@
    
 ** theme
    #+BEGIN_SRC emacs-lisp
-     (use-package solarized-theme
-       :ensure t
-       :config
-       (load-theme 'solarized-dark t))
+     (load-theme 'solarized-dark t)
    #+END_SRC
+   
 ** paren matching
    #+BEGIN_SRC emacs-lisp
      (use-package smartparens-config
