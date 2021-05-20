@@ -207,12 +207,13 @@
        :ensure t
        :config (add-hook 'org-mode-hook 'org-bullets-mode))
    #+end_src
-  
+
 ** org-agenda
    #+begin_src emacs-lisp
      (setq org-agenda-files
 	   '("~/org/personal.org"
-	     "~/org/work.org"))
+	     "~/org/work.org"
+	     "~/org/kaappagam.org"))
 
      (setq org-todo-keywords
 	   '((sequence "TODO" "NEXT" "PROJ" "WAIT" "SLEEP" "|" "DONE" "CANC")))
@@ -225,6 +226,18 @@
 
    #+end_src
 
+** org-refile
+
+*** TODO 
+**** TODO find possible values for =org-refile-targets=
+     
+*** config
+    org-refile by default only targets current file and heading unless =org-refile-targets= is configured 
+    #+begin_src emacs-lisp
+      (setq org-refile-targets '((org-agenda-files :maxlevel . 3)))  ;;use headings upto level 3
+      (setq org-refile-use-outline-path 'file) ;; include files not just headings
+      (setq org-refile-allow-creating-parent-nodes 'confirm) ;; allow creating new nodes on-fly
+    #+end_src
    
 ** org-gcal
    #+begin_src 
