@@ -297,6 +297,22 @@
 
     #+END_SRC
 
+** org-babel
+   #+begin_src emacs-lisp
+     (org-babel-do-load-languages 'org-babel-load-languages '((shell . t)
+							      (python . t)))
+
+
+   #+end_src
+** tempo
+   #+begin_src emacs-lisp
+
+     ;;(add-function :before-until electric-pair-inhibit-predicate
+     ;;	   (lambda (c) (eq c ?<)))
+
+     (require 'org-tempo)
+
+   #+end_src
 * elfeed-org
   #+BEGIN_SRC emacs-lisp
     ;; Load elfeed-org
