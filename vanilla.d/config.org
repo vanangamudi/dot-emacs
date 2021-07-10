@@ -25,7 +25,14 @@
     (prefer-coding-system 'utf-8)
     (setq default-process-coding-system '(utf-8-unix . utf-8-unix))
   #+END_SRC
+* very large files
+  #+begin_src emacs-lisp
+    (require 'vlf-setup)
 
+    ;;(custom-set-variables
+    ;; '(vlf-application 'dont-ask))
+
+  #+end_src
 * recent files
   #+BEGIN_SRC emacs-lisp
 
@@ -256,6 +263,7 @@
 *** org-capture templates
     #+BEGIN_SRC emacs-lisp
       (require 'org-protocol)
+
       (global-set-key (kbd "C-c c") 'org-capture)
 
       (setq org-protocol-default-template-key "l")
