@@ -2,6 +2,7 @@
 
 * Inspirations
   - https://blog.sumtypeofway.com/posts/emacs-config.html
+  - https://github.com/trev-dev/emacs
 * debug
   #+BEGIN_SRC emacs-lisp
     (setq debug-on-error nil)
@@ -233,6 +234,24 @@
 
    #+end_src
 
+** org-roam
+   #+begin_src emacs-lisp
+     (use-package org-roam
+       :ensure t
+       :init
+       (setq org-roam-v2-ack t)
+       :custom
+       (org-roam-directory "~/org/roam")
+       (org-roam-completion-everywhere t)
+       :bind (("C-c n l" . org-roam-buffer-toggle)
+	      ("C-c n f" . org-roam-node-find)
+	      ("C-c n i" . org-roam-node-insert)
+	      :map org-mode-map
+	      ("C-M-i"    . completion-at-point))
+       :config
+       (org-roam-setup))
+
+   #+end_src
 ** org-refile
 
 *** TODO 
@@ -415,4 +434,46 @@
       "Align non-space columns in region BEG END."
       (interactive "r")
       (align-regexp BEG END "\\(\\s-*\\)\\S-+" 1 1 t))
+  #+end_src
+
+  
+* completion
+  #+begin_src emacs-lisp
+    ;; Completions with counsel
+    (use-package counsel
+      :ensure t
+      :config
+      (counsel-mode 1))
+
+    ;; Search better with swiper
+    (use-package swiper
+      :ensure t
+      :config
+      (counsel-mode 1))
+
+    ;; The interface for swiper/counsel
+    (use-package ivy
+      :ensure t
+      :requires (counsel swiper)
+      :config
+      (ivy-mode 1)
+      (setq ivy-use-virtual-buffers t)
+      (setq enable-recursive-minibuffers t)
+      ;; enable this if you want `swiper' to use it
+      ;; (setq search-default-mode #'char-fold-to-regexp)
+      (global-set-key "\C-s" 'swiper)
+      (global-set-key (kbd "C-c C-r") 'ivy-resume)
+      (global-set-key (kbd "<f6>") 'ivy-resume)
+      (global-set-key (kbd "M-x") 'counsel-M-x))
+
+  #+end_src
+
+  
+* syntax highlighting
+  #+begin_src emacs-lisp
+    (use-package rainbow-delimiters
+      :ensure t
+      :config
+      (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
+
   #+end_src
