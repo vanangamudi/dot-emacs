@@ -3,6 +3,7 @@
 * Inspirations
   - https://blog.sumtypeofway.com/posts/emacs-config.html
   - https://github.com/trev-dev/emacs
+    
 * debug
   #+BEGIN_SRC emacs-lisp
     (setq debug-on-error nil)
@@ -479,6 +480,11 @@
   #+end_src
 
 * mu4e
+  #+begin_src bash
+    sudo apt-get install mu4e
+    sudo apt-get install isync
+
+  #+end_src
   #+begin_src emacs-lisp
     (use-package mu4e
       :ensure nil
@@ -492,7 +498,7 @@
       ;; Refresh mail using isync every 10 minutes
       (setq mu4e-update-interval (* 10 60))
       (setq mu4e-get-mail-command "mbsync -a")
-      (setq mu4e-maildir "~/Mail")
+      (setq mu4e-maildir "~/mail/personal-gmail")
 
       (setq mu4e-drafts-folder "/[Gmail]/Drafts")
       (setq mu4e-sent-folder   "/[Gmail]/Sent Mail")
