@@ -26,7 +26,14 @@
     (prefer-coding-system 'utf-8)
     (setq default-process-coding-system '(utf-8-unix . utf-8-unix))
   #+END_SRC
+* very large files
+  #+begin_src emacs-lisp
+    (require 'vlf-setup)
 
+    ;;(custom-set-variables
+    ;; '(vlf-application 'dont-ask))
+
+  #+end_src
 * recent files
   #+BEGIN_SRC emacs-lisp
 
@@ -110,11 +117,9 @@
    
 ** theme
    #+BEGIN_SRC emacs-lisp
-     (use-package solarized-theme
-       :ensure t
-       :config
-       (load-theme 'solarized-light t))
+     (load-theme 'solarized-dark t)
    #+END_SRC
+   
 ** paren matching
    #+BEGIN_SRC emacs-lisp
      (use-package smartparens-config
@@ -210,12 +215,13 @@
        :ensure t
        :config (add-hook 'org-mode-hook 'org-bullets-mode))
    #+end_src
-  
+
 ** org-agenda
    #+begin_src emacs-lisp
      (setq org-agenda-files
 	   '("~/org/personal.org"
-	     "~/org/work.org"))
+	     "~/org/work.org"
+	     "~/org/kaappagam.org"))
 
      (setq org-todo-keywords
 	   '((sequence "TODO" "NEXT" "PROJ" "WAIT" "SLEEP" "|" "DONE" "CANC")))
@@ -228,6 +234,18 @@
 
    #+end_src
 
+** org-refile
+
+*** TODO 
+**** TODO find possible values for =org-refile-targets=
+     
+*** config
+    org-refile by default only targets current file and heading unless =org-refile-targets= is configured 
+    #+begin_src emacs-lisp
+      (setq org-refile-targets '((org-agenda-files :maxlevel . 3)))  ;;use headings upto level 3
+      (setq org-refile-use-outline-path 'file) ;; include files not just headings
+      (setq org-refile-allow-creating-parent-nodes 'confirm) ;; allow creating new nodes on-fly
+    #+end_src
    
 ** org-gcal
    #+begin_src 
@@ -246,15 +264,16 @@
 *** org-capture templates
     #+BEGIN_SRC emacs-lisp
       (require 'org-protocol)
+
       (global-set-key (kbd "C-c c") 'org-capture)
 
       (setq org-protocol-default-template-key "l")
       (setq org-capture-templates
-	    '(("t" "Todo" entry (file+headline "~/kuri/notes.org" "Tasks")
+	    '(("t" "Todo" entry (file+headline "~/org/pidi.org" "Tasks")
 	       "* TODO %?\n  %i\n  %a")
-	      ("l" "Link" entry (file+olp "~/kuri/notes.org" "Web Links")
+	      ("l" "Link" entry (file+olp "~/org/pidi.org" "Web Links")
 	       "* %a\n %?\n %i")
-	      ("j" "Journal" entry (file+datetree "~/kuri/journal.org")
+	      ("j" "Journal" entry (file+datetree "~/org/pidi.org" "Journal")
 	       "* %?\nEntered on %U\n  %i\n  %a")))
 
     #+END_SRC
@@ -287,6 +306,22 @@
 
     #+END_SRC
 
+** org-babel
+   #+begin_src emacs-lisp
+     (org-babel-do-load-languages 'org-babel-load-languages '((shell . t)
+							      (python . t)))
+
+
+   #+end_src
+** tempo
+   #+begin_src emacs-lisp
+
+     ;;(add-function :before-until electric-pair-inhibit-predicate
+     ;;	   (lambda (c) (eq c ?<)))
+
+     (require 'org-tempo)
+
+   #+end_src
 * elfeed-org
   #+BEGIN_SRC emacs-lisp
     ;; Load elfeed-org
@@ -378,4 +413,14 @@
   (add-hook 'pdf-view-mode-hook (lambda() (linum-mode -1)))
       
   #+begin_src emacs-lisp
+  #+end_src
+
+
+* align-non-space
+  [[https://blog.lambda.cx/posts/emacs-align-columns/][Aligning columns in Emacs]]
+  #+begin_src emacs-lisp
+    (defun align-non-space (BEG END)
+      "Align non-space columns in region BEG END."
+      (interactive "r")
+      (align-regexp BEG END "\\(\\s-*\\)\\S-+" 1 1 t))
   #+end_src
