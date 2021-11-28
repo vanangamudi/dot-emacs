@@ -8,3 +8,8 @@ config.el
 !config.org
 !.gitignore
 !init.el
+recentf
+session.*
+auto-save-list/*
+elpa/*
+transient/*
