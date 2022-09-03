@@ -1,3 +1,6 @@
+
+
+
 #+TITLE: Config
 
 * Inspirations
@@ -6,8 +9,14 @@
     
 * debug
   #+BEGIN_SRC emacs-lisp
+    ;; Profile emacs startup
+    (add-hook 'emacs-startup-hook
+	      (lambda ()
+		(message "Emacs loaded in %s."
+			 (emacs-init-time))))
+    
     (setq debug-on-error nil)
-    (setq gc-cons-threshold 100000000)
+    (setq gc-cons-threshold (* 2 1000 1000))
     (setq find-file-visit-truename nil)
   #+END_SRC
   
@@ -160,12 +169,27 @@
 	      (smartparens-global-mode t)
 	      )
        )
-
+     
      ;; (add-hook 'prog-mode-hook 'turn-on-smartparens-strict-mode)
      ;;(add-hook 'markdown-mode-hook 'turn-on-smartparens-strict-mode)
 
    #+END_SRC
-   
+
+** tabbed interface
+  #+begin_src emacs-lisp
+    (use-package centaur-tabs
+    :ensure t
+    :hook
+    (dired-mode . centaur-tabs-local-mode)
+    :config
+    (centaur-tabs-mode t)
+    :bind
+    ("C-<prior>" . centaur-tabs-backward)
+    ("C-<next>" . centaur-tabs-forward))
+
+  #+end_src
+
+
 * try
   #+BEGIN_SRC emacs-lisp
     (use-package try
@@ -216,6 +240,16 @@
        :ensure t
        :config (add-hook 'org-mode-hook 'org-bullets-mode))
    #+end_src
+** org-download
+   #+begin_src emacs-lisp
+     (use-package org-download
+       :ensure t
+       :config (add-hook 'dired-mode-hook 'org-download-enable)
+       :bind (("C-c s s" . org-download-screenshot)
+	      ("C-c s y" . org-download-yank)))
+	 
+   #+end_src
+
 
 ** org-agenda
    #+begin_src emacs-lisp
@@ -234,7 +268,7 @@
      (global-set-key (kbd "C-c a") 'org-agenda)
 
    #+end_src
-
+   
 ** org-roam
    #+begin_src emacs-lisp
      (use-package org-roam
@@ -252,7 +286,29 @@
        :config
        (org-roam-setup))
 
+     
    #+end_src
+   
+** org-roam-ui
+#+begin_src emacs-lisp
+    (use-package org-roam-ui
+      ;;:straight
+      ;;(:host github :repo "org-roam/org-roam-ui" :branch "main" :files ("*.el" "out"))
+      :after org-roam
+  ;;         normally we'd recommend hooking orui after org-roam, but since org-roam does not have
+  ;;         a hookable mode anymore, you're advised to pick something yourself
+  ;;         if you don't care about startup time, use
+  ;;  :hook (after-init . org-roam-ui-mode)
+      :config
+      (setq org-roam-ui-sync-theme t
+	    org-roam-ui-follow t
+	    org-roam-ui-update-on-save t
+	    org-roam-ui-open-on-start t))
+
+#+end_src
+
+#+RESULTS:
+
 ** org-refile
 
 *** TODO 
@@ -298,6 +354,8 @@
     #+END_SRC
 
 
+    
+    
 *** for browser based interaction
     from : https://gist.github.com/progfolio/af627354f87542879de3ddc30a31adc1
     #+BEGIN_SRC emacs-lisp
@@ -468,7 +526,16 @@
       (global-set-key (kbd "M-x") 'counsel-M-x))
 
   #+end_src
+  
+* search
+#+begin_src emacs-lisp
+  (use-package deadgrep
+     :ensure t
+     )
 
+#+end_src
+
+#+RESULTS:
   
 * syntax highlighting
   #+begin_src emacs-lisp
@@ -498,12 +565,47 @@
       ;; Refresh mail using isync every 10 minutes
       (setq mu4e-update-interval (* 10 60))
       (setq mu4e-get-mail-command "mbsync -a")
-      (setq mu4e-maildir "~/mail/personal-gmail")
+      (setq mu4e-maildir "~/mail/")
 
-      (setq mu4e-drafts-folder "/[Gmail]/Drafts")
-      (setq mu4e-sent-folder   "/[Gmail]/Sent Mail")
-      (setq mu4e-refile-folder "/[Gmail]/All Mail")
-      (setq mu4e-trash-folder  "/[Gmail]/Trash")
+      (setq mu4e-contexts
+	    (list
+	     ;; personals account
+	     (make-mu4e-context
+	      :name "personal"
+	      :match-func
+	      (lambda (msg)
+		(when msg
+		  (string-prefix-p "/personal-gmail" (mu4e-message-field msg :maildir))))
+	      :vars '((user-mail-address . "selva.personal@gmail.com")
+		      (user-full-name    . "Selvakumar Murugan")
+		      (smtpmail-smtp-server  . "smtp.gmail.com")
+		      (smtpmail-smtp-service . 465)
+		      (smtpmail-stream-type  . ssl)
+		      (mu4e-drafts-folder  . "/personal-gmail/[Gmail]/Drafts")
+		      (mu4e-sent-folder  . "/personal-gmail/[Gmail]/Sent Mail")
+		      (mu4e-refile-folder  . "/personal-gmail/[Gmail]/All Mail")
+		      (mu4e-trash-folder  . "/personal-gmail/[Gmail]/Trash")))
+
+	     ;; developer account
+	     (make-mu4e-context
+	      :name "developer"
+	      :match-func
+	      (lambda (msg)
+		(when msg
+		  (string-prefix-p "/developer-gmail" (mu4e-message-field msg :maildir))))
+	      :vars '((user-mail-address . "selva.developer@gmail.com")
+		      (user-full-name    . "Selvakumar Murugan")
+		      (smtpmail-smtp-server  . "smtp.gmail.com")
+		      (smtpmail-smtp-service . 465)
+		      (smtpmail-stream-type  . ssl)
+		      (mu4e-drafts-folder  . "/developer-gmail/[Gmail]/Drafts")
+		      (mu4e-sent-folder  . "/developer-gmail/[Gmail]/Sent Mail")
+		      (mu4e-refile-folder  . "/developer-gmail/[Gmail]/All Mail")
+		      (mu4e-trash-folder  . "/developer-gmail/[Gmail]/Trash")))
+
+	     ))
+
+
 
       (setq mu4e-maildir-shortcuts
 	  '(("/Inbox"             . ?i)
@@ -516,3 +618,4 @@
 
   #+RESULTS:
   : t
+
