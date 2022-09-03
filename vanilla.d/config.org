@@ -1,7 +1,5 @@
-
-
-
 #+TITLE: Config
+
 
 * Inspirations
   - https://blog.sumtypeofway.com/posts/emacs-config.html
@@ -455,6 +453,13 @@
     (use-package dockerfile-mode)
     (use-package toml-mode)
   #+end_src
+
+  
+** common lisp
+   #+begin_src 
+     (use-package sly
+       :ensure t)
+   #+end_src
 * emacs
 ** mu4e
    
