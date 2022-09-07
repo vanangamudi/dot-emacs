@@ -1,9 +1,19 @@
 #+TITLE: Config
-
+#+OPTIONS: tex:t
 
 * Inspirations
   - https://blog.sumtypeofway.com/posts/emacs-config.html
   - https://github.com/trev-dev/emacs
+  - https://github.com/daviwil/emacs-from-scratch
+
+
+* Tips
+ 
+** Debug your config.org with =M-x org-lint=
+   - https://emacs.stackexchange.com/questions/63003/org-babel-tangle-error
+
+* Emacs
+
     
 * debug
   #+BEGIN_SRC emacs-lisp
@@ -17,176 +27,205 @@
     (setq gc-cons-threshold (* 2 1000 1000))
     (setq find-file-visit-truename nil)
   #+END_SRC
-  
-* package
 
-  #+BEGIN_SRC emacs-lisp
-    (setq use-package-always-ensure t)
-  #+END_SRC
-
-* text-encoding
-  #+BEGIN_SRC emacs-lisp
-    (set-charset-priority 'unicode)
-    (setq locale-coding-system 'utf-8)
-    (set-terminal-coding-system 'utf-8)
-    (set-keyboard-coding-system 'utf-8)
-    (set-selection-coding-system 'utf-8)
-    (prefer-coding-system 'utf-8)
-    (setq default-process-coding-system '(utf-8-unix . utf-8-unix))
-  #+END_SRC
-* very large files
-  #+begin_src emacs-lisp
-    (require 'vlf-setup)
-
-    ;;(custom-set-variables
-    ;; '(vlf-application 'dont-ask))
-
-  #+end_src
-* recent files
-  #+BEGIN_SRC emacs-lisp
-
-    (require 'recentf)
-    (add-to-list 'recentf-exclude "\\elpa")
-    (recentf-mode 1)
-    (setq recentf-max-menu-items 25)
-    (setq recentf-max-saved-items 25)
-    (global-set-key "\C-x\ \C-r" 'recentf-open-files)
-    (run-at-time nil (* 5 60) 'recentf-save-list)
-  #+END_SRC
-  
-* buffer-management
-  #+begin_src emacs-lisp
-    (global-set-key "\C-x\ \C-b" 'ibuffer)
-
-  #+end_src
-* misc
-  #+BEGIN_SRC emacs-lisp
-
-    (setq
-     make-backup-files nil
-     auto-save-default nil
-     create-lockfiles nil)
-  #+END_SRC
-
-* remove startup welcome screen
-  The code block below toggle off the welcome startup screen.
-
-  #+BEGIN_SRC emacs-lisp
-    (custom-set-variables
-     '(inhibit-startup-screen t))
-  #+END_SRC
-
-* interface tweaks
-** window decorations
+** remove startup welcome screen
+   The code block below toggle off the welcome startup screen.
    #+BEGIN_SRC emacs-lisp
-
-     (menu-bar-mode -1)
-     (add-to-list 'default-frame-alist '(alpha 99 99))
-
-     (when (window-system)
-       (tool-bar-mode -1)
-       (scroll-bar-mode -1)
-       (tooltip-mode -1))
-
-     (use-package all-the-icons
-       :ensure t)
-
-     (use-package all-the-icons-dired
-       :ensure t
-       :after all-the-icons
-       :hook (dired-mode . all-the-icons-dired-mode))
-
-     (use-package doom-modeline
-       :ensure t
-       :config (doom-modeline-mode))
-     (use-package diminish
-       :ensure t
-       :config (diminish 'eldoc-mode))
+     (custom-set-variables
+      '(inhibit-startup-screen t))
    #+END_SRC
-       
-** inhibit startup message
+
+** minibuffer setup
+   #+begin_src emacs-lisp
+     (add-hook 'minibuffer-setup-hook 'va-minibuffer-setup)
+     (defun va-minibuffer-setup ()
+	    (set (make-local-variable 'face-remapping-alist)
+	       '((default :height 1.25))))
+
+
+   #+end_src
+
+** package
    #+BEGIN_SRC emacs-lisp
-     (setq inhibit-startup-message t)
-     (fset 'yes-or-no-p 'y-or-n-p)
-     (global-set-key (kbd "<f5>") 'revert-buffer)
-     (add-hook 'text-mode-hook 'turn-on-visual-line-mode)
-     (add-hook 'org-mode-hook 'turn-on-visual-line-mode)
+     (setq use-package-always-ensure nil)
+   #+END_SRC
 
-     (global-set-key [C-mouse-4] 'text-scale-increase)
-     (global-set-key [C-mouse-5] 'text-scale-decrease)
-   #+END_SRC
-** dim inactive buffer
+** debug
    #+BEGIN_SRC emacs-lisp
-     (use-package dimmer
-       :ensure t
-       :custom (dimmer-fraction 0.2)
-       :config (dimmer-mode))
+     (setq debug-on-error nil)
+     (setq gc-cons-threshold 100000000)
+     (setq find-file-visit-truename nil)
    #+END_SRC
+
+** interface tweaks
+*** window decorations
+    #+BEGIN_SRC emacs-lisp
+      (menu-bar-mode -1)
+      (add-to-list 'default-frame-alist '(alpha 99 99))
+
+      (when (window-system)
+	(tool-bar-mode -1)
+	(scroll-bar-mode -1)
+	(tooltip-mode -1))
+
+      (use-package all-the-icons
+	:ensure t)
+
+      (use-package all-the-icons-dired
+	:ensure t
+	:after all-the-icons
+	:hook (dired-mode . all-the-icons-dired-mode))
+
+      (use-package doom-modeline
+	:ensure t
+	:config (doom-modeline-mode))
+
+      (use-package diminish
+	:ensure t
+	:config (diminish 'eldoc-mode))
+    #+END_SRC
+
+*** inhibit startup message
+    #+BEGIN_SRC emacs-lisp
+      (setq inhibit-startup-message t)
+      (fset 'yes-or-no-p 'y-or-n-p)
+      (global-set-key (kbd "<f5>") 'revert-buffer)
+      (add-hook 'text-mode-hook 'turn-on-visual-line-mode)
+      (add-hook 'org-mode-hook 'turn-on-visual-line-mode)
+
+      (global-set-key [C-mouse-4] 'text-scale-increase)
+      (global-set-key [C-mouse-5] 'text-scale-decrease)
+    #+END_SRC
+
+*** dim inactive buffer
+    #+BEGIN_SRC emacs-lisp
+      (use-package dimmer
+	:ensure t
+	:custom (dimmer-fraction 0.2)
+	:config (dimmer-mode))
+    #+END_SRC
    
-** theme
+*** theme
+    #+BEGIN_SRC emacs-lisp
+      (add-to-list 'custom-theme-load-path "~/aalar/emacs/vanilla.d/themes/")
+      (load-theme 'afternoon t)
+    #+END_SRC
+
+**** COMMENT use use-package to install and load theme
+     #+begin_src emacs-lisp
+       (use-package ample-theme
+	 :ensure t
+	 :init (progn (load-theme 'ample t t)
+		      (load-theme 'ample-flat t t)
+		      (load-theme 'ample-light t t)
+		      (enable-theme 'ample))
+	 :defer t)
+     #+end_src
+    
+**** COMMENT customize theme after loading theme
+    #+begin_src emacs-lisp
+      (with-eval-after-load "ample-theme"
+	;; add one of these blocks for each of the themes you want to customize
+	(custom-theme-set-faces
+	  'ample
+	  ;; this will overwride the color of strings just for ample-theme
+	  '(font-lock-string-face ((t (:foreground "#bdba81"))))))
+    #+end_src
+
+*** paren matching
+    #+BEGIN_SRC emacs-lisp
+      (use-package smartparens-config
+	:ensure smartparens
+	:config
+	(progn (show-smartparens-global-mode t)
+	       ;; emacs regexp parens
+	       ;; (sp-pair "\\\\(" . "\\\\)")
+
+	       ;; latex literal braces in    math mode
+	       ;; (sp-pair "\\\\{"   . "\\\\}"  )
+
+	       ;; capture parens in regexp in various languages
+	       ;; (sp-pair "\\("   . "\\)"  )
+
+	       ;; escaped quotes in strings
+	       ;; (sp-pair "\\\""  . "\\\"" )
+
+	       ;; string double quotes
+	       ;; (sp-pair "\""    . "\""   )
+
+	       ;; string single quotes/character quotes
+	       ;; (sp-pair "'"     . "'"    )
+
+	       ;; parens (yay lisp)
+	       ;; (sp-pair "("     . ")"    )
+
+	       ;; brackets
+	       ;; (sp-pair "["     . "]"    )
+
+	       ;; braces (a.k.a. curly brackets)
+	       ;; (sp-pair "{"     . "}"    )
+
+	       ;; latex strings. tap twice for latex double quotes
+	       ;; (sp-pair "`"     . "`"    )
+
+	       (smartparens-global-mode t)
+	       )
+	)
+
+      ;;(add-hook 'prog-mode-hook 'turn-on-smartparens-strict-mode)
+      ;;(add-hook 'markdown-mode-hook 'turn-on-smartparens-strict-mode)
+
+    #+END_SRC
+
+** text-encoding
    #+BEGIN_SRC emacs-lisp
-     (load-theme 'solarized-dark t)
+     (set-charset-priority 'unicode)
+     (setq locale-coding-system 'utf-8)
+     (set-terminal-coding-system 'utf-8)
+     (set-keyboard-coding-system 'utf-8)
+     (set-selection-coding-system 'utf-8)
+     (prefer-coding-system 'utf-8)
+     (setq default-process-coding-system '(utf-8-unix . utf-8-unix))
+
    #+END_SRC
-   
-** paren matching
+
+** buffer-management
+   #+begin_src emacs-lisp
+     (global-set-key "\C-x\ \C-b" 'ibuffer)
+   #+end_src
+
+** recent files
    #+BEGIN_SRC emacs-lisp
-     (use-package smartparens-config
-       :ensure smartparens
-       :config
-       (progn (show-smartparens-global-mode t)
-	      ;; emacs regexp parens
-	      ;; (sp-pair "\\\\(" . "\\\\)")
+     (require 'recentf)
+     (add-to-list 'recentf-exclude "\\elpa")
+     (recentf-mode 1)
+     (setq recentf-max-menu-items 25)
+     (setq recentf-max-saved-items 25)
+     (global-set-key "\C-x\ \C-r" 'recentf-open-files)
+     (run-at-time nil (* 5 60) 'recentf-save-list)
+   #+END_SRC
 
-	      ;; latex literal braces in    math mode
-	      ;; (sp-pair "\\\\{"   . "\\\\}"  )
-
-	      ;; capture parens in regexp in various languages
-	      ;; (sp-pair "\\("   . "\\)"  )
-
-	      ;; escaped quotes in strings
-	      ;; (sp-pair "\\\""  . "\\\"" )
-
-	      ;; string double quotes
-	      ;; (sp-pair "\""    . "\""   )
-
-	      ;; string single quotes/character quotes
-	      ;; (sp-pair "'"     . "'"    )
-
-	      ;; parens (yay lisp)
-	      ;; (sp-pair "("     . ")"    )
-
-	      ;; brackets
-	      ;; (sp-pair "["     . "]"    )
-
-	      ;; braces (a.k.a. curly brackets)
-	      ;; (sp-pair "{"     . "}"    )
-
-	      ;; latex strings. tap twice for latex double quotes
-	      ;; (sp-pair "`"     . "`"    )
-
-	      (smartparens-global-mode t)
-	      )
-       )
-     
-     ;; (add-hook 'prog-mode-hook 'turn-on-smartparens-strict-mode)
-     ;;(add-hook 'markdown-mode-hook 'turn-on-smartparens-strict-mode)
-
+** misc
+   #+BEGIN_SRC emacs-lisp
+     (setq
+      make-backup-files nil
+      auto-save-default nil
+      create-lockfiles nil)
    #+END_SRC
 
 ** tabbed interface
   #+begin_src emacs-lisp
     (use-package centaur-tabs
-    :ensure t
-    :hook
-    (dired-mode . centaur-tabs-local-mode)
-    :config
-    (centaur-tabs-mode t)
-    :bind
-    ("C-<prior>" . centaur-tabs-backward)
-    ("C-<next>" . centaur-tabs-forward))
+      :ensure t
+      :hook
+      (dired-mode . centaur-tabs-local-mode)
+      :config
+      (centaur-tabs-mode t)
+      :bind
+      ("C-<prior>" . centaur-tabs-backward)
+      ("C-<next>" . centaur-tabs-forward))
 
   #+end_src
-
 
 * try
   #+BEGIN_SRC emacs-lisp
@@ -205,8 +244,20 @@
       :custom (which-key-idle-delay 1.2))
 
   #+END_SRC
+
+* Input system
+** tamil
+   #+begin_src emacs-lisp
+     (set-fontset-font "fontset-default" 'tamil "Noto Sans Tamil")
+     ;;(use-package ibus
+     ;; :ensure t
+     ;;  :config (add-hook 'after-init-hook 'ibus-mode-on))
+
+   #+end_src
+   
 * completion
 ** company
+
    #+begin_src emacs-lisp
      (use-package company
        :ensure t
@@ -219,25 +270,70 @@
        (company-tooltip-limit 20 "The more the merrier.")
        (company-tooltip-idle-delay 0.4 "Faster!")
        (company-async-timeout 20 "Some requests can take a long time. That's fine.")
-       :config
 
+       :config
        ;; Use the numbers 0-9 to select company completion candidates
        (let ((map company-active-map))
 	 (mapc (lambda (x) (define-key map (format "%d" x)
 			     `(lambda () (interactive) (company-complete-number ,x))))
 	       (number-sequence 0 9))))
    #+end_src
+
+* very large files
+  #+begin_src emacs-lisp
+    (require 'vlf-setup)
+    ;;(custom-set-variables
+    ;; '(vlf-application 'dont-ask))
+  #+end_src
+   
+* dired-subtree
+  #+BEGIN_SRC emacs-lisp
+    (use-package dired
+      :ensure nil
+      :commands (dired dired-jump)
+      :bind (("C-x C-j" . dired-jump))
+      :custom ((dired-listing-switches "-alH --group-directories-first"))
+      :config
+      ())
+
+    (use-package dired-hide-dotfiles
+      :hook (dired-mode . dired-hide-dotfiles-mode)
+      :config
+      (define-key dired-mode-map "." #'dired-hide-dotfiles-mode))
+
+    (use-package dired-subtree
+      :ensure t
+      :after dired
+      :bind (:map dired-mode-map
+		  ("TAB" . dired-subtree-toggle)))
+
+    (use-package dired-open
+      :config
+      ;; Doesn't work as expected!
+      ;;(add-to-list 'dired-open-functions #'dired-open-xdg t)
+      (setq dired-open-extensions '(("mkv" . "vlc")
+				    ("webm" . "vlc")
+				    ("mp4" . "vlc")
+				    ("png" . "geeqie"))))
+  #+END_SRC
+
 * org
 ** basic
+   - org-cycle-separator-line https://stackoverflow.com/questions/40332479/org-mode-folding-considers-whitespace-as-content
   #+begin_src emacs-lisp
-    (setq org-cycle-separator-lines -1)
+    (setq org-cycle-separator-lines 2)
+    (setq org-blank-before-new-entry
+	  '((heading . always)
+	   (plain-list-item . nil)))
   #+end_src
+
 ** org-bullets
    #+begin_src emacs-lisp
      (use-package org-bullets
        :ensure t
        :config (add-hook 'org-mode-hook 'org-bullets-mode))
    #+end_src
+
 ** org-download
    #+begin_src emacs-lisp
      (use-package org-download
@@ -248,7 +344,6 @@
 	 
    #+end_src
 
-
 ** org-agenda
    #+begin_src emacs-lisp
      (setq org-agenda-files
@@ -258,6 +353,8 @@
 
      (setq org-todo-keywords
 	   '((sequence "TODO" "NEXT" "PROJ" "WAIT" "SLEEP" "|" "DONE" "CANC")))
+
+     (setq org-log-into-drawer "LOGBOOK")
 
      (setq org-agenda-span 10
 	   org-agenda-start-on-weekday nil
@@ -305,13 +402,9 @@
 
 #+end_src
 
-#+RESULTS:
-
 ** org-refile
-
 *** TODO 
 **** TODO find possible values for =org-refile-targets=
-     
 *** config
     org-refile by default only targets current file and heading unless =org-refile-targets= is configured 
     #+begin_src emacs-lisp
@@ -319,9 +412,9 @@
       (setq org-refile-use-outline-path 'file) ;; include files not just headings
       (setq org-refile-allow-creating-parent-nodes 'confirm) ;; allow creating new nodes on-fly
     #+end_src
-   
+    
 ** org-gcal
-   #+begin_src 
+   #+begin_src #emacs-lisp
      (use-package org-gcal
        :ensure t
        :config 
@@ -333,7 +426,6 @@
    #+end_src
    
 ** org-capture
-   
 *** org-capture templates
     #+BEGIN_SRC emacs-lisp
       (require 'org-protocol)
@@ -351,9 +443,6 @@
 
     #+END_SRC
 
-
-    
-    
 *** for browser based interaction
     from : https://gist.github.com/progfolio/af627354f87542879de3ddc30a31adc1
     #+BEGIN_SRC emacs-lisp
@@ -377,8 +466,6 @@
 	    ;; delete the newly created frame in this scenario.
 	    (user-error (when (string= (cadr err) "Abort")
 			  (delete-frame))))))
-
-
     #+END_SRC
 
 ** org-babel
@@ -388,6 +475,7 @@
 
 
    #+end_src
+
 ** tempo
    #+begin_src emacs-lisp
 
@@ -397,6 +485,7 @@
      (require 'org-tempo)
 
    #+end_src
+
 * elfeed-org
   #+BEGIN_SRC emacs-lisp
     ;; Load elfeed-org
@@ -413,124 +502,108 @@
     ;; Note: The customize interface is also supported.
     (setq rmh-elfeed-org-files (list "~/emacs/vanilla.d/elfeed.org"))
   #+END_SRC
-  
-  
-* dired-subtree
-  #+BEGIN_SRC emacs-lisp
-    (use-package dired-subtree
-      :ensure t
-      :after dired
-      :bind (:map dired-mode-map
-		  ("TAB" . dired-subtree-toggle)))
-  #+END_SRC
 
+* programming
+** programming languages
+   #+begin_src emacs-lisp
+     (use-package blacken
+       :hook ((python-mode . blacken-mode)))
 
-* magit
-  #+BEGIN_SRC emacs-lisp
-    (use-package magit
-      :ensure t
-      :bind (("C-c g" . #'magit-status)))
+     (use-package typescript-mode)
+     ;(use-package csharp-mode)
 
-    ;; (use-package libgit
-    ;;   :ensure t)
-
-    ;; (use-package magit-libgit
-    ;;  :ensure t
-    ;;  :after (magit libgit))
-  #+END_SRC
-
-
-  
-* programming languages
-  #+begin_src emacs-lisp
-    (use-package blacken
-      :hook ((python-mode . blacken-mode)))
-
-    (use-package typescript-mode)
-    ;(use-package csharp-mode)
-
-    (use-package yaml-mode)
-    (use-package dockerfile-mode)
-    (use-package toml-mode)
-  #+end_src
-
-  
-** common lisp
-   #+begin_src 
-     (use-package sly
-       :ensure t)
+     (use-package yaml-mode)
+     (use-package dockerfile-mode)
+     (use-package toml-mode)
    #+end_src
-* emacs
-** mu4e
-   
-* latex and pdf-tools
+** magit
+   #+BEGIN_SRC emacs-lisp
+     (use-package magit
+       :ensure t
+       :bind (("C-c g" . #'magit-status)))
 
-  (use-package tex
-  :ensure auctex)
+     ;; (use-package libgit
+     ;;   :ensure t)
 
-  (use-package pdf-tools
-  :pin manual
-  :ensure t
-  :config
-  (pdf-tools-install)
-  (setq-default pdf-view-display-size 'fit-width)
-  (define-key pdf-view-mode-map (kbd "C-s") 'isearch-forward)
-  :custom
-  (pdf-annot-activate-created-annotations t "automatically annotate highlights"))
+     ;; (use-package magit-libgit
+     ;;  :ensure t
+     ;;  :after (magit libgit))
+   #+END_SRC
 
-  (setq TeX-view-program-selection '((output-pdf "PDF Tools"))
-  TeX-view-program-list '(("PDF Tools" TeX-pdf-tools-sync-view))
-  TeX-source-correlate-start-server t)
+** syntax highlighting
+   #+begin_src emacs-lisp
+     (use-package rainbow-delimiters
+       :ensure t
+       :config
+       (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
 
-  (add-hook 'TeX-after-compilation-finished-functions
-  #'TeX-revert-document-buffer)
+   #+end_src
 
-  (add-hook 'pdf-view-mode-hook (lambda() (linum-mode -1)))
-      
-  #+begin_src emacs-lisp
-  #+end_src
+** completion
+   #+begin_src emacs-lisp
+     ;; Completions with counsel
+     (use-package counsel
+       :ensure t
+       :config
+       (counsel-mode 1))
 
+     ;; Search better with swiper
+     (use-package swiper
+       :ensure t
+       :config
+       (counsel-mode 1))
 
-* align-non-space
-  [[https://blog.lambda.cx/posts/emacs-align-columns/][Aligning columns in Emacs]]
-  #+begin_src emacs-lisp
-    (defun align-non-space (BEG END)
-      "Align non-space columns in region BEG END."
-      (interactive "r")
-      (align-regexp BEG END "\\(\\s-*\\)\\S-+" 1 1 t))
-  #+end_src
+     ;; The interface for swiper/counsel
+     (use-package ivy
+       :ensure t
+       :requires (counsel swiper)
+       :config
+       (ivy-mode 1)
+       (setq ivy-use-virtual-buffers t)
+       (setq enable-recursive-minibuffers t)
+       ;; enable this if you want `swiper' to use it
+       ;; (setq search-default-mode #'char-fold-to-regexp)
+       (global-set-key "\C-s" 'swiper)
+       (global-set-key (kbd "C-c C-r") 'ivy-resume)
+       (global-set-key (kbd "<f6>") 'ivy-resume)
+       (global-set-key (kbd "M-x") 'counsel-M-x))
 
-  
-* completion
-  #+begin_src emacs-lisp
-    ;; Completions with counsel
-    (use-package counsel
-      :ensure t
-      :config
-      (counsel-mode 1))
+   #+end_src
+** align-non-space
+   [[https://blog.lambda.cx/posts/emacs-align-columns/][Aligning columns in Emacs]]
+   #+begin_src emacs-lisp
+     (defun align-non-space (BEG END)
+       "Align non-space columns in region BEG END."
+       (interactive "r")
+       (align-regexp BEG END "\\(\\s-*\\)\\S-+" 1 1 t))
+   #+end_src
 
-    ;; Search better with swiper
-    (use-package swiper
-      :ensure t
-      :config
-      (counsel-mode 1))
+* reading and writing
+** latex and pdf-tools
+   #+begin_src emacs-lisp
+     (use-package tex
+       :ensure auctex)
 
-    ;; The interface for swiper/counsel
-    (use-package ivy
-      :ensure t
-      :requires (counsel swiper)
-      :config
-      (ivy-mode 1)
-      (setq ivy-use-virtual-buffers t)
-      (setq enable-recursive-minibuffers t)
-      ;; enable this if you want `swiper' to use it
-      ;; (setq search-default-mode #'char-fold-to-regexp)
-      (global-set-key "\C-s" 'swiper)
-      (global-set-key (kbd "C-c C-r") 'ivy-resume)
-      (global-set-key (kbd "<f6>") 'ivy-resume)
-      (global-set-key (kbd "M-x") 'counsel-M-x))
+     (use-package pdf-tools
+       :pin manual
+       :ensure t
+       :config
+       (pdf-tools-install)
+       (setq-default pdf-view-display-size 'fit-width)
+       (define-key pdf-view-mode-map (kbd "C-s") 'isearch-forward)
+       :custom
+       (pdf-annot-activate-created-annotations t "automatically annotate highlights"))
 
-  #+end_src
+     (setq TeX-view-program-selection '((output-pdf "PDF Tools"))
+	   TeX-view-program-list '(("PDF Tools" TeX-pdf-tools-sync-view))
+	   TeX-source-correlate-start-server t)
+
+     (add-hook 'TeX-after-compilation-finished-functions
+	       #'TeX-revert-document-buffer)
+
+     (add-hook 'pdf-view-mode-hook (lambda() (linum-mode -1)))
+
+#+end_src
   
 * search
 #+begin_src emacs-lisp
@@ -540,8 +613,6 @@
 
 #+end_src
 
-#+RESULTS:
-  
 * syntax highlighting
   #+begin_src emacs-lisp
     (use-package rainbow-delimiters
@@ -553,10 +624,9 @@
 
 * mu4e
   #+begin_src bash
-    sudo apt-get install mu4e
-    sudo apt-get install isync
-
+    sudo apt-get install mu4e isync
   #+end_src
+  
   #+begin_src emacs-lisp
     (use-package mu4e
       :ensure nil
@@ -620,7 +690,3 @@
 	    ("/[Gmail]/All Mail"  . ?a))))
 
   #+end_src
-
-  #+RESULTS:
-  : t
-
