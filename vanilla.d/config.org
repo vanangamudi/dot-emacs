@@ -349,11 +349,20 @@
      (setq org-agenda-files
 	   '("~/org/personal.org"
 	     "~/org/work.org"
-	     "~/org/kaappagam.org"))
+	     "~/org/kaappagam.org"
+	     "~/org/padi.org"
+	     "~/org/kadamai-thani.org"
+	     "~/org/kadamai-saama.org"
+	     "~/org/kadamai-mtechcse.org"
+	     "~/org/kadamai-yendravathu.org"
+	     "~/org/thirattu.org"
+	     "~/org/naadagam.org"
+	     ))
 
      (setq org-todo-keywords
 	   '((sequence "TODO" "NEXT" "PROJ" "WAIT" "SLEEP" "|" "DONE" "CANC")))
 
+     ;; From: https://emacs.stackexchange.com/questions/17282/org-mode-logbook-note-entry-without-logbook-drawer
      (setq org-log-into-drawer "LOGBOOK")
 
      (setq org-agenda-span 10
@@ -386,19 +395,19 @@
    
 ** org-roam-ui
 #+begin_src emacs-lisp
-    (use-package org-roam-ui
-      ;;:straight
-      ;;(:host github :repo "org-roam/org-roam-ui" :branch "main" :files ("*.el" "out"))
-      :after org-roam
-  ;;         normally we'd recommend hooking orui after org-roam, but since org-roam does not have
-  ;;         a hookable mode anymore, you're advised to pick something yourself
-  ;;         if you don't care about startup time, use
-  ;;  :hook (after-init . org-roam-ui-mode)
-      :config
-      (setq org-roam-ui-sync-theme t
-	    org-roam-ui-follow t
-	    org-roam-ui-update-on-save t
-	    org-roam-ui-open-on-start t))
+  (use-package org-roam-ui
+    ;;:straight
+    ;;(:host github :repo "org-roam/org-roam-ui" :branch "main" :files ("*.el" "out"))
+    :after org-roam
+    ;;         normally we'd recommend hooking orui after org-roam, but since org-roam does not have
+    ;;         a hookable mode anymore, you're advised to pick something yourself
+    ;;         if you don't care about startup time, use
+    ;;  :hook (after-init . org-roam-ui-mode)
+    :config
+    (setq org-roam-ui-sync-theme t
+	  org-roam-ui-follow t
+	  org-roam-ui-update-on-save t
+	  org-roam-ui-open-on-start t))
 
 #+end_src
 
@@ -408,10 +417,16 @@
 *** config
     org-refile by default only targets current file and heading unless =org-refile-targets= is configured 
     #+begin_src emacs-lisp
-      (setq org-refile-targets '((org-agenda-files :maxlevel . 3)))  ;;use headings upto level 3
+      ;;use headings upto level 3
+      (setq org-refile-targets '((org-agenda-files :maxlevel . 9)))
+      (setq org-log-refile 'note)
       (setq org-refile-use-outline-path 'file) ;; include files not just headings
       (setq org-refile-allow-creating-parent-nodes 'confirm) ;; allow creating new nodes on-fly
+      (setq org-outline-path-complete-in-steps nil)         ; refile in a single go
     #+end_src
+
+    #+RESULTS:
+
     
 ** org-gcal
    #+begin_src #emacs-lisp
