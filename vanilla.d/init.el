@@ -3,14 +3,12 @@
 (package-initialize)
 
 
-(add-to-list 'package-archives  '("melpa"     . "https://melpa.org/packages/"))
 (add-to-list 'package-archives  '("org"       . "http://orgmode.org/elpa/"))
+(add-to-list 'package-archives  '("melpa"     . "https://melpa.org/packages/"))
 ;;(add-to-list 'package-archives  '("marmalade" . "http://marmalade-repo.org/packages/"))
 
 (unless package-archive-contents
   (package-refresh-contents))
-
-
 
 ;; if not yet installed, install package use-package
 (unless (package-installed-p 'use-package)
@@ -24,9 +22,8 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(inhibit-startup-screen t)
- '(package-selected-packages
-   '(vlf org-noter htmlize org-plus-contrib which-key try use-package)))
+ '(inhibit-startup-screen t))
+
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
