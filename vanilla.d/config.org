@@ -13,8 +13,34 @@
    - https://emacs.stackexchange.com/questions/63003/org-babel-tangle-error
 
 * Emacs
+  #+begin_src emacs-lisp
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(fci-rule-color "#14151E")
+ '(inhibit-startup-screen t)
+ '(vc-annotate-very-old-color nil)
+ '(warning-suppress-log-types '((comp))))
 
-    
+
+  #+end_src
+* cryptographic
+  #+begin_src emacs-lisp
+    (use-package epg
+      :ensure t
+      :config
+      (setq epg-gpg-program "gpg2")
+      (setq epa-pinentry-mode 'loopback)
+      (setenv "GPG_AGENT_INFO" nil)
+      )
+
+  #+end_src
+
+  #+RESULTS:
+  : t
+
 * debug
   #+BEGIN_SRC emacs-lisp
     ;; Profile emacs startup
