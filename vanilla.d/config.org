@@ -742,7 +742,13 @@
   #+end_src
 
 * writing
-  
+
+** org-citations
+   #+begin_src emacs-lisp
+     (use-package ox-bibtex
+       :ensure t)
+   #+end_src
+
 ** spellcheck
    #+begin_src emacs-lisp
      (use-package flyspell
