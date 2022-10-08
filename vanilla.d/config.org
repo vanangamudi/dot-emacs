@@ -259,7 +259,6 @@
    #+end_src
 * completion
 ** company
-
    #+begin_src emacs-lisp
      (use-package company
        :ensure t
@@ -286,7 +285,7 @@
     ;;(custom-set-variables
     ;; '(vlf-application 'dont-ask))
   #+end_src
-* dired-subtree
+* dired utils
   #+BEGIN_SRC emacs-lisp
     (use-package dired
       :ensure nil
@@ -337,6 +336,7 @@
      (use-package dockerfile-mode)
      (use-package toml-mode)
    #+end_src
+
 ** magit
    #+BEGIN_SRC emacs-lisp
      (use-package magit
@@ -350,6 +350,7 @@
      ;;  :ensure t
      ;;  :after (magit libgit))
    #+END_SRC
+   
 ** syntax highlighting
    #+begin_src emacs-lisp
      (use-package rainbow-delimiters
@@ -357,7 +358,8 @@
        :config
        (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
    #+end_src
-** completion
+   
+** minibuffer completion
    #+begin_src emacs-lisp
      ;; Completions with counsel
      (use-package counsel
@@ -615,6 +617,7 @@
 	      ("C-c s y" . org-download-yank)))
 	 
    #+end_src
+
 ** org-agenda
    #+begin_src emacs-lisp
      (setq org-agenda-files
@@ -643,6 +646,7 @@
      (global-set-key (kbd "C-c a") 'org-agenda)
 
    #+end_src
+
 ** org-roam
    #+begin_src emacs-lisp
      (use-package org-roam
@@ -764,7 +768,6 @@
      (use-package org-ref-ivy)
    #+end_src
 
-
 ** bibtex
    =bibtex-autokey-*= variables are used while constructing the key for a bibtex entry automatically from the fields of the bibtex entry. The bibtex entries can be created from =doi=, =arxiv=
    #+begin_src emacs-lisp
@@ -795,7 +798,7 @@
 	       (t             . "${=has-pdf=:1}${=has-note=:1} ${year:4} ${author:36} ${title:*}"))
 	     bibtex-completion-pdf-open-function
 	     (lambda (fpath)
-	       (call-process "open" nil 0 nil fpath)))))
+	       (call-process "open" nil 0 nil fpath))))
    #+end_src
    
 ** tempo
@@ -824,6 +827,11 @@
     (setq rmh-elfeed-org-files (list "~/emacs/vanilla.d/elfeed.org"))
   #+END_SRC
 * emacs-everywhere
+install the following packages
+#+begin_src bash  :dir /sudo::  :results output
+  apt-get install xclip xdotool xbindkeys #xprop xwininfo 
+#+end_src
+
 #+begin_src emacs-lisp
   (use-package emacs-everywhere
     :ensure t)
