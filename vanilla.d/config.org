@@ -5,14 +5,12 @@
   - https://blog.sumtypeofway.com/posts/emacs-config.html
   - https://github.com/trev-dev/emacs
   - https://github.com/daviwil/emacs-from-scratch
-
-
 * Tips
- 
 ** Debug your config.org with =M-x org-lint=
    - https://emacs.stackexchange.com/questions/63003/org-babel-tangle-error
 
 * Emacs
+  Custom set variables are moved here from =init.el= where they were placed automatically by certain packages like =vlf-setup=
   #+begin_src emacs-lisp
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -38,9 +36,6 @@
 
   #+end_src
 
-  #+RESULTS:
-  : t
-
 * debug
   #+BEGIN_SRC emacs-lisp
     ;; Profile emacs startup
@@ -53,14 +48,12 @@
     (setq gc-cons-threshold (* 2 1000 1000))
     (setq find-file-visit-truename nil)
   #+END_SRC
-
 ** remove startup welcome screen
    The code block below toggle off the welcome startup screen.
    #+BEGIN_SRC emacs-lisp
      (custom-set-variables
       '(inhibit-startup-screen t))
    #+END_SRC
-
 ** minibuffer setup
    #+begin_src emacs-lisp
      (add-hook 'minibuffer-setup-hook 'va-minibuffer-setup)
@@ -70,19 +63,16 @@
 
 
    #+end_src
-
 ** package
    #+BEGIN_SRC emacs-lisp
      (setq use-package-always-ensure nil)
    #+END_SRC
-
 ** debug
    #+BEGIN_SRC emacs-lisp
      (setq debug-on-error nil)
      (setq gc-cons-threshold 100000000)
      (setq find-file-visit-truename nil)
    #+END_SRC
-
 ** interface tweaks
 *** window decorations
     #+BEGIN_SRC emacs-lisp
@@ -110,7 +100,6 @@
 	:ensure t
 	:config (diminish 'eldoc-mode))
     #+END_SRC
-
 *** inhibit startup message
     #+BEGIN_SRC emacs-lisp
       (setq inhibit-startup-message t)
@@ -122,7 +111,6 @@
       (global-set-key [C-mouse-4] 'text-scale-increase)
       (global-set-key [C-mouse-5] 'text-scale-decrease)
     #+END_SRC
-
 *** dim inactive buffer
     #+BEGIN_SRC emacs-lisp
       (use-package dimmer
@@ -130,13 +118,11 @@
 	:custom (dimmer-fraction 0.2)
 	:config (dimmer-mode))
     #+END_SRC
-   
 *** theme
     #+BEGIN_SRC emacs-lisp
       (add-to-list 'custom-theme-load-path "~/aalar/emacs/vanilla.d/themes/")
       (load-theme 'afternoon t)
     #+END_SRC
-
 **** COMMENT use use-package to install and load theme
      #+begin_src emacs-lisp
        (use-package ample-theme
@@ -147,7 +133,6 @@
 		      (enable-theme 'ample))
 	 :defer t)
      #+end_src
-    
 **** COMMENT customize theme after loading theme
     #+begin_src emacs-lisp
       (with-eval-after-load "ample-theme"
@@ -157,7 +142,6 @@
 	  ;; this will overwride the color of strings just for ample-theme
 	  '(font-lock-string-face ((t (:foreground "#bdba81"))))))
     #+end_src
-
 *** paren matching
     #+BEGIN_SRC emacs-lisp
       (use-package smartparens-config
@@ -202,7 +186,6 @@
       ;;(add-hook 'markdown-mode-hook 'turn-on-smartparens-strict-mode)
 
     #+END_SRC
-
 ** text-encoding
    #+BEGIN_SRC emacs-lisp
      (set-charset-priority 'unicode)
@@ -214,12 +197,10 @@
      (setq default-process-coding-system '(utf-8-unix . utf-8-unix))
 
    #+END_SRC
-
 ** buffer-management
    #+begin_src emacs-lisp
      (global-set-key "\C-x\ \C-b" 'ibuffer)
    #+end_src
-
 ** recent files
    #+BEGIN_SRC emacs-lisp
      (require 'recentf)
@@ -230,7 +211,6 @@
      (global-set-key "\C-x\ \C-r" 'recentf-open-files)
      (run-at-time nil (* 5 60) 'recentf-save-list)
    #+END_SRC
-
 ** misc
    #+BEGIN_SRC emacs-lisp
      (setq
@@ -238,7 +218,6 @@
       auto-save-default nil
       create-lockfiles nil)
    #+END_SRC
-
 ** tabbed interface
   #+begin_src emacs-lisp
     (use-package centaur-tabs
@@ -252,13 +231,11 @@
       ("C-<next>" . centaur-tabs-forward))
 
   #+end_src
-
 * try
   #+BEGIN_SRC emacs-lisp
     (use-package try
       :ensure t)
   #+END_SRC
-
 * which key
   Brings up some help
   #+BEGIN_SRC emacs-lisp
@@ -270,7 +247,6 @@
       :custom (which-key-idle-delay 1.2))
 
   #+END_SRC
-
 * Input system
 ** tamil
    #+begin_src emacs-lisp
@@ -279,8 +255,8 @@
      ;; :ensure t
      ;;  :config (add-hook 'after-init-hook 'ibus-mode-on))
 
+     
    #+end_src
-   
 * completion
 ** company
 
@@ -304,14 +280,12 @@
 			     `(lambda () (interactive) (company-complete-number ,x))))
 	       (number-sequence 0 9))))
    #+end_src
-
 * very large files
   #+begin_src emacs-lisp
     (require 'vlf-setup)
     ;;(custom-set-variables
     ;; '(vlf-application 'dont-ask))
   #+end_src
-   
 * dired-subtree
   #+BEGIN_SRC emacs-lisp
     (use-package dired
@@ -323,6 +297,7 @@
       ())
 
     (use-package dired-hide-dotfiles
+      :ensure t
       :hook (dired-mode . dired-hide-dotfiles-mode)
       :config
       (define-key dired-mode-map "." #'dired-hide-dotfiles-mode))
@@ -334,6 +309,7 @@
 		  ("TAB" . dired-subtree-toggle)))
 
     (use-package dired-open
+      :ensure t
       :config
       ;; Doesn't work as expected!
       ;;(add-to-list 'dired-open-functions #'dired-open-xdg t)
@@ -343,208 +319,11 @@
 				    ("png" . "geeqie"))))
   #+END_SRC
 
-* org
-** basic
-   - org-cycle-separator-line https://stackoverflow.com/questions/40332479/org-mode-folding-considers-whitespace-as-content
+* accounting
   #+begin_src emacs-lisp
-    (setq org-cycle-separator-lines 2)
-    (setq org-blank-before-new-entry
-	  '((heading . always)
-	   (plain-list-item . nil)))
-  #+end_src
-
-** org-bullets
-   #+begin_src emacs-lisp
-     (use-package org-bullets
-       :ensure t
-       :config (add-hook 'org-mode-hook 'org-bullets-mode))
-   #+end_src
-
-** org-download
-   #+begin_src emacs-lisp
-     (use-package org-download
-       :ensure t
-       :config (add-hook 'dired-mode-hook 'org-download-enable)
-       :bind (("C-c s s" . org-download-screenshot)
-	      ("C-c s y" . org-download-yank)))
-	 
-   #+end_src
-
-** org-agenda
-   #+begin_src emacs-lisp
-     (setq org-agenda-files
-	   '("~/org/personal.org"
-	     "~/org/work.org"
-	     "~/org/kaappagam.org"
-	     "~/org/padi.org"
-	     "~/org/kadamai-thani.org"
-	     "~/org/kadamai-saama.org"
-	     "~/org/kadamai-mtechcse.org"
-	     "~/org/kadamai-yendravathu.org"
-	     "~/org/thirattu.org"
-	     "~/org/naadagam.org"
-	     ))
-
-     (setq org-todo-keywords
-	   '((sequence "TODO" "NEXT" "PROJ" "WAIT" "SLEEP" "|" "DONE" "CANC")))
-
-     ;; From: https://emacs.stackexchange.com/questions/17282/org-mode-logbook-note-entry-without-logbook-drawer
-     (setq org-log-into-drawer "LOGBOOK")
-
-     (setq org-agenda-span 10
-	   org-agenda-start-on-weekday nil
-	   org-agenda-start-day "-3d")
-
-     (global-set-key (kbd "C-c a") 'org-agenda)
-
-   #+end_src
-   
-** org-roam
-   #+begin_src emacs-lisp
-     (use-package org-roam
-       :ensure t
-       :init
-       (setq org-roam-v2-ack t)
-       :custom
-       (org-roam-directory "~/org/roam")
-       (org-roam-completion-everywhere t)
-       :bind (("C-c n l" . org-roam-buffer-toggle)
-	      ("C-c n f" . org-roam-node-find)
-	      ("C-c n i" . org-roam-node-insert)
-	      :map org-mode-map
-	      ("C-M-i"    . completion-at-point))
-       :config
-       (org-roam-setup))
-
-     
-   #+end_src
-   
-** org-roam-ui
-#+begin_src emacs-lisp
-  (use-package org-roam-ui
-    ;;:straight
-    ;;(:host github :repo "org-roam/org-roam-ui" :branch "main" :files ("*.el" "out"))
-    :after org-roam
-    ;;         normally we'd recommend hooking orui after org-roam, but since org-roam does not have
-    ;;         a hookable mode anymore, you're advised to pick something yourself
-    ;;         if you don't care about startup time, use
-    ;;  :hook (after-init . org-roam-ui-mode)
-    :config
-    (setq org-roam-ui-sync-theme t
-	  org-roam-ui-follow t
-	  org-roam-ui-update-on-save t
-	  org-roam-ui-open-on-start t))
-
-#+end_src
-
-** org-refile
-*** TODO 
-**** TODO find possible values for =org-refile-targets=
-*** config
-    org-refile by default only targets current file and heading unless =org-refile-targets= is configured 
-    #+begin_src emacs-lisp
-      ;;use headings upto level 3
-      (setq org-refile-targets '((org-agenda-files :maxlevel . 9)))
-      (setq org-log-refile 'note)
-      (setq org-refile-use-outline-path 'file) ;; include files not just headings
-      (setq org-refile-allow-creating-parent-nodes 'confirm) ;; allow creating new nodes on-fly
-      (setq org-outline-path-complete-in-steps nil)         ; refile in a single go
-    #+end_src
-
-    #+RESULTS:
-
-    
-** org-gcal
-   #+begin_src #emacs-lisp
-     (use-package org-gcal
-       :ensure t
-       :config 
-       (setq org-gcal-client-id "691697679170-vfhv024f23jmjbpmoh891u9bt0mhe1nb.apps.googleusercontent.com"
-	     org-gcal-client-secret "kK9mdg6MK4g_zYkFBHcDRV0P"
-	     org-gcal-file-alist '(("selva.developer@gmail.com" .  "~/org/work.org")
-				   ("selva.on.profession@gmail.com" .  "~/org/work.org")))
-       )
-   #+end_src
-   
-** org-capture
-*** org-capture templates
-    #+BEGIN_SRC emacs-lisp
-      (require 'org-protocol)
-
-      (global-set-key (kbd "C-c c") 'org-capture)
-
-      (setq org-protocol-default-template-key "l")
-      (setq org-capture-templates
-	    '(("t" "Todo" entry (file+headline "~/org/pidi.org" "Tasks")
-	       "* TODO %?\n  %i\n  %a")
-	      ("l" "Link" entry (file+olp "~/org/pidi.org" "Web Links")
-	       "* %a\n %?\n %i")
-	      ("j" "Journal" entry (file+datetree "~/org/pidi.org" "Journal")
-	       "* %?\nEntered on %U\n  %i\n  %a")))
-
-    #+END_SRC
-
-*** for browser based interaction
-    from : https://gist.github.com/progfolio/af627354f87542879de3ddc30a31adc1
-    #+BEGIN_SRC emacs-lisp
-
-      (defun my/delete-capture-frame (&rest _)
-	"Delete frame with its name frame-parameter set to \"capture\"."
-	(if (equal "capture" (frame-parameter nil 'name))
-	    (delete-frame)))
-      (advice-add 'org-capture-finalize :after #'my/delete-capture-frame)
-
-      (defun my/org-capture-frame ()
-	"Run org-capture in its own frame."
-	(interactive)
-	(require 'cl-lib)
-	(select-frame-by-name "capture")
-	(delete-other-windows)
-	(cl-letf (((symbol-function 'switch-to-buffer-other-window) #'switch-to-buffer))
-	  (condition-case err
-	      (org-capture)
-	    ;; "q" signals (error "Abort") in `org-capture'
-	    ;; delete the newly created frame in this scenario.
-	    (user-error (when (string= (cadr err) "Abort")
-			  (delete-frame))))))
-    #+END_SRC
-
-** org-babel
-   #+begin_src emacs-lisp
-     (org-babel-do-load-languages 'org-babel-load-languages '((shell . t)
-							      (python . t)
-							      (ledger . t)))
-
-
-   #+end_src
-
-** tempo
-   #+begin_src emacs-lisp
-
-     ;;(add-function :before-until electric-pair-inhibit-predicate
-     ;;	   (lambda (c) (eq c ?<)))
-
-     (require 'org-tempo)
-
-   #+end_src
-
-* elfeed-org
-  #+BEGIN_SRC emacs-lisp
-    ;; Load elfeed-org
-    (use-package elfeed-org
+    (use-package ledger-mode
       :ensure t)
-
-    ;; Initialize elfeed-org
-    ;; This hooks up elfeed-org to read the configuration when elfeed
-    ;; is started with =M-x elfeed=
-    (elfeed-org)
-
-    ;; Optionally specify a number of files containing elfeed
-    ;; configuration. If not set then the location below is used.
-    ;; Note: The customize interface is also supported.
-    (setq rmh-elfeed-org-files (list "~/emacs/vanilla.d/elfeed.org"))
-  #+END_SRC
-
+  #+end_src
 * programming
 ** programming languages
    #+begin_src emacs-lisp
@@ -571,16 +350,13 @@
      ;;  :ensure t
      ;;  :after (magit libgit))
    #+END_SRC
-
 ** syntax highlighting
    #+begin_src emacs-lisp
      (use-package rainbow-delimiters
        :ensure t
        :config
        (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
-
    #+end_src
-
 ** completion
    #+begin_src emacs-lisp
      ;; Completions with counsel
@@ -609,7 +385,6 @@
        (global-set-key (kbd "C-c C-r") 'ivy-resume)
        (global-set-key (kbd "<f6>") 'ivy-resume)
        (global-set-key (kbd "M-x") 'counsel-M-x))
-
    #+end_src
 ** align-non-space
    [[https://blog.lambda.cx/posts/emacs-align-columns/][Aligning columns in Emacs]]
@@ -619,10 +394,9 @@
        (interactive "r")
        (align-regexp BEG END "\\(\\s-*\\)\\S-+" 1 1 t))
    #+end_src
-
 * reading and writing
 ** latex and pdf-tools
-   #+begin_src emacs-lisp
+   #+begin_src dummy
      (use-package tex
        :ensure auctex)
 
@@ -646,15 +420,12 @@
      (add-hook 'pdf-view-mode-hook (lambda() (linum-mode -1)))
 
 #+end_src
-  
 * search
 #+begin_src emacs-lisp
   (use-package deadgrep
      :ensure t
      )
-
 #+end_src
-
 * syntax highlighting
   #+begin_src emacs-lisp
     (use-package rainbow-delimiters
@@ -663,7 +434,6 @@
       (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
 
   #+end_src
-
 * mu4e
   #+begin_src bash
     sudo apt-get install mu4e isync
@@ -732,23 +502,12 @@
 	    ("/[Gmail]/All Mail"  . ?a))))
 
   #+end_src
-
-* accounting
-  #+begin_src emacs-lisp
-
-    (use-package ledger-mode
-      :ensure t)
-
-  #+end_src
-
 * writing
-
 ** org-citations
-   #+begin_src emacs-lisp
-     (use-package ox-bibtex
+   #+begin_src dummy
+     (use-package oc-bibtex
        :ensure t)
    #+end_src
-
 ** spellcheck
    #+begin_src emacs-lisp
      (use-package flyspell
@@ -763,15 +522,7 @@
        :bind (("M-<f7>" . flyspell-buffer)
 	      ("<f7>" . flyspell-word)
 	      ("C-;" . flyspell-auto-correct-previous-word)))
-
-
-
    #+end_src
-
-   #+RESULTS:
-   : flyspell-auto-correct-previous-word
-
-  
 ** distraction free
    #+begin_src emacs-lisp
      ;; Distraction-free screen
@@ -795,13 +546,8 @@
 	     (text-scale-decrease 2))))
        :bind
        (("<f9>" . distraction-free)))
-
-
-
    #+end_src
-
 * reading
-  
 ** nov.el
    #+begin_src emacs-lisp
      (defun my-nov-font-setup ()
@@ -845,4 +591,243 @@
 		   nil t)))
 
      (add-hook 'nov-post-html-render-hook 'my-nov-post-html-render-hook)
+* org
+** basic
+   - org-cycle-separator-line https://stackoverflow.com/questions/40332479/org-mode-folding-considers-whitespace-as-content
+  #+begin_src emacs-lisp
+    (setq org-cycle-separator-lines 2)
+    (setq org-blank-before-new-entry
+	  '((heading . always)
+	   (plain-list-item . nil)))
+  #+end_src
+** org-bullets
+   #+begin_src emacs-lisp
+     (use-package org-bullets
+       :ensure t
+       :config (add-hook 'org-mode-hook 'org-bullets-mode))
+   #+end_src
+** org-download
+   #+begin_src emacs-lisp
+     (use-package org-download
+       :ensure t
+       :config (add-hook 'dired-mode-hook 'org-download-enable)
+       :bind (("C-c s s" . org-download-screenshot)
+	      ("C-c s y" . org-download-yank)))
+	 
+   #+end_src
+** org-agenda
+   #+begin_src emacs-lisp
+     (setq org-agenda-files
+	   '("~/org/personal.org"
+	     "~/org/work.org"
+	     "~/org/kaappagam.org"
+	     "~/org/padi.org"
+	     "~/org/kadamai-thani.org"
+	     "~/org/kadamai-saama.org"
+	     "~/org/kadamai-mtechcse.org"
+	     "~/org/kadamai-yendravathu.org"
+	     "~/org/thirattu.org"
+	     "~/org/naadagam.org"
+	     ))
+
+     (setq org-todo-keywords
+	   '((sequence "TODO" "NEXT" "PROJ" "WAIT" "SLEEP" "|" "DONE" "CANC")))
+
+     ;; From: https://emacs.stackexchange.com/questions/17282/org-mode-logbook-note-entry-without-logbook-drawer
+     (setq org-log-into-drawer "LOGBOOK")
+
+     (setq org-agenda-span 10
+	   org-agenda-start-on-weekday nil
+	   org-agenda-start-day "-3d")
+
+     (global-set-key (kbd "C-c a") 'org-agenda)
+
+   #+end_src
+** org-roam
+   #+begin_src emacs-lisp
+     (use-package org-roam
+       :ensure t
+       :init
+       (setq org-roam-v2-ack t)
+       :custom
+       (org-roam-directory "~/org/roam")
+       (org-roam-completion-everywhere t)
+       :bind (("C-c n l" . org-roam-buffer-toggle)
+	      ("C-c n f" . org-roam-node-find)
+	      ("C-c n i" . org-roam-node-insert)
+	      :map org-mode-map
+	      ("C-M-i"    . completion-at-point))
+       :config
+       (org-roam-setup))
+
+     
+   #+end_src
+** org-roam-ui
+#+begin_src emacs-lisp
+  (use-package org-roam-ui
+    ;;:straight
+    ;;(:host github :repo "org-roam/org-roam-ui" :branch "main" :files ("*.el" "out"))
+    :after org-roam
+    ;;         normally we'd recommend hooking orui after org-roam, but since org-roam does not have
+    ;;         a hookable mode anymore, you're advised to pick something yourself
+    ;;         if you don't care about startup time, use
+    ;;  :hook (after-init . org-roam-ui-mode)
+    :config
+    (setq org-roam-ui-sync-theme t
+	  org-roam-ui-follow t
+	  org-roam-ui-update-on-save t
+	  org-roam-ui-open-on-start t))
+
+#+end_src
+** org-refile
+*** TODO 
+**** TODO find possible values for =org-refile-targets=
+*** config
+    org-refile by default only targets current file and heading unless =org-refile-targets= is configured 
+    #+begin_src emacs-lisp
+      ;;use headings upto level 3
+      (setq org-refile-targets '((org-agenda-files :maxlevel . 9)))
+      (setq org-log-refile 'note)
+      (setq org-refile-use-outline-path 'file) ;; include files not just headings
+      (setq org-refile-allow-creating-parent-nodes 'confirm) ;; allow creating new nodes on-fly
+      (setq org-outline-path-complete-in-steps nil)         ; refile in a single go
+    #+end_src
+** org-gcal
+   #+begin_src #emacs-lisp
+     (use-package org-gcal
+       :ensure t
+       :config 
+       (setq org-gcal-client-id "691697679170-vfhv024f23jmjbpmoh891u9bt0mhe1nb.apps.googleusercontent.com"
+	     org-gcal-client-secret "kK9mdg6MK4g_zYkFBHcDRV0P"
+	     org-gcal-file-alist '(("selva.developer@gmail.com" .  "~/org/work.org")
+				   ("selva.on.profession@gmail.com" .  "~/org/work.org")))
+       )
+   #+end_src
+** org-capture
+*** org-capture templates
+    #+BEGIN_SRC emacs-lisp
+      (require 'org-protocol)
+
+      (global-set-key (kbd "C-c c") 'org-capture)
+
+      (setq org-protocol-default-template-key "l")
+      (setq org-capture-templates
+	    '(("t" "Todo" entry (file+headline "~/org/pidi.org" "Tasks")
+	       "* TODO %?\n  %i\n  %a")
+	      ("l" "Link" entry (file+olp "~/org/pidi.org" "Web Links")
+	       "* %a\n %?\n %i")
+	      ("j" "Journal" entry (file+datetree "~/org/pidi.org" "Journal")
+	       "* %?\nEntered on %U\n  %i\n  %a")))
+
+    #+END_SRC
+*** for browser based interaction
+    from : https://gist.github.com/progfolio/af627354f87542879de3ddc30a31adc1
+    #+BEGIN_SRC emacs-lisp
+
+      (defun my/delete-capture-frame (&rest _)
+	"Delete frame with its name frame-parameter set to \"capture\"."
+	(if (equal "capture" (frame-parameter nil 'name))
+	    (delete-frame)))
+      (advice-add 'org-capture-finalize :after #'my/delete-capture-frame)
+
+      (defun my/org-capture-frame ()
+	"Run org-capture in its own frame."
+	(interactive)
+	(require 'cl-lib)
+	(select-frame-by-name "capture")
+	(delete-other-windows)
+	(cl-letf (((symbol-function 'switch-to-buffer-other-window) #'switch-to-buffer))
+	  (condition-case err
+	      (org-capture)
+	    ;; "q" signals (error "Abort") in `org-capture'
+	    ;; delete the newly created frame in this scenario.
+	    (user-error (when (string= (cadr err) "Abort")
+			  (delete-frame))))))
+    #+END_SRC
+** org-babel
+   #+begin_src emacs-lisp
+     (org-babel-do-load-languages 'org-babel-load-languages '((shell . t)
+							      ;;(ledger . t)
+							      (python . t)))
+
+
+   #+end_src
+
+** org-ref
+   org-ref is very helpful when authoring papers. =org-ref-insert-link= function can be used to insert citations. The citations are looked up from list of =.bib= files as conigured in variable =bibtex-completion-bibliography=. org-ref has to be used in conjuction with =ivy-bibtex= package.
+   org-ref enables us to insert citations, export them to latex and even non-latex exports consistently.
+   #+begin_src emacs-lisp  
+     (use-package org-ref
+       :ensure  t
+       :bind (:map org-mode-map
+		   ("C-c ]" . org-ref-insert-link-hydra/body)))
+     (use-package org-ref-ivy)
+   #+end_src
+
+
+** bibtex
+   =bibtex-autokey-*= variables are used while constructing the key for a bibtex entry automatically from the fields of the bibtex entry. The bibtex entries can be created from =doi=, =arxiv=
+   #+begin_src emacs-lisp
+     (use-package ivy-bibtex
+       :ensure t
+       :config
+     ;;; create a key for the bibtex entry automatically using the rules
+       (setq bibtex-autokey-year-length 4
+	     bibtex-autokey-name-year-separator "-"
+	     bibtex-autokey-year-title-separator "-"
+	     bibtex-autokey-titleword-separator "-"
+	     bibtex-autokey-titlewords 2
+	     bibtex-autokey-titlewords-stretch 1
+	     bibtex-autokey-titleword-length 5)
+       ;;; path to the bibliography(.bib) files
+       (setq bibtex-completion-bibliography
+	     '("~/kuri/bibliography/references.bib")
+	     bibtex-completion-library-path '("~/kuri/bibliography/bibtex-pdfs/")
+	     bibtex-completion-notes-path "~/kuri/bibliography/notes/"
+	     bibtex-completion-notes-template-multiple-files "* ${author-or-editor}, ${title}, ${journal}, (${year}) :${=type=}: \n\nSee [[cite:&${=key=}]]\n"
+
+	     bibtex-completion-additional-search-fields '(keywords)
+	     bibtex-completion-display-formats
+	     '((article       . "${=has-pdf=:1}${=has-note=:1} ${year:4} ${author:36} ${title:*} ${journal:40}")
+	       (inbook        . "${=has-pdf=:1}${=has-note=:1} ${year:4} ${author:36} ${title:*} Chapter ${chapter:32}")
+	       (incollection  . "${=has-pdf=:1}${=has-note=:1} ${year:4} ${author:36} ${title:*} ${booktitle:40}")
+	       (inproceedings . "${=has-pdf=:1}${=has-note=:1} ${year:4} ${author:36} ${title:*} ${booktitle:40}")
+	       (t             . "${=has-pdf=:1}${=has-note=:1} ${year:4} ${author:36} ${title:*}"))
+	     bibtex-completion-pdf-open-function
+	     (lambda (fpath)
+	       (call-process "open" nil 0 nil fpath)))))
+   #+end_src
+   
+** tempo
+   #+begin_src emacs-lisp
+
+     ;;(add-function :before-until electric-pair-inhibit-predicate
+     ;;	   (lambda (c) (eq c ?<)))
+
+     (require 'org-tempo)
+
+   #+end_src
+* elfeed-org
+  #+BEGIN_SRC emacs-lisp
+    ;; Load elfeed-org
+    (use-package elfeed-org
+      :ensure t)
+
+    ;; Initialize elfeed-org
+    ;; This hooks up elfeed-org to read the configuration when elfeed
+    ;; is started with =M-x elfeed=
+    (elfeed-org)
+
+    ;; Optionally specify a number of files containing elfeed
+    ;; configuration. If not set then the location below is used.
+    ;; Note: The customize interface is also supported.
+    (setq rmh-elfeed-org-files (list "~/emacs/vanilla.d/elfeed.org"))
+  #+END_SRC
+* emacs-everywhere
+#+begin_src emacs-lisp
+  (use-package emacs-everywhere
+    :ensure t)
+#+end_src
+
+
 
