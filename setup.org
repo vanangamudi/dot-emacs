@@ -214,8 +214,20 @@ For opening and closing a separate frame for the capture
        Terminal=false
        Categories=System;
        MimeType=x-scheme-handler/org-protocol;
-     #+END_SRC
 
+	
+     #+END_SRC
+     
+     #+begin_src conf
+       [Desktop Entry]	
+       Name=org-protocol	
+       Exec=emacsclient --create-frame --alternate-editor='' --no-wait %u
+       Type=Application
+       Terminal=false
+       Categories=System;
+       MimeType=x-scheme-handler/org-protocol;
+
+     #+end_src
      And run the following
 
      #+BEGIN_SRC bash
@@ -231,6 +243,18 @@ For opening and closing a separate frame for the capture
 	   + encodeURIComponent(location.href) \
 	   + '/'+encodeURIComponent(document.title) \
 	   +'/'+encodeURIComponent(window.getSelection())
+
+       //org-protocol.desktop 
+       javascript:location.href='org-protocol://capture://l/' \
+	   + encodeURIComponent(location.href)     \
+	   +'/'+encodeURIComponent(document.title)    \
+	   +'/'+encodeURIComponent(window.getSelection());
+
+       //org-protocol2.desktop the one that works now
+       javascript:location.href = 'org-protocol://capture?template=l'\
+	   + '&url='   + encodeURIComponent(location.href)\
+	   + '&title=' + encodeURIComponent(document.title)\
+	   + '&body='  + encodeURIComponent(window.getSelection())
 
      #+END_SRC
      
@@ -315,4 +339,9 @@ https://sachachua.com/blog/2015/11/capturing-links-quickly-with-emacsclient-org-
   #+end_src
 
 
-  
+* emacs-everywhere
+#+begin_src bash  :dir /sudo::  :results output
+  apt-get install xclip xdotool xbindkeys #xprop xwininfo 
+#+end_src
+
+#+RESULTS:

@@ -8,20 +8,27 @@
 * Tips
 ** Debug your config.org with =M-x org-lint=
    - https://emacs.stackexchange.com/questions/63003/org-babel-tangle-error
+  
+* TODO List
+  
+** TODO use vertico, consult, embark combo
+   - how to intergrate with [[org-ref]]
+     
 
 * Emacs
   Custom set variables are moved here from =init.el= where they were placed automatically by certain packages like =vlf-setup=
   #+begin_src emacs-lisp
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(fci-rule-color "#14151E")
- '(inhibit-startup-screen t)
- '(vc-annotate-very-old-color nil)
- '(warning-suppress-log-types '((comp))))
+    (custom-set-variables
+     ;; custom-set-variables was added by Custom.
+     ;; If you edit it by hand, you could mess it up, so be careful.
+     ;; Your init file should contain only one such instance.
+     ;; If there is more than one, they won't work right.
+     '(fci-rule-color "#14151E")
+     '(inhibit-startup-screen t)
+     '(vc-annotate-very-old-color nil)
+     '(warning-suppress-log-types '((comp))))
 
+    (add-to-list 'load-path "~/emacs/vanilla.d/lisp")
 
   #+end_src
 * cryptographic
@@ -387,6 +394,7 @@
        (global-set-key (kbd "C-c C-r") 'ivy-resume)
        (global-set-key (kbd "<f6>") 'ivy-resume)
        (global-set-key (kbd "M-x") 'counsel-M-x))
+
    #+end_src
 ** align-non-space
    [[https://blog.lambda.cx/posts/emacs-align-columns/][Aligning columns in Emacs]]
