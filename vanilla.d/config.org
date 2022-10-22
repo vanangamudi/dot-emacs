@@ -1048,15 +1048,32 @@ emacs	      "https://raw.githubusercontent.com/radian-software/straight.el/devel
     (setq rmh-elfeed-org-files (list "~/emacs/vanilla.d/elfeed.org"))
   #+END_SRC
 * emacs-everywhere
-install the following packages
-#+begin_src bash  :dir /sudo::  :results output
-  apt-get install xclip xdotool xbindkeys #xprop xwininfo 
-#+end_src
+  install the following packages
+  #+begin_src bash  :dir /sudo::  :results output
+    apt-get install xclip xdotool xbindkeys #xprop xwininfo 
+  #+end_src
 
-#+begin_src emacs-lisp
-  (use-package emacs-everywhere
-    :ensure t)
-#+end_src
+  #+begin_src emacs-lisp
+    (use-package emacs-everywhere
+      :ensure t)
+  #+end_src
 
+* media
+  #+begin_src emacs-lisp
+    (use-package mpv
+      :ensure t)
+  #+end_src
 
-
+  #+begin_src emacs-lisp
+    (use-package subed
+      :ensure t
+      :config
+      ;; Disable automatic movement of point by default
+      (add-hook 'subed-mode-hook 'subed-disable-sync-point-to-player)
+      ;; Remember cursor position between sessions
+      (add-hook 'subed-mode-hook 'save-place-local-mode)
+      ;; Break lines automatically while typing
+      (add-hook 'subed-mode-hook 'turn-on-auto-fill)
+      ;; Break lines at 40 characters
+      (add-hook 'subed-mode-hook (lambda () (setq-local fill-column 40))))
+  #+end_src
