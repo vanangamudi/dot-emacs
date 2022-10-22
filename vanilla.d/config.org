@@ -543,8 +543,8 @@ emacs	      "https://raw.githubusercontent.com/radian-software/straight.el/devel
 * Reading and Writing
 ** Reading
 ** Writing
-** Latex and pdf-tools
-   #+begin_src dummy
+** COMMENT Latex and pdf-tools
+   #+begin_src emacs-lisp
      (use-package tex
        :ensure auctex)
 
