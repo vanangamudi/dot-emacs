@@ -471,6 +471,15 @@ emacs	      "https://raw.githubusercontent.com/radian-software/straight.el/devel
      (use-package toml-mode)
    #+end_src
 
+** Slime for common-lisp
+   Clone [[https://github.com/slime/slime.git][Slime repository]] into ~/code/cloned/slime and add to load path
+   #+begin_src emacs-lisp
+     (setq inferior-lisp-program "/usr/local/bin/sbcl") 
+     (add-to-list 'load-path "~/code/cloned/slime/") 
+     (require 'slime)
+     (slime-setup)
+   #+end_src
+
 ** magit
    #+BEGIN_SRC emacs-lisp
      (use-package magit
