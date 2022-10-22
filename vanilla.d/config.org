@@ -294,6 +294,79 @@ emacs	      "https://raw.githubusercontent.com/radian-software/straight.el/devel
      ;;(custom-set-variables
      ;; '(vlf-application 'dont-ask))
    #+end_src
+
+** clipetty
+   Clipetty is a minor mode for terminal (TTY) users that sends text that you kill in Emacs to your Operating System's clipboard. If you predominately use Emacs in GUI (X-Windows, macOS, Windows) frames you don't need Clipetty.
+
+   For this to work you need to be using a terminal emulator that supports OSC 52 escape sequences. See the Terminals section below to check if your favorite terminal emulator is on the list.
+   #+begin_src emacs-lisp
+     (use-package clipetty
+       :ensure t
+       :hook (after-init . global-clipetty-mode))
+   #+end_src
+
+   #+RESULTS:
+   | global-clipetty-mode | #[0 \303\211\235\203 \304"\301\305!\210\210	\205 \306 \210\307\211\207 [command-line-args desktop-save-mode inhibit-startup-screen --no-desktop delete 0 desktop-read t] 4] | x-wm-set-size-hint | tramp-register-archive-file-name-handler | magit-maybe-define-global-key-bindings | magit-auto-revert-mode--init-kludge | magit-startup-asserts | magit-version | table--make-cell-map |
+
+** hl-todo
+   Highlight TODO and similar keywords in comments and strings.
+   Look into this for starting emacs extension development
+   #+begin_src emacs-lisp
+     (use-package hl-todo
+       :ensure t
+       :config
+       (setq hl-todo-keyword-faces
+	     '(("TODO"   . "#FF0000")
+	       ("FIXME"  . "#FF0000")
+	       ("DEBUG"  . "#A020F0")
+	       ("GOTCHA" . "#FF4500")
+	       ("STUB"   . "#1E90FF"))))
+   #+end_src
+
+** anzu 
+   #+begin_src emacs-lisp
+     (use-package anzu
+       :ensure t
+       :config
+       (require 'anzu)
+       (global-anzu-mode +1)
+
+       (set-face-attribute 'anzu-mode-line nil
+			   :foreground "yellow" :weight 'bold)
+  
+       (custom-set-variables
+	'(anzu-mode-lighter "")
+	'(anzu-deactivate-region t)
+	'(anzu-search-threshold 1000)
+	'(anzu-replace-threshold 50)
+	'(anzu-replace-to-string-separator " => "))
+  
+       (define-key isearch-mode-map [remap isearch-query-replace]  #'anzu-isearch-query-replace)
+       (define-key isearch-mode-map [remap isearch-query-replace-regexp] #'anzu-isearch-query-replace-regexp))
+   #+end_src
+
+* Navigation
+** avy 
+   #+begin_src emacs-lisp
+     (use-package avy
+       :ensure t
+       :bind
+       ("C-:"     . 'avy-goto-char)
+       ("C-'"     . 'avy-goto-char-2)
+       ("M-g f"   . 'avy-goto-line)
+       ("M-g w"   . 'avy-goto-word-1)
+       ("M-g e"   . 'avy-goto-word-0)
+       ("C-c C-j" . 'avy-resume))
+   #+end_src
+
+** link-hint
+   #+begin_src emacs-lisp
+     (use-package link-hint
+       :ensure t
+       :bind
+       ("C-c l o" . link-hint-open-link)
+       ("C-c l c" . link-hint-copy-link))
+   #+end_src
 * Input system
 ** tamil
    #+begin_src emacs-lisp
