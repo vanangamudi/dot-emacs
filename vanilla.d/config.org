@@ -450,6 +450,14 @@ emacs	      "https://raw.githubusercontent.com/radian-software/straight.el/devel
       :ensure t)
   #+end_src
 * Programming
+** crontab editing
+   #+begin_src emacs-lisp
+     (defun crontab-e ()
+	 "Run `crontab -e' in a emacs buffer."
+	 (interactive)
+	 (with-editor-async-shell-command "crontab -e"))
+   #+end_src
+
 ** programming languages
    #+begin_src emacs-lisp
      (use-package blacken
