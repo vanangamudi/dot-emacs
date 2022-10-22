@@ -567,7 +567,8 @@ emacs	      "https://raw.githubusercontent.com/radian-software/straight.el/devel
 
      (add-hook 'pdf-view-mode-hook (lambda() (linum-mode -1)))
 
-#+end_src
+   #+end_src
+   
 ** Nov.el
    #+begin_src emacs-lisp
      (defun my-nov-font-setup ()
@@ -582,6 +583,9 @@ emacs	      "https://raw.githubusercontent.com/radian-software/straight.el/devel
        (setq nov-text-width 80))
 
    #+end_src
+   
+** COMMENT more config
+   #+begin_src emacs-lisp
      (use-package justify-kp
        :ensure t)
 
@@ -611,6 +615,9 @@ emacs	      "https://raw.githubusercontent.com/radian-software/straight.el/devel
 		   nil t)))
 
      (add-hook 'nov-post-html-render-hook 'my-nov-post-html-render-hook)
+     
+   #+end_src
+
 ** Spellcheck
    #+begin_src emacs-lisp
      (use-package flyspell
