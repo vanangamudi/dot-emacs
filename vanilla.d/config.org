@@ -657,6 +657,7 @@ emacs	      "https://raw.githubusercontent.com/radian-software/straight.el/devel
        :bind
        (("<f9>" . distraction-free)))
    #+end_src
+   
 * Search
 #+begin_src emacs-lisp
   (use-package deadgrep
@@ -671,14 +672,67 @@ emacs	      "https://raw.githubusercontent.com/radian-software/straight.el/devel
 
   #+end_src
 * mu4e
-  #+begin_src bash
+  Install =mu4e= for =mu= and =mu4e= and install =isync= packages for =mbsync=
+  #+begin_src bash :results output code
     sudo apt-get install mu4e isync
   #+end_src
   
+  Configure =mbsync= using =.mbsyncrc=
+  #+begin_src conf :tangle ~/aalar/.mbsyncrc
+    IMAPAccount personal-gmail
+    Host imap.gmail.com
+    User selva.personals@gmail.com
+    PassCmd "cat ~/ko-pa-ni/thani/kadavu/mbsync.karunthulai.selva.personals.txt"
+    SSLType IMAPS
+    CertificateFile /etc/ssl/certs/ca-certificates.crt
+    PipelineDepth 1
+
+    IMAPStore personal-gmail-remote
+    Account personal-gmail
+
+    MaildirStore personal-gmail-local
+    Subfolders Verbatim
+    Path ~/mail/personal-gmail/
+    Inbox ~/mail/personal-gmail/Inbox
+
+    Channel personal-gmail
+    Master :personal-gmail-remote:
+    Slave :personal-gmail-local:
+    Patterns * ![Gmail]* "[Gmail]/Sent Mail" "[Gmail]/Starred" "[Gmail]/All Mail" "[Gmail]/Trash"
+    Create Both
+    SyncState *
+
+
+    IMAPAccount developer-gmail
+    Host imap.gmail.com
+    User selva.developer@gmail.com
+    PassCmd "cat ~/ko-pa-ni/thani/kadavu/mbsync.karunthulai.selva.developer.txt"
+    SSLType IMAPS
+    CertificateFile /etc/ssl/certs/ca-certificates.crt
+    PipelineDepth 1
+
+    IMAPStore developer-gmail-remote
+    Account developer-gmail
+
+    MaildirStore developer-gmail-local
+    Subfolders Verbatim
+    Path ~/mail/developer-gmail/
+    Inbox ~/mail/developer-gmail/Inbox
+
+    Channel developer-gmail
+    Master :developer-gmail-remote:
+    Slave :developer-gmail-local:
+    Patterns * ![Gmail]* "[Gmail]/Sent Mail" "[Gmail]/Starred" "[Gmail]/All Mail" "[Gmail]/Trash"
+    Create Both
+    SyncState *	
+
+  #+end_src
+
+  Configure mu4e
   #+begin_src emacs-lisp
     (use-package mu4e
       :ensure nil
-      :load-path "/usr/share/emacs/site-lisp/mu4e/"
+      ;;:load-path "/usr/share/emacs/site-lisp/mu4e/"
       ;; :defer 20 ; Wait until 20 seconds after startup
       :config
 
@@ -727,8 +781,6 @@ emacs	      "https://raw.githubusercontent.com/radian-software/straight.el/devel
 		      (mu4e-trash-folder  . "/developer-gmail/[Gmail]/Trash")))
 
 	     ))
-
-
 
       (setq mu4e-maildir-shortcuts
 	  '(("/Inbox"             . ?i)
