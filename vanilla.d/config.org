@@ -946,6 +946,7 @@ emacs	      "https://raw.githubusercontent.com/radian-software/straight.el/devel
     #+END_SRC
 ** org-babel
    #+begin_src emacs-lisp
+     (setq org-babel-sh-command "~/emacs/org-babel-stderr.sh")
      (org-babel-do-load-languages 'org-babel-load-languages '((shell . t)
 							      ;;(ledger . t)
 							      (python . t)))
