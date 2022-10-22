@@ -962,6 +962,30 @@ emacs	      "https://raw.githubusercontent.com/radian-software/straight.el/devel
      (require 'org-tempo)
 
    #+end_src
+
+** mathpix
+   Capture latex equations from browser
+   #+begin_src dummy
+     (use-package mathpix.el
+       :straight (:host github :repo "jethrokuan/mathpix.el")
+       :custom ((mathpix-app-id "app-id")
+		(mathpix-app-key "app-key"))
+       :bind
+       ("C-x m" . mathpix-screenshot))
+   #+end_src
+   
+** org-media-note
+   #+begin_src dummy
+     (use-package quelpa-use-package)  ;; to allow installation of github packages
+     (use-package pretty-hydra)
+     (use-package org-media-note
+       :quelpa (org-media-note :fetcher github :repo "yuchen-lea/org-media-note")
+       :hook (org-mode .  org-media-note-mode)
+       :bind (("C-f2" . org-media-note-hydra/body))  ;; Main entrance
+       :config
+       (setq org-media-note-screenshot-image-dir "~/kuri/images/"))
+   #+end_src
+
 * Reference Management
 ** bibtex
    =bibtex-autokey-*= variables are used while constructing the key for a bibtex entry automatically from the fields of the bibtex entry. The bibtex entries can be created from =doi=, =arxiv=
