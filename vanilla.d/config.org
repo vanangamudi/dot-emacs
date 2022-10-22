@@ -633,13 +633,13 @@ emacs	      "https://raw.githubusercontent.com/radian-software/straight.el/devel
 	      ("<f7>" . flyspell-word)
 	      ("C-;" . flyspell-auto-correct-previous-word)))
    #+end_src
-** Distraction Free
+** Distraction Free Editing
    #+begin_src emacs-lisp
      ;; Distraction-free screen
      (use-package olivetti
        :ensure t
        :init
-       (setq olivetti-body-width .3)
+       (setq olivetti-body-width .5)
        :config
        (defun distraction-free ()
 	 "Distraction-free writing environment"
