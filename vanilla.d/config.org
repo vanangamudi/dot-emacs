@@ -998,6 +998,17 @@ emacs	      "https://raw.githubusercontent.com/radian-software/straight.el/devel
        (setq org-media-note-screenshot-image-dir "~/kuri/images/"))
    #+end_src
 
+** treating webp as image
+   #+begin_src emacs-lisp
+     (setq image-file-name-regexps "\\.\\(GIF\\|JP\\(?:E?G\\)\\|P\\(?:BM\\|GM\\|N[GM]\\|PM\\)\\|SVG\\|TIFF?\\|X\\(?:[BP]M\\)\\|gif\\|jp\\(?:e?g\\)\\|p\\(?:bm\\|gm\\|n[gm]\\|pm\\)\\|webp\\|svg\\|tiff?\\|x\\(?:[bp]m\\)\\)\\'")
+
+     (setq org-html-inline-image-rules
+	   '(("file" . "\\(?:\\.\\(?:gif\\|\\(?:jpe?\\|pn\\|sv\\)g\\|webp\\)\\)")
+	     ("http" . "\\(?:\\.\\(?:gif\\|\\(?:jpe?\\|pn\\|sv\\)g\\|webp\\)\\)")
+	     ("https" . "\\(?:\\.\\(?:gif\\|\\(?:jpe?\\|pn\\|sv\\)g\\|webp\\)\\)")) )
+
+   #+end_src
+
 * Reference Management
 ** bibtex
    =bibtex-autokey-*= variables are used while constructing the key for a bibtex entry automatically from the fields of the bibtex entry. The bibtex entries can be created from =doi=, =arxiv=
