@@ -1054,6 +1054,19 @@ emacs	      "https://raw.githubusercontent.com/radian-software/straight.el/devel
      (use-package org-ref-ivy)
    #+end_src
 
+** ebib
+   #+begin_src emacs-lisp
+     (use-package ebib
+       :ensure t
+       :config
+       (setq ebib-bibtex-dialect 'biblatex))
+
+   #+end_src
+
+** ebib-biblio
+   When fetching entries via Biblio, Ebib checks for duplicates based on the key of the new entry. This will only work reliably if both Ebib and Biblio are configured to automatically generate BibTeX keys. Ebib does this by default (see the option ebib-autogenerate-keys), Biblio can be configured to do so by setting the option biblio-bibtex-use-autokey.
+
+
 * elfeed-org
   #+BEGIN_SRC emacs-lisp
     ;; Load elfeed-org
