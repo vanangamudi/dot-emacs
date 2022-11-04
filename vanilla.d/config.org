@@ -94,6 +94,7 @@ emacs	      "https://raw.githubusercontent.com/radian-software/straight.el/devel
 
 
    #+end_src
+   
 ** debug
      #+BEGIN_SRC emacs-lisp
     ;; Profile emacs startup
@@ -367,6 +368,18 @@ emacs	      "https://raw.githubusercontent.com/radian-software/straight.el/devel
        ("C-c l o" . link-hint-open-link)
        ("C-c l c" . link-hint-copy-link))
    #+end_src
+
+** projectile
+   #+begin_src emacs-lisp
+     (use-package projectile
+       :ensure t
+       :init
+       (projectile-mode +1)
+       :bind
+	(:map projectile-mode-map
+	      ("C-c p" . projectile-command-map)))
+   #+end_src
+
 * Input system
 ** tamil
    #+begin_src emacs-lisp
@@ -379,13 +392,12 @@ emacs	      "https://raw.githubusercontent.com/radian-software/straight.el/devel
    #+end_src
 * Cryptography
   #+begin_src emacs-lisp
-    (use-package epg
+    (use-package epa
       :ensure t
       :config
-      (setq epg-gpg-program "gpg2")
+      (setq epa-gpg-program "gpg2")
       (setq epa-pinentry-mode 'loopback)
-      (setenv "GPG_AGENT_INFO" nil)
-      )
+      (setenv "GPG_AGENT_INFO" nil))
 
   #+end_src
 
