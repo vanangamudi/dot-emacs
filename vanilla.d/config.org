@@ -1001,8 +1001,8 @@ emacs	      "https://raw.githubusercontent.com/radian-software/straight.el/devel
 		"* %a\n %?\n %i")
 	       ("j" "Journal" entry (file+datetree "~/org/pidi.org" "Journal")
 		"* %?\nEntered on %U\n  %i\n  %a")
-	       ("w" "Web site" entry (file+olp "~/org/pidi.org" "Web Links")
-		"* %a :website:\n\n%U %?\n\n%:initial")))
+	       ("w" "Website" plain (function org-website-clipper)
+		"* %a\n%T\n" :immediate-finish t)))
 
      #+END_SRC
 
