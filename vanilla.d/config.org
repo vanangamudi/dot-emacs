@@ -380,6 +380,13 @@ emacs	      "https://raw.githubusercontent.com/radian-software/straight.el/devel
 	      ("C-c p" . projectile-command-map)))
    #+end_src
 
+* Browsing
+  install w3m via apt/dnf
+  #+begin_src bash
+    sudo apt install w3m
+  #+end_src
+
+
 * Input system
 ** tamil
    #+begin_src emacs-lisp
