@@ -906,39 +906,106 @@ emacs	      "https://raw.githubusercontent.com/radian-software/straight.el/devel
 
    #+end_src
 ** org-roam-ui
-#+begin_src emacs-lisp
-  (use-package org-roam-ui
-    ;;:straight
-    ;;(:host github :repo "org-roam/org-roam-ui" :branch "main" :files ("*.el" "out"))
-    :after org-roam
-    ;;         normally we'd recommend hooking orui after org-roam, but since org-roam does not have
-    ;;         a hookable mode anymore, you're advised to pick something yourself
-    ;;         if you don't care about startup time, use
-    ;;  :hook (after-init . org-roam-ui-mode)
-    :config
-    (setq org-roam-ui-sync-theme t
-	  org-roam-ui-follow t
-	  org-roam-ui-update-on-save t
-	  org-roam-ui-open-on-start t))
+   #+begin_src emacs-lisp
+     (use-package org-roam-ui
+       ;;:straight
+       ;;(:host github :repo "org-roam/org-roam-ui" :branch "main" :files ("*.el" "out"))
+       :after org-roam
+       ;;         normally we'd recommend hooking orui after org-roam, but since org-roam does not have
+       ;;         a hookable mode anymore, you're advised to pick something yourself
+       ;;         if you don't care about startup time, use
+       ;;  :hook (after-init . org-roam-ui-mode)
+       :config
+       (setq org-roam-ui-sync-theme t
+	     org-roam-ui-follow t
+	     org-roam-ui-update-on-save t
+	     org-roam-ui-open-on-start t))
 
-#+end_src
+   #+end_src
 ** org-capture
-*** org-capture templates
-    #+BEGIN_SRC emacs-lisp
-      (require 'org-protocol)
+*** org-capture
+**** html-capture 
+     eww and w3m org-web clipper from [[http://www.bobnewell.net/publish/35years/webclipper.html][Bob Newell]]
+     #+begin_src emacs-lisp
 
-      (global-set-key (kbd "C-c c") 'org-capture)
+       ;; org-eww and org-w3m should be in your org distribution, but see
+       ;; note below on patch level of org-eww.
+       (require  'ol-eww)
+       (require  'ol-w3m)
 
-      (setq org-protocol-default-template-key "l")
-      (setq org-capture-templates
-	    '(("t" "Todo" entry (file+headline "~/org/pidi.org" "Tasks")
-	       "* TODO %?\n  %i\n  %a")
-	      ("l" "Link" entry (file+olp "~/org/pidi.org" "Web Links")
-	       "* %a\n %?\n %i")
-	      ("j" "Journal" entry (file+datetree "~/org/pidi.org" "Journal")
-	       "* %?\nEntered on %U\n  %i\n  %a")))
+       (defvar org-website-page-archive-file "~/kuri/org/websites.org")
+       (defun org-website-clipper ()
+	 "When capturing a website page, go to the right place in capture file,
+	  but do sneaky things. Because it's a w3m or eww page, we go
+	  ahead and insert the fixed-up page content, as I don't see a
+	  good way to do that from an org-capture template alone. Requires
+	  Emacs 25 and the 2017-02-12 or later patched version of org-eww.el."
+	(interactive)
 
-    #+END_SRC
+	 ;; Check for acceptable major mode (w3m or eww) and set up a couple of
+	 ;; browser specific values. Error if unknown mode.
+
+	 (cond
+	  ((eq major-mode 'w3m-mode)
+	    (org-w3m-copy-for-org-mode))
+	  ((eq major-mode 'eww-mode)
+	    (org-eww-copy-for-org-mode))
+	  (t
+	    (error "Not valid -- must be in w3m or eww mode")))
+
+	 ;; Check if we have a full path to the archive file. 
+	 ;; Create any missing directories.
+
+	 (unless (file-exists-p org-website-page-archive-file)
+	   (let ((dir (file-name-directory org-website-page-archive-file)))
+	     (unless (file-exists-p dir)
+	       (make-directory dir))))
+
+	 ;; Open the archive file and yank in the content.
+	 ;; Headers are fixed up later by org-capture.
+
+	 (find-file org-website-page-archive-file)
+	 (goto-char (point-max))
+	 ;; Leave a blank line for org-capture to fill in
+	 ;; with a timestamp, URL, etc.
+	 (insert "\n\n")
+	 ;; Insert the web content but keep our place.
+	 (save-excursion (yank))
+	 ;; Don't keep the page info on the kill ring.
+	 ;; Also fix the yank pointer.
+	 (setq kill-ring (cdr kill-ring))
+	 (setq kill-ring-yank-pointer kill-ring)
+	 ;; Final repositioning.
+	 (forward-line -1)
+       )
+     #+end_src
+
+     the following from alphapapa but doesn't suit my needs
+     #+begin_src emacs-lisp
+       (use-package org-protocol-capture-html
+	 :ensure t)
+     #+end_src
+
+
+**** templates
+     #+BEGIN_SRC emacs-lisp
+       (require 'org-protocol)
+
+       (global-set-key (kbd "C-c c") 'org-capture)
+
+       (setq org-protocol-default-template-key "l")
+       (setq org-capture-templates
+	     '(("t" "Todo" entry (file+headline "~/org/pidi.org" "Tasks")
+		"* TODO %?\n  %i\n  %a")
+	       ("l" "Link" entry (file+olp "~/org/pidi.org" "Web Links")
+		"* %a\n %?\n %i")
+	       ("j" "Journal" entry (file+datetree "~/org/pidi.org" "Journal")
+		"* %?\nEntered on %U\n  %i\n  %a")
+	       ("w" "Web site" entry (file+olp "~/org/pidi.org" "Web Links")
+		"* %a :website:\n\n%U %?\n\n%:initial")))
+
+     #+END_SRC
+
 *** for browser based interaction
     from : https://gist.github.com/progfolio/af627354f87542879de3ddc30a31adc1
     #+BEGIN_SRC emacs-lisp
