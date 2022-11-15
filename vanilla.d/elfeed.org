@@ -25,3 +25,9 @@
 ******   https://matthieu.io/blog/feed/rss.xml
 ** Financial markets
 *** https://aswathdamodaran.blogspot.com/feeds/posts/default
+
+** https://sethusubbar.wordpress.com/rss :sethusubbar:
+** http://kavithaigal-senggovai.blogspot.com/feeds/1547863671906307217/comments/default :tamil:
+   
+** https://mediapub.it.ox.ac.uk/feeds/144140/audio.xml    :biology:gardening:
+** https://mediapub.it.ox.ac.uk/feeds/144140/video.xml    :biology:gardening:
