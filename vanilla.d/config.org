@@ -239,7 +239,7 @@
       create-lockfiles nil)
    #+END_SRC
 
-** tabbed interface
+** COMMENT tabbed interface
   #+begin_src emacs-lisp
     (use-package centaur-tabs
       :ensure t
@@ -252,7 +252,7 @@
       ("C-<next>" . centaur-tabs-forward))
 
   #+end_src
-
+  
 * try
   #+BEGIN_SRC emacs-lisp
     (use-package try
@@ -528,6 +528,35 @@
 
    #+end_src
 
+** youtube link and mpv
+   
+*** [[https://github.com/bitspook/spookmax.d/blob/5f1d71cf572cd18dc7d41f292753d4b7683877c3/readme.org#org-mode][from spookmax]]  [[[yt://www.youtube.com/watch?v=eaZUZCzaIgw][video]]]
+    #+begin_src emacs-lisp
+      (defun spook-org--follow-yt-link (path prefix)
+	(let* ((url (format "https:%s" path))
+	       ;;(display-buffer-alist `((,shell-command-buffer-name-async . (display-buffer-no-window))))
+	       )
+	  (if (and prefix (executable-find "mpv"))
+	      (browse-url url)
+	    (async-shell-command (format "mpv \"%s\"" url))
+	    (message "Launched mpv with \"%s\"" url))))
+
+      (defun spook-org--export-yt-link (path desc backend)
+	(when (eq backend 'html)
+	  (let* ((video-id (cadar (url-parse-query-string path)))
+		 (url (if (string-empty-p video-id) path
+			(format "//youtube.com/embed/%s" video-id))))
+	    (format
+	     "<iframe width=\"560\" height=\"315\" src=\"%s\" title=\"%s\" frameborder=\"0\" allowfullscreen></iframe>"
+	     url desc))))
+
+      (org-link-set-parameters "yt" :follow #'spook-org--follow-yt-link :export #'spook-org--export-yt-link)
+
+    #+end_src
+
+    #+RESULTS:
+    | :follow | spook-org--follow-yt-link | :export | spook-org--export-yt-link |
+
 * elfeed-org
   #+BEGIN_SRC emacs-lisp
     ;; Load elfeed-org
@@ -646,7 +675,7 @@
      (add-hook 'pdf-view-mode-hook (lambda() (linum-mode -1)))
 
 #+end_src
-  
+
 * search
 #+begin_src emacs-lisp
   (use-package deadgrep
@@ -816,6 +845,10 @@
        (setq nov-text-width 80))
 
    #+end_src
+
+   #+begin_src dummy
+
+
      (use-package justify-kp
        :ensure t)
 
@@ -846,3 +879,4 @@
 
      (add-hook 'nov-post-html-render-hook 'my-nov-post-html-render-hook)
 
+   #+end_src
