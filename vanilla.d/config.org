@@ -51,16 +51,12 @@
 
   #+end_src
 * Package Management
-  
    #+BEGIN_SRC emacs-lisp
      (setq use-package-always-ensure nil)
      ;;; https://emacs.stackexchange.com/a/68302/8476
      (use-package quelpa-use-package
        :ensure t)
    #+END_SRC
-
-   #+RESULTS:
-
 ** COMMENT straight.el
    [[https://github.com/radian-software/straight.el#getting-started][Getting started with straight.el]] there are variables that can be set to customize straight.el but must be set before the following bootstrapping code
    #+begin_src emacs-lisp
@@ -1219,6 +1215,12 @@ emacs	      "https://raw.githubusercontent.com/radian-software/straight.el/devel
     (use-package mpv
       :ensure t)
   #+end_src
+
+** subed subtitle editor
+   needs to imported from nongnu elpa. add the following to init.el
+   #+begin_src emacs-lisp :tangle no
+     (add-to-list 'package-archives '("nongnu" . "https://elpa.nongnu.org/nongnu/"))
+   #+end_src
 
   #+begin_src emacs-lisp
     (use-package subed
