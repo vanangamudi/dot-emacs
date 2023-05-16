@@ -272,7 +272,8 @@ emacs	      "https://raw.githubusercontent.com/radian-software/straight.el/devel
       auto-save-default nil
       create-lockfiles nil)
    #+END_SRC
-** tabbed interface
+
+** COMMENT tabbed interface
   #+begin_src emacs-lisp
     (use-package centaur-tabs
       :ensure t
@@ -285,6 +286,7 @@ emacs	      "https://raw.githubusercontent.com/radian-software/straight.el/devel
       ("C-<next>" . centaur-tabs-forward))
 
   #+end_src
+  
 ** try
    #+BEGIN_SRC emacs-lisp
      (use-package try
@@ -307,7 +309,6 @@ emacs	      "https://raw.githubusercontent.com/radian-software/straight.el/devel
      ;;(custom-set-variables
      ;; '(vlf-application 'dont-ask))
    #+end_src
-
 ** clipetty
    Clipetty is a minor mode for terminal (TTY) users that sends text that you kill in Emacs to your Operating System's clipboard. If you predominately use Emacs in GUI (X-Windows, macOS, Windows) frames you don't need Clipetty.
 
@@ -509,7 +510,7 @@ emacs	      "https://raw.githubusercontent.com/radian-software/straight.el/devel
       (setq-default indent-tabs-mode nil)
     #+end_src
 
-** Slime for common-lisp
+** COMMENT Slime for common-lisp
    Clone [[https://github.com/slime/slime.git][Slime repository]] into ~/code/cloned/slime and add to load path
    #+begin_src emacs-lisp
      (setq inferior-lisp-program "/usr/local/bin/sbcl") 
@@ -622,39 +623,39 @@ emacs	      "https://raw.githubusercontent.com/radian-software/straight.el/devel
 
    #+end_src
    
-** COMMENT more config
-   #+begin_src emacs-lisp
-     (use-package justify-kp
-       :ensure t)
+*** COMMENT more config
+    #+begin_src emacs-lisp
+      (use-package justify-kp
+	:ensure t)
 
-     (setq nov-text-width t)
+      (setq nov-text-width t)
 
-     (defun my-nov-window-configuration-change-hook ()
-       (my-nov-post-html-render-hook)
-       (remove-hook 'window-configuration-change-hook
+      (defun my-nov-window-configuration-change-hook ()
+	(my-nov-post-html-render-hook)
+	(remove-hook 'window-configuration-change-hook
+		     'my-nov-window-configuration-change-hook
+		     t))
+
+      (defun my-nov-post-html-render-hook ()
+	(if (get-buffer-window)
+	    (let ((max-width (pj-line-width))
+		  buffer-read-only)
+	      (save-excursion
+		(goto-char (point-min))
+		(while (not (eobp))
+		  (when (not (looking-at "^[[:space:]]*$"))
+		    (goto-char (line-end-position))
+		    (when (> (shr-pixel-column) max-width)
+		      (goto-char (line-beginning-position))
+		      (pj-justify)))
+		  (forward-line 1))))
+	  (add-hook 'window-configuration-change-hook
 		    'my-nov-window-configuration-change-hook
-		    t))
+		    nil t)))
 
-     (defun my-nov-post-html-render-hook ()
-       (if (get-buffer-window)
-	   (let ((max-width (pj-line-width))
-		 buffer-read-only)
-	     (save-excursion
-	       (goto-char (point-min))
-	       (while (not (eobp))
-		 (when (not (looking-at "^[[:space:]]*$"))
-		   (goto-char (line-end-position))
-		   (when (> (shr-pixel-column) max-width)
-		     (goto-char (line-beginning-position))
-		     (pj-justify)))
-		 (forward-line 1))))
-	 (add-hook 'window-configuration-change-hook
-		   'my-nov-window-configuration-change-hook
-		   nil t)))
-
-     (add-hook 'nov-post-html-render-hook 'my-nov-post-html-render-hook)
+      (add-hook 'nov-post-html-render-hook 'my-nov-post-html-render-hook)
      
-   #+end_src
+    #+end_src
 
 ** Spellcheck
    #+begin_src emacs-lisp
@@ -1126,6 +1127,36 @@ emacs	      "https://raw.githubusercontent.com/radian-software/straight.el/devel
 	     ("https" . "\\(?:\\.\\(?:gif\\|\\(?:jpe?\\|pn\\|sv\\)g\\|webp\\)\\)")) )
 
    #+end_src
+   
+** youtube link and mpv
+   
+*** [[https://github.com/bitspook/spookmax.d/blob/5f1d71cf572cd18dc7d41f292753d4b7683877c3/readme.org#org-mode][from spookmax]]  [[[yt://www.youtube.com/watch?v=eaZUZCzaIgw][video]]]
+    #+begin_src emacs-lisp
+      (defun spook-org--follow-yt-link (path prefix)
+	(let* ((url (format "https:%s" path))
+	       ;;(display-buffer-alist `((,shell-command-buffer-name-async . (display-buffer-no-window))))
+	       )
+	  (if (and prefix (executable-find "mpv"))
+	      (browse-url url)
+	    (async-shell-command (format "mpv \"%s\"" url))
+	    (message "Launched mpv with \"%s\"" url))))
+
+      (defun spook-org--export-yt-link (path desc backend)
+	(when (eq backend 'html)
+	  (let* ((video-id (cadar (url-parse-query-string path)))
+		 (url (if (string-empty-p video-id) path
+			(format "//youtube.com/embed/%s" video-id))))
+	    (format
+	     "<iframe width=\"560\" height=\"315\" src=\"%s\" title=\"%s\" frameborder=\"0\" allowfullscreen></iframe>"
+	     url desc))))
+
+      (org-link-set-parameters "yt" :follow #'spook-org--follow-yt-link :export #'spook-org--export-yt-link)
+
+    #+end_src
+
+    #+RESULTS:
+    | :follow | spook-org--follow-yt-link | :export | spook-org--export-yt-link |
+
 
 * Reference Management
 ** bibtex
@@ -1195,7 +1226,6 @@ emacs	      "https://raw.githubusercontent.com/radian-software/straight.el/devel
     ;; This hooks up elfeed-org to read the configuration when elfeed
     ;; is started with =M-x elfeed=
     (elfeed-org)
-
     ;; Optionally specify a number of files containing elfeed
     ;; configuration. If not set then the location below is used.
     ;; Note: The customize interface is also supported.
@@ -1217,6 +1247,12 @@ emacs	      "https://raw.githubusercontent.com/radian-software/straight.el/devel
     (use-package mpv
       :ensure t)
   #+end_src
+
+** subed subtitle editor
+   needs to imported from nongnu elpa. add the following to init.el
+   #+begin_src emacs-lisp :tangle no
+     (add-to-list 'package-archives '("nongnu" . "https://elpa.nongnu.org/nongnu/"))
+   #+end_src
 
   #+begin_src emacs-lisp
     (use-package subed

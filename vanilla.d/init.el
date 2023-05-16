@@ -4,7 +4,8 @@
 
 (add-to-list 'package-archives  '("org"       . "http://orgmode.org/elpa/"))
 (add-to-list 'package-archives  '("melpa"     . "https://melpa.org/packages/"))
-(add-to-list 'package-archives  '("nongnu" . "https://elpa.nongnu.org/nongnu/"))
+(add-to-list 'package-archives '("nongnu" . "https://elpa.nongnu.org/nongnu/"))
+
 ;;(add-to-list 'package-archives  '("marmalade" . "http://marmalade-repo.org/packages/"))
 
 (unless package-archive-contents

@@ -345,3 +345,87 @@ https://sachachua.com/blog/2015/11/capturing-links-quickly-with-emacsclient-org-
 #+end_src
 
 #+RESULTS:
+
+
+* commenting system
+
+** isso config
+#+begin_src config
+[general]
+name = isso-comments
+
+; database location, check permissions, automatically created if not exists
+dbpath = /var/lib/isso/comments.db
+
+; Your website or blog address (not the location of Isso!)
+; You can add multiple hosts for local development
+; or SSL connections. There is no wildcard to allow
+; any domain.
+host = http://pori.vanangamudi.org
+
+;To moderate comments, either use the activation or deletion URL in the logs
+;or use SMTP to get notified on new comments including the URLs
+;for activation and deletion:
+;notify = smtp
+
+[moderation]
+enabled = false
+purge-after = 30d
+
+[smtp]
+host = localhost
+port = 25
+security = none
+from = info@example.com
+timeout = 10
+
+[guard]
+; Enable basic spam protection features, e.g. rate-limit per IP address
+; (/24 for IPv4, /48 for IPv6).
+enabled = true
+ratelimit = 2
+direct-reply = 3
+reply-to-self = false
+
+[markup]
+options = strikethrough, superscript, autolink
+allowed-elements =
+allowed-attributes =
+
+#+end_src
+
+** systemd
+#+begin_src systemd
+[Unit]
+Description=isso commenting system
+
+[Service]
+ExecStart=/opt/isso/isso-start.sh
+
+Restart=on-failure
+TimeoutSec=1
+User=isso
+
+LimitNOFILE=16384
+LimitNPROC=16384
+LimitLOCKS=16384
+
+# ensures that the service process and all its children can never gain new
+# privileges.
+NoNewPrivileges=true
+
+[Install]
+WantedBy=multi-user.target
+#+end_src
+
+** isso-service
+#+begin_src bash
+  #!/bin/bash
+  set -e
+  source /opt/isso/bin/activate
+  export LANG=C.UTF-8
+  export ISSO_SETTINGS=/etc/isso.cfg
+  exec gunicorn -n gunicorn-isso -b 127.0.0.1:1927 --preload -w 4 --log-file /var/log/isso/isso.log isso.dispatch 2>>/var/log/isso/isso.log
+
+
+#+end_src
