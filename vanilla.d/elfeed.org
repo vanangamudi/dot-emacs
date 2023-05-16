@@ -5,10 +5,12 @@
 ** [[http://orgmode.org][Org Mode Links supported as well]]
 ** Software Development                                                 :dev:
 *** Emacs                                                    :emacs:mustread:
+**** [[https://emacs.cafe/feed.xml][emacs cafe]]
 **** http://www.terminally-incoherent.com/blog/feed
 **** http://nullprogram.com/feed
 **** entry-title: \(emacs\|org-mode\)
 **** http://planet.emacsen.org/atom.xml
+**** https://emacsnotes.wordpress.com/rss.xml
 *** Web Development                                                     :web:
 **** http://planet.phpunit.de/atom.xml
 **** http://feeds.feedburner.com/symfony/blog
@@ -24,9 +26,23 @@
 ******   https://matthieu.io/blog/feed/rss.xml
 ** Financial markets
 *** https://aswathdamodaran.blogspot.com/feeds/posts/default
-
+** https://felixcrux.com/blog/rss.xml 
 ** https://sethusubbar.wordpress.com/rss :sethusubbar:
 ** http://kavithaigal-senggovai.blogspot.com/feeds/1547863671906307217/comments/default :tamil:
    
 ** https://mediapub.it.ox.ac.uk/feeds/144140/audio.xml    :biology:gardening:
 ** https://mediapub.it.ox.ac.uk/feeds/144140/video.xml    :biology:gardening:
+** https://daryl.wakatara.com/rss.xml
+
+** https://fare.livejournal.com/data/rss/  :fare:computing:
+
+
+** https://sivamaalaa.blogspot.com/rss.xml                            :tamil:
+   
+** https://nhigham.com/feed/  :math:
+
+** https://www.wisdomandwonder.com/feed  :computing:
+
+** https://karthinks.com/index.xml :emacs:
+
+** https://tratt.net/laurie/blog/blog.rss :programming:

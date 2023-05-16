@@ -25,6 +25,8 @@
       (find-file "~/emacs/vanilla.d/config.org"))
     (global-set-key (kbd "C-c e") 'find-config-file)
   #+end_src
+
+  
   
   #+begin_src emacs-lisp
     (defun reload-config ()
@@ -34,6 +36,18 @@
     (global-set-key (kbd "C-c r") 'reload-config)
 
   #+end_src
+
+  Find this work.org
+  #+begin_src emacs-lisp
+    (defun find-work-file ()
+      (interactive)
+      (find-file "~/org/work.org"))
+    (global-set-key (kbd "C-c w") 'find-work-file)
+  #+end_src
+
+  #+RESULTS:
+  : find-work-file
+
 * Emacs
   Custom set variables are moved here from =init.el= where they were placed automatically by certain packages like =vlf-setup=
   #+begin_src emacs-lisp
@@ -51,16 +65,12 @@
 
   #+end_src
 * Package Management
-  
    #+BEGIN_SRC emacs-lisp
      (setq use-package-always-ensure nil)
      ;;; https://emacs.stackexchange.com/a/68302/8476
      (use-package quelpa-use-package
        :ensure t)
    #+END_SRC
-
-   #+RESULTS:
-
 ** COMMENT straight.el
    [[https://github.com/radian-software/straight.el#getting-started][Getting started with straight.el]] there are variables that can be set to customize straight.el but must be set before the following bootstrapping code
    #+begin_src emacs-lisp
@@ -154,8 +164,10 @@ emacs	      "https://raw.githubusercontent.com/radian-software/straight.el/devel
     #+END_SRC
 *** theme
     #+BEGIN_SRC emacs-lisp
-      (add-to-list 'custom-theme-load-path "~/aalar/emacs/vanilla.d/themes/")
-      (load-theme 'afternoon t)
+      (add-to-list 'custom-theme-load-path "~/emacs/vanilla.d/themes/")
+      ;;(load-theme 'afternoon t)
+      (load-theme 'zenburn t)
+
     #+END_SRC
 **** COMMENT use use-package to install and load theme
      #+begin_src emacs-lisp
@@ -386,7 +398,6 @@ emacs	      "https://raw.githubusercontent.com/radian-software/straight.el/devel
     sudo apt install w3m
   #+end_src
 
-
 * Input system
 ** tamil
    #+begin_src emacs-lisp
@@ -479,8 +490,6 @@ emacs	      "https://raw.githubusercontent.com/radian-software/straight.el/devel
 
 ** programming languages
    #+begin_src emacs-lisp
-     (use-package blacken
-       :hook ((python-mode . blacken-mode)))
 
      (use-package typescript-mode)
      ;(use-package csharp-mode)
@@ -489,6 +498,16 @@ emacs	      "https://raw.githubusercontent.com/radian-software/straight.el/devel
      (use-package dockerfile-mode)
      (use-package toml-mode)
    #+end_src
+
+*** Python
+    #+begin_src emacs-lisp
+      (use-package blacken
+	:hook ((python-mode . blacken-mode)))
+
+      (use-package pyvenv
+	:ensure t)
+      (setq-default indent-tabs-mode nil)
+    #+end_src
 
 ** Slime for common-lisp
    Clone [[https://github.com/slime/slime.git][Slime repository]] into ~/code/cloned/slime and add to load path
@@ -892,6 +911,7 @@ emacs	      "https://raw.githubusercontent.com/radian-software/straight.el/devel
      (use-package org-roam
        :ensure t
        :init
+       :defer
        (setq org-roam-v2-ack t)
        :custom
        (org-roam-directory "~/org/roam")
@@ -900,10 +920,18 @@ emacs	      "https://raw.githubusercontent.com/radian-software/straight.el/devel
 	      ("C-c n f" . org-roam-node-find)
 	      ("C-c n i" . org-roam-node-insert)
 	      :map org-mode-map
-	      ("C-M-i"    . completion-at-point))
+		   ("C-M-i"    . completion-at-point))
        :config
        (org-roam-setup))
 
+     (require 'org-roam-protocol)
+     ;; 
+     (setq org-roam-capture-ref-templates 
+	   '("i" "internet" plain #'org-roam-capture--get-point "%?"
+	     :file-name "float/%<%Y%m%d%H%M>-${slug}"
+	     :head "#+title: ${title}\n#+roam_key: ${ref}%?"
+	     :unnarrowed t))
+     (setq org-roam-v2-ack t)
    #+end_src
 ** org-roam-ui
    #+begin_src emacs-lisp
