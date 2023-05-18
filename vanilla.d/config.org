@@ -864,30 +864,61 @@ emacs	      "https://raw.githubusercontent.com/radian-software/straight.el/devel
 ** Org-agenda
    #+begin_src emacs-lisp
      (setq org-agenda-files
-	   '("~/org/personal.org"
-	     "~/org/work.org"
-	     "~/org/kaappagam.org"
-	     "~/org/padi.org"
-	     "~/org/kadamai-thani.org"
-	     "~/org/kadamai-saama.org"
-	     "~/org/kadamai-mtechcse.org"
-	     "~/org/kadamai-yendravathu.org"
-	     "~/org/thirattu.org"
-	     "~/org/naadagam.org"
-	     ))
+           '("~/org/personal.org"
+             "~/org/work.org"
+             "~/org/gcal-developer.org"
+             "~/org/gcal-profession.org"
+             "~/org/kaappagam.org"
+             "~/org/padi.org"
+             "~/org/kadamai-thani.org"
+             "~/org/kadamai-saama.org"
+             "~/org/kadamai-mtechcse.org"
+             "~/org/kadamai-yendravathu.org"
+             "~/org/thirattu.org"
+             "~/org/naadagam.org"
+             ))
 
      (setq org-todo-keywords
-	   '((sequence "TODO" "NEXT" "PROJ" "WAIT" "SLEEP" "|" "DONE" "CANC")))
+           '((sequence "TODO" "NEXT" "PROJ" "WAIT" "SLEEP" "|" "DONE" "CANC")))
 
      ;; From: https://emacs.stackexchange.com/questions/17282/org-mode-logbook-note-entry-without-logbook-drawer
      (setq org-log-into-drawer "LOGBOOK")
 
      (setq org-agenda-span 10
-	   org-agenda-start-on-weekday nil
-	   org-agenda-start-day "-3d")
+           org-agenda-start-on-weekday nil
+           org-agenda-start-day "-3d")
 
      (global-set-key (kbd "C-c a") 'org-agenda)
    #+end_src
+
+*** Google Calendar Integration
+    #+begin_src bash :dir /sudo::/ :result code
+      pip3 install ical2orgpy
+    #+end_src
+
+    #+begin_src bash :tangle ~/emacs/google-calendar.sh 
+      #!/bin/bash
+      WGET=wget
+      ICS2ORG=ical2orgpy
+
+      DEV_ICSFILE=~/org/gcal-developer.ics
+      DEV_URL=https://calendar.google.com/calendar/ical/selva.developer%40gmail.com/private-55c78769215b5f36a3f14d6d6fd9d04f/basic.ics
+      DEV_ORGFILE=~/org/gcal-developer.org
+
+      PRO_ICSFILE=~/org/gcal-profession.ics
+      PRO_URL=https://calendar.google.com/calendar/ical/selva.on.profession%40gmail.com/private-f9bcae9409c369949ba78b81789919fd/basic.ics
+      PRO_ORGFILE=~/org/gcal-profession.org
+
+      $WGET -O $DEV_ICSFILE $DEV_URL
+      $WGET -O $PRO_ICSFILE $PRO_URL
+
+      $ICS2ORG $DEV_ICSFILE $DEV_ORGFILE
+      $ICS2ORG $PRO_ICSFILE $PRO_ORGFILE
+    #+end_src
+
+    #+begin_src bash
+      chmod a+x ~/emacs/google-calendar.sh
+    #+end_src
 
 ** org-refile
 *** TODO 
