@@ -1,9 +1,9 @@
 * Emacs setup
-  #+BEGIN_SRC
-   export EMACSDIR=~/kadal/aalar/emacs
+  #+BEGIN_SRC bash
+   export EMACSDIR=~/aalar/emacs
   #+END_SRC
 
-  #+BEGIN_SRC bash
+  #+BEGIN_SRC bash 
     vanangamudi@karunthulai:~
 
     $ ll .*emacs*
@@ -20,274 +20,274 @@
 
   #+END_SRC
 
-** directories
-*** $EMACSDIR/.emacs.d/
-     - install chemacs here
+**  Install Emacs
+*** TODO this is the vannila config, shouldn't it be moved to $EMACSDIR
+    #+BEGIN_SRC bash
+      sudo apt-get install emacs
+      [ -d ~/.emacs.d ] && mv ~/.emacs.d ~/emacs.d.bk
+      [ -f ~/.emacs ] && mv ~/.emacs ~/emacs.bk
+
+    #+END_SRC
+
+** Directories
+*** ~/.emacs.d/
+    #+begin_src bash
+      mkdir -p ~/.emacs.d
+    #+end_src
   
-*** emacs/
-**** vannila.d
-     vanilla emacs setip
-**** doom.d/
+*** Install chemacs2
+     #+BEGIN_SRC bash
+       git clone https://github.com/plexus/chemacs2.git ~/.emacs.d
+     #+END_SRC
+
+*** ~/emacs/
+**** ~/emacs/vannila.d
+     vanilla emacs setup
+**** ~/emacs/doom.d/
      - clone doom emacs to this directory
 
-*** kadal/aalar/emacs
+*** ~/aalar/emacs
      - This is where this org files lives
-     - .emacs-profiles.el and .emacs-profile
+     - =.emacs-profiles.el= and =.emacs-profile=
+       
 **** .emacs.profile.el
-     #+BEGIN_SRC emacs-lisp
+     #+BEGIN_SRC emacs-lisp :tangle ~/.emacs.profile.el
        ("vanilla" . ((user-emacs-directory . "~/emacs/vanilla.d"))
 	"doom"  . ((user-emacs-directory . "~/emacs/doom.d")
 		   (env . (("DOOMDIR" . "$EMACSDIR/doom.d")))))
      #+END_SRC
 **** .emacs-profile
-     #+BEGIN_SRC text
+     #+BEGIN_SRC text :tangle ~/.emacs-profile
       vanilla
      #+END_SRC
 **** doom.d
      - doom config
      - setup DOOMDIR to this directory before invoking `doom install`
-
-* Install emacs
-
- ** TODO this is the vannila config, shouldn't it be moved to $EMACSDIR
-#+BEGIN_SRC bash
-sudo apt-get install emacs
-
-[ -d ~/.emacs.d ] && mv ~/.emacs.d $EMACSDIR/vanilla.d
-[ -f ~/.emacs ] && mv ~/.emacs $EMACSDIR
-
-#+END_SRC
-
-* install chemacs2
-#+BEGIN_SRC bash
-git clone https://github.com/plexus/chemacs2.git $EMACSDIR/.emacs.d
-#+END_SRC
-
-* Link emacs profiles
-#+BEGIN_SRC bash
-ln -s $EMACSDIR/.emacs-profiles.el ~/
-ln -s $EMACSDIR/.emacs-profile     ~/
-#+END_SRC
-
-#+RESULTS:
-
+       
 * Install doom-emacs
-#+BEGIN_SRC bash
-export DOOMDIR=$EMACSDIR/doom.d
-git clone --depth 1 https://github.com/hlissner/doom-emacs $EMACSDIR/doom.d
-$EMACSDIR/doom.d/bin/doom install
-#+END_SRC
+   #+BEGIN_SRC bash
+     export DOOMDIR=$EMACSDIR/doom.d
+     git clone --depth 1 https://github.com/hlissner/doom-emacs $EMACSDIR/doom.d
+     $EMACSDIR/doom.d/bin/doom install
+   #+END_SRC
 
-* org based init file for `emacs` flavor
-from: https://xvrdm.github.io/2017/05/29/a-minimal-emacs-setup-with-orgmode/
-init.el vanilla emacs setup
-#+NAME: init.el
-#+BEGIN_SRC emacs-lisp
-;; add MELPA package server
-(require 'package)
-(package-initialize)
+* Org based init file for `emacs` flavor
+  From https://xvrdm.github.io/2017/05/29/a-minimal-emacs-setup-with-orgmode/
 
-(add-to-list 'package-archives
-  '("melpa" . "https://melpa.org/packages/"))
+  =init.el= vanilla emacs setup
+   #+NAME: init.el
+   #+BEGIN_SRC emacs-lisp :tangle ~/emacs/vanilla.d/init.el
+     ;; add MELPA package server
+     (require 'package)
+     (package-initialize)
 
-(unless package-archive-contents
-  (package-refresh-contents))
+     (add-to-list 'package-archives  '("org"       . "http://orgmode.org/elpa/"))
+     (add-to-list 'package-archives  '("melpa"     . "https://melpa.org/packages/"))
+     (add-to-list 'package-archives  '("nongnu" . "https://elpa.nongnu.org/nongnu/"))
 
-;; if not yet installed, install package use-package
-(unless (package-installed-p 'use-package)
-  (package-install 'use-package))
+     ;;(add-to-list 'package-archives  '("marmalade" . "http://marmalade-repo.org/packages/"))
 
-;; load org package and our emacs-config.org file
-(require 'org)
-(org-babel-load-file "~/emacs/vanilla.d/config.org")
-#+END_SRC
+     (unless package-archive-contents
+       (package-refresh-contents))
 
-* org-gcal
+     ;; if not yet installed, install package use-package
+     (unless (package-installed-p 'use-package)
+       (package-install 'use-package))
+
+     ;; load org package and our emacs-config.org file
+     (require 'org)
+     (org-babel-load-file "~/emacs/vanilla.d/config.org")
+     (custom-set-variables
+      ;; custom-set-variables was added by Custom.
+      ;; If you edit it by hand, you could mess it up, so be careful.
+      ;; Your init file should contain only one such instance.
+      ;; If there is more than one, they won't work right.
+      '(inhibit-startup-screen t))
+
+     (custom-set-faces
+      ;; custom-set-faces was added by Custom.
+      ;; If you edit it by hand, you could mess it up, so be careful.
+      ;; Your init file should contain only one such instance.
+      ;; If there is more than one, they won't work right.
+      )
+
+     (run-with-idle-timer
+          3 nil
+          (lambda ()
+            (let ((inhibit-message t))
+              (message "Emacs ready in %s with %d garbage collections."
+                       (format "%.2f seconds"
+                               (float-time
+                                (time-subtract after-init-time before-init-time)))
+                       gcs-done))))
+   #+END_SRC
+
+* Org-gcal
   - cannot setup in current emacs version which is
     - "GNU Emacs 25.2.2 (x86_64-pc-linux-gnu, GTK+ Version 3.22.21) of 2017-09-23, 
       modified by Debian"
   - needs client id and secret which needs to be setup in google dev console
   - needs calendar id which is usually your email id or can be copied from respective calendar
-** help
+    
+** Help
    - [[https://cestlaz.github.io/posts/using-emacs-26-gcal/#.WIqBud9vGAk][cestlaz Using Emacs - 26 - Google Calendar, Org Agenda]]
-* Emacs daemon
-  from: https://www.emacswiki.org/emacs/EmacsAsDaemon
+     
+**** Emacs daemon
+     from: https://www.emacswiki.org/emacs/EmacsAsDaemon
   
-  Systemd is the supported method of running applications at startup on most Linux distributions. The following configuration file emacs.service will be included in the standard Emacs installation as of 26.1.
+     Systemd is the supported method of running applications at startup on most Linux distributions. The following configuration file emacs.service will be included in the standard Emacs installation as of 26.1.
   
-** All you need to do is copy this to ~/.config/systemd/user/emacs.service .
-   #+BEGIN_SRC systemd
+***** All you need to do is copy this to ~/.config/systemd/user/emacs.service .
+      #+BEGIN_SRC conf
+        [Unit]
+        Description=Emacs text editor
+        Documentation=info:emacs man:emacs(1) https://gnu.org/software/emacs/
 
- [Unit]
- Description=Emacs text editor
- Documentation=info:emacs man:emacs(1) https://gnu.org/software/emacs/
+        [Service]
+        Type=forking
+        ExecStart=/usr/bin/emacs --daemon
+        ExecStop=/usr/bin/emacsclient --eval "(kill-emacs)"
+        Environment=SSH_AUTH_SOCK=%t/keyring/ssh
+        Restart=on-failure
 
- [Service]
- Type=forking
- ExecStart=/usr/bin/emacs --daemon
- ExecStop=/usr/bin/emacsclient --eval "(kill-emacs)"
- Environment=SSH_AUTH_SOCK=%t/keyring/ssh
- Restart=on-failure
+        [Install]
+        WantedBy=default.target
+      #+END_SRC
+   
+***** And add the following to .bashrc in linux
+      From https://emacs.stackexchange.com/questions/24095/bashrc-script-to-automatically-create-emacs-server-session-on-startup
+      #+BEGIN_SRC bash
+        export ALTERNATE_EDITOR=""
+        export VISUAL='emacsclient --alternate-editor='
+        export EDITOR='emacsclient --alternate-editor='
+      #+END_SRC
+   
+***** For windows add the following into .emacs
+      #+BEGIN_SRC emacs-lisp
+         (load "server")
+         (unless (server-running-p) (server-start))
+      #+END_SRC
 
- [Install]
- WantedBy=default.target
+***** Note
+      Note that ~/.bashrc runs every time you open a terminal, not when you log in. On normal Unix systems, the file that runs when you log in is ~/.profile (or ~/.bash_profile, ~/.profile, etc. depending on your login shell), but OSX does things differently (and actually runs ~/.bash_profile or ~/.profile and not ~/.bashrc when you open a terminal due to a combination of bad design in OSX and bad design in bash: OSX opens a login shell in each terminal and bash doesn't load .bashrc in login shells — see https://unix.stackexchange.com/questions/110998/missing-source-bashrc-mac-terminal-profile).
 
-   #+END_SRC
-** And add the following to .bashrc in linux
-   from: https://emacs.stackexchange.com/questions/24095/bashrc-script-to-automatically-create-emacs-server-session-on-startup
-   #+BEGIN_SRC bash
-     export ALTERNATE_EDITOR=""
-     export VISUAL='emacsclient --alternate-editor='
-     export EDITOR='emacsclient --alternate-editor='
-
-   #+END_SRC
-** For windows add the following into .emacs
- #+BEGIN_SRC emacs-lisp
-
-   (load "server")
-   (unless (server-running-p) (server-start))
-
- #+END_SRC
-
-** Note:
-Note that ~/.bashrc runs every time you open a terminal, not when you log in. On normal Unix systems, the file that runs when you log in is ~/.profile (or ~/.bash_profile, ~/.profile, etc. depending on your login shell), but OSX does things differently (and actually runs ~/.bash_profile or ~/.profile and not ~/.bashrc when you open a terminal due to a combination of bad design in OSX and bad design in bash: OSX opens a login shell in each terminal and bash doesn't load .bashrc in login shells — see https://unix.stackexchange.com/questions/110998/missing-source-bashrc-mac-terminal-profile).
-
-* org-capture
-
-** linux
-both of them working now.
-*** Method One
-- bind the following script to a shortcut
-- no capture from browser
-
-#+BEGIN_SRC bash
-#!/bin/bash
-emacsclient --create-frame \
+****** Org-capture
+******* Linux
+        Both of them working now.
+   
+******** Capture from browser (Firefox)
+         Can capture from browser
+    
+********* Create a =.desktop= file
+          From https://github.com/zv/dotfilez 
+     
+          #+BEGIN_SRC  conf 
+            [Desktop Entry]
+            Name=org-protocol
+            Exec=emacsclient --create-frame \
             --socket-name 'capture' \
             --alternate-editor='' \
             --frame-parameters='(quote (name . "capture"))' \
             --no-wait \
-            --eval "(my/org-capture-frame)"
+            Type=Application
+            Terminal=false
+            Categories=System;
+            MimeType=x-scheme-handler/org-protocol;
+          #+END_SRC
 
-#+END_SRC
-
-For opening and closing a separate frame for the capture
-#+BEGIN_SRC emacs-lisp
-
-(defun my/delete-capture-frame (&rest _)
-  "Delete frame with its name frame-parameter set to \"capture\"."
-  (if (equal "capture" (frame-parameter nil 'name))
-      (delete-frame)))
-(advice-add 'org-capture-finalize :after #'my/delete-capture-frame)
-
-(defun my/org-capture-frame ()
-  "Run org-capture in its own frame."
-  (interactive)
-  (require 'cl-lib)
-  (select-frame-by-name "capture")
-  (delete-other-windows)
-  (cl-letf (((symbol-function 'switch-to-buffer-other-window) #'switch-to-buffer))
-    (condition-case err
-        (org-capture)
-      ;; "q" signals (error "Abort") in `org-capture'
-      ;; delete the newly created frame in this scenario.
-      (user-error (when (string= (cadr err) "Abort")
-                    (delete-frame))))))
-
-#+END_SRC
-
-*** Method 2
-- can capture from browser
-**** create a desktop file
-     from: https://github.com/zv/dotfile z
-     ~/kadal/aalar/local/share/applications/org-protcol
-     #+BEGIN_SRC  conf
-       [Desktop Entry]
-       Name=org-protocol
-       Exec=emacsclient --create-frame \
-       --socket-name 'capture' \
-       --alternate-editor='' \
-       --frame-parameters='(quote (name . "capture"))' \
-       --no-wait \
-       --eval "(my/org-capture-frame)"
-       Type=Application
-       Terminal=false
-       Categories=System;
-       MimeType=x-scheme-handler/org-protocol;
-
-	
-     #+END_SRC
+          Succinct version of the same code snippet as above.
+          #+BEGIN_SRC  conf :tangle ~/emacs/org-protocol.desktop
+            [Desktop Entry]
+            Name=org-protocol
+            Exec=emacsclient --create-frame --alternate-editor='' --frame-parameters='(quote (name . "capture"))' --no-wait  %u
+            Type=Application
+            Terminal=false
+            Categories=System;
+            MimeType=x-scheme-handler/org-protocol;
+          #+END_SRC
      
-     #+begin_src conf
-       [Desktop Entry]	
-       Name=org-protocol	
-       Exec=emacsclient --create-frame --alternate-editor='' --no-wait %u
-       Type=Application
-       Terminal=false
-       Categories=System;
-       MimeType=x-scheme-handler/org-protocol;
+          And run the following
 
-     #+end_src
-     And run the following
+          #+BEGIN_SRC bash
+            chmod a+x ~/emacs/org-protocol.desktop
+            ln -s ~/emacs/org-protocol.desktop ~/.local/share/applications/
+            update-desktop-database ~/.local/share/applications/
+          #+END_SRC
 
-     #+BEGIN_SRC bash
-       chmod a+x ~/kadal/aalar/emacs/org-protocol.desktop
-       ln -s ~/kadal/aalar/emacs/org-protocol.desktop ~/.local/share/applications/
-       update-desktop-database ~/.local/share/applications/
+          Org-capture book-marklet for firefox, add this to bookmark toolbar on firefox
+          #+BEGIN_SRC js
+            //org-protocol.desktop the one that works now
+            javascript:location.href = 'org-protocol://capture?template=l'\
+                + '&url='   + encodeURIComponent(location.href)\
+                + '&title=' + encodeURIComponent(document.title)\
+                + '&body='  + encodeURIComponent(window.getSelection())
 
-     #+END_SRC
-
-     Org-capture bookmarklet for firefox, add this to bookmark toolbar on firefox
-     #+BEGIN_SRC js
-       javascript:location.href = 'org-protocol://capture://l/' \
-	   + encodeURIComponent(location.href) \
-	   + '/'+encodeURIComponent(document.title) \
-	   +'/'+encodeURIComponent(window.getSelection())
-
-       //org-protocol.desktop 
-       javascript:location.href='org-protocol://capture://l/' \
-	   + encodeURIComponent(location.href)     \
-	   +'/'+encodeURIComponent(document.title)    \
-	   +'/'+encodeURIComponent(window.getSelection());
-
-       //org-protocol2.desktop the one that works now
-       javascript:location.href = 'org-protocol://capture?template=l'\
-	   + '&url='   + encodeURIComponent(location.href)\
-	   + '&title=' + encodeURIComponent(document.title)\
-	   + '&body='  + encodeURIComponent(window.getSelection())
-
-     #+END_SRC
+          #+END_SRC
      
+******** Capture from desktop environment
+         - bind the following script to a shortcut
+         - no capture from browser
 
-** mac
-https://www.reddit.com/r/emacs/comments/6lzyg2/heres_how_to_do_emacsclient_global_orgcapture/
+         #+BEGIN_SRC bash  :tangle ~/emacs/org-protocol.sh
+           #!/bin/bash
+           emacsclient --create-frame \
+                       --socket-name 'capture' \
+                       --alternate-editor='' \
+                       --frame-parameters='(quote (name . "capture"))' \
+                       --no-wait \
+                       --eval "(my/org-capture-frame)"
 
-** windows
-https://sachachua.com/blog/2015/11/capturing-links-quickly-with-emacsclient-org-protocol-and-chrome-shortcut-manager-on-microsoft-windows-8/
+         #+END_SRC
 
-* elfeed
-** elfeed-org
-   add this to emacs config, in this case config.org under ~/ko-pa-ni/aalar/emacs/vannila.d/config.org
-*** installation
+         For opening and closing a separate frame for the capture.
+         #+BEGIN_SRC emacs-lisp
+           (defun my/delete-capture-frame (&rest _)
+             "Delete frame with its name frame-parameter set to \"capture\"."
+             (if (equal "capture" (frame-parameter nil 'name))
+                 (delete-frame)))
+           (advice-add 'org-capture-finalize :after #'my/delete-capture-frame)
+
+           (defun my/org-capture-frame ()
+             "Run org-capture in its own frame."
+             (interactive)
+             (require 'cl-lib)
+             (select-frame-by-name "capture")
+             (delete-other-windows)
+             (cl-letf (((symbol-function 'switch-to-buffer-other-window) #'switch-to-buffer))
+               (condition-case err
+                   (org-capture)
+                 ;; "q" signals (error "Abort") in `org-capture'
+                 ;; delete the newly created frame in this scenario.
+                 (user-error (when (string= (cadr err) "Abort")
+                               (delete-frame))))))
+ 
+         #+END_SRC
+      
+******* Mac
+        https://www.reddit.com/r/emacs/comments/6lzyg2/heres_how_to_do_emacsclient_global_orgcapture/
+
+******* Windows
+        https://sachachua.com/blog/2015/11/capturing-links-quickly-with-emacsclient-org-protocol-and-chrome-shortcut-manager-on-microsoft-windows-8/
+
+* Elfeed
+** Elfeed-org
+   Add this to emacs config, in this case config.org under ~/ko-pa-ni/aalar/emacs/vannila.d/config.org
+   
+*** Installation
 **** Download elfeed-org
      #+BEGIN_SRC bash
-
        cd ~/.emacs.d/lisp
        #wget https://github.com/remyhonig/elfeed-org/blob/master/elfeed-org.el
        wget https://raw.githubusercontent.com/remyhonig/elfeed-org/master/elfeed-org.el
-
      #+END_SRC
 
-     #+RESULTS:
 **** Install the package in Emacs
-     #+BEGIN_SRC
-
- C-x C-f ~/.emacs.d/lisp/elfeed-org.el <ENTER>
- M-x package-install-from-buffer <ENTER>
-
+     #+BEGIN_SRC 
+       C-x C-f ~/.emacs.d/lisp/elfeed-org.el <ENTER>
+       M-x package-install-from-buffer <ENTER>
      #+END_SRC
 
-*** configuration
+*** Configuration
     #+BEGIN_SRC emacs-lisp
       ;; Load elfeed-org
       (require 'elfeed-org)
@@ -301,131 +301,84 @@ https://sachachua.com/blog/2015/11/capturing-links-quickly-with-emacsclient-org-
       ;; configuration. If not set then the location below is used.
       ;; Note: The customize interface is also supported.
       (setq rmh-elfeed-org-files (list "~/.emacs.d/elfeed.org"))
-
     #+END_SRC
 
-
-* email
-* mbsync
-  install isync
-  #+begin_src bash
-    sudo apt-get install isync
-  #+end_src
-
-  create ~/.mbsyncrc file and copy the following content
-  #+begin_src conf
-    IMAPAccount gmail
-    Host imap.gmail.com
-    User selva.personals@gmail.com
-    PassCmd "cat ~/password.txt"
-    SSLType IMAPS
-    CertificateFile /etc/ssl/certs/ca-certificates.crt
-
-    IMAPStore gmail-remote
-    Account gmail
-
-    MaildirStore gmail-local
-    Subfolders Verbatim
-    Path ~/Mail/
-    Inbox ~/Mail/Inbox
-
-    Channel gmail
-    Master :gmail-remote:
-    Slave :gmail-local:
-    Patterns * ![Gmail]* "[Gmail]/Sent Mail" "[Gmail]/Starred" "[Gmail]/All Mail" "[Gmail]/Trash"
-    Create Both
-    SyncState *
-
-  #+end_src
-
-
-* emacs-everywhere
-#+begin_src bash  :dir /sudo::  :results output
-  apt-get install xclip xdotool xbindkeys #xprop xwininfo 
-#+end_src
-
-#+RESULTS:
-
-
-* commenting system
-
+* Commenting System
 ** isso config
-#+begin_src config
-[general]
-name = isso-comments
+   #+begin_src conf 
+     [general]       
+     name = isso-comments
 
-; database location, check permissions, automatically created if not exists
-dbpath = /var/lib/isso/comments.db
+     ; database location, check permissions, automatically created if not exists
+     dbpath = /var/lib/isso/comments.db
 
-; Your website or blog address (not the location of Isso!)
-; You can add multiple hosts for local development
-; or SSL connections. There is no wildcard to allow
-; any domain.
-host = http://pori.vanangamudi.org
+     ; Your website or blog address (not the location of Isso!)
+     ; You can add multiple hosts for local development
+     ; or SSL connections. There is no wildcard to allow
+     ; any domain.
+     host = http://pori.vanangamudi.org
 
-;To moderate comments, either use the activation or deletion URL in the logs
-;or use SMTP to get notified on new comments including the URLs
-;for activation and deletion:
-;notify = smtp
+     ;To moderate comments, either use the activation or deletion URL in the logs
+     ;or use SMTP to get notified on new comments including the URLs
+     ;for activation and deletion:
+     ;notify = smtp
 
-[moderation]
-enabled = false
-purge-after = 30d
+     [moderation]
+     enabled = false
+     purge-after = 30d
 
-[smtp]
-host = localhost
-port = 25
-security = none
-from = info@example.com
-timeout = 10
+     [smtp]
+     host = localhost
+     port = 25
+     security = none
+     from = info@example.com
+     timeout = 10
 
-[guard]
-; Enable basic spam protection features, e.g. rate-limit per IP address
-; (/24 for IPv4, /48 for IPv6).
-enabled = true
-ratelimit = 2
-direct-reply = 3
-reply-to-self = false
+     [guard]
+     ; Enable basic spam protection features, e.g. rate-limit per IP address
+     ; (/24 for IPv4, /48 for IPv6).
+     enabled = true
+     ratelimit = 2
+     direct-reply = 3
+     reply-to-self = false
 
-[markup]
-options = strikethrough, superscript, autolink
-allowed-elements =
-allowed-attributes =
-
-#+end_src
+     [markup]
+     options = strikethrough, superscript, autolink
+     allowed-elements =
+     allowed-attributes =
+  #+end_src
 
 ** systemd
-#+begin_src systemd
-[Unit]
-Description=isso commenting system
+   #+begin_src conf 
+     [Unit]  
+     Description=isso commenting system
 
-[Service]
-ExecStart=/opt/isso/isso-start.sh
+     [Service]
+     ExecStart=/opt/isso/isso-start.sh
 
-Restart=on-failure
-TimeoutSec=1
-User=isso
+     Restart=on-failure
+     TimeoutSec=1
+     User=isso
 
-LimitNOFILE=16384
-LimitNPROC=16384
-LimitLOCKS=16384
+     LimitNOFILE=16384
+     LimitNPROC=16384
+     LimitLOCKS=16384
 
-# ensures that the service process and all its children can never gain new
-# privileges.
-NoNewPrivileges=true
+     # ensures that the service process and all its children can never gain new
+     # privileges.
+     NoNewPrivileges=true
 
-[Install]
-WantedBy=multi-user.target
-#+end_src
+     [Install]
+     WantedBy=multi-user.target
+   #+end_src
 
 ** isso-service
-#+begin_src bash
-  #!/bin/bash
-  set -e
-  source /opt/isso/bin/activate
-  export LANG=C.UTF-8
-  export ISSO_SETTINGS=/etc/isso.cfg
-  exec gunicorn -n gunicorn-isso -b 127.0.0.1:1927 --preload -w 4 --log-file /var/log/isso/isso.log isso.dispatch 2>>/var/log/isso/isso.log
-
-
-#+end_src
+   #+begin_src bash
+     #!/bin/bash
+     set -e
+     source /opt/isso/bin/activate
+     export LANG=C.UTF-8
+     export ISSO_SETTINGS=/etc/isso.cfg
+     exec gunicorn -n gunicorn-isso -b 127.0.0.1:1927 --preload -w 4 --log-file /var/log/isso/isso.log isso.dispatch 2>>/var/log/isso/isso.log
+   #+end_src
+   

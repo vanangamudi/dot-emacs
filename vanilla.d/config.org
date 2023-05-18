@@ -1,6 +1,10 @@
 #+TITLE: Config
 #+OPTIONS: tex:t
 
+* Summary
+  The emacs config is written from scratch or should I say built ground up by copying from several sources listed under [[*Inspirations][Inspirations]] section. 
+
+  
 * Inspirations
   - https://blog.sumtypeofway.com/posts/emacs-config.html
   - https://github.com/trev-dev/emacs
@@ -8,16 +12,16 @@
   - https://github.com/daedreth/UncleDavesEmacs
   - https://github.com/larstvei/dot-emacs#meta
   - https://github.com/skx/dotfiles/blob/master/.emacs.d/init.md#org-mode-and-blank-lines
+    
 * Tips
 ** Debug your config.org with =M-x org-lint=
    - https://emacs.stackexchange.com/questions/63003/org-babel-tangle-error
   
 * TODO List
-  
 ** TODO use vertico, consult, embark combo
    - how to intergrate with [[org-ref]]
      
-* config.org
+* Open this =config.org= file
   Find this config file
   #+begin_src emacs-lisp
     (defun find-config-file ()
@@ -25,8 +29,6 @@
       (find-file "~/emacs/vanilla.d/config.org"))
     (global-set-key (kbd "C-c e") 'find-config-file)
   #+end_src
-
-  
   
   #+begin_src emacs-lisp
     (defun reload-config ()
@@ -45,9 +47,6 @@
     (global-set-key (kbd "C-c w") 'find-work-file)
   #+end_src
 
-  #+RESULTS:
-  : find-work-file
-
 * Emacs
   Custom set variables are moved here from =init.el= where they were placed automatically by certain packages like =vlf-setup=
   #+begin_src emacs-lisp
@@ -62,8 +61,8 @@
      '(warning-suppress-log-types '((comp))))
 
     (add-to-list 'load-path "~/emacs/vanilla.d/lisp")
-
   #+end_src
+  
 * Package Management
    #+BEGIN_SRC emacs-lisp
      (setq use-package-always-ensure nil)
@@ -71,6 +70,7 @@
      (use-package quelpa-use-package
        :ensure t)
    #+END_SRC
+   
 ** COMMENT straight.el
    [[https://github.com/radian-software/straight.el#getting-started][Getting started with straight.el]] there are variables that can be set to customize straight.el but must be set before the following bootstrapping code
    #+begin_src emacs-lisp
@@ -89,24 +89,23 @@ emacs	      "https://raw.githubusercontent.com/radian-software/straight.el/devel
    #+end_src
    
 * Basic settings
-** remove startup welcome screen
+** Remove startup welcome screen
    The code block below toggle off the welcome startup screen.
    #+BEGIN_SRC emacs-lisp
      (custom-set-variables
       '(inhibit-startup-screen t))
    #+END_SRC
-** minibuffer setup
+   
+** Minibuffer setup
    #+begin_src emacs-lisp
      (add-hook 'minibuffer-setup-hook 'va-minibuffer-setup)
      (defun va-minibuffer-setup ()
 	    (set (make-local-variable 'face-remapping-alist)
 	       '((default :height 1.25))))
-
-
    #+end_src
    
-** debug
-     #+BEGIN_SRC emacs-lisp
+** Debug
+    #+BEGIN_SRC emacs-lisp
     ;; Profile emacs startup
     (add-hook 'emacs-startup-hook
 	      (lambda ()
@@ -117,8 +116,9 @@ emacs	      "https://raw.githubusercontent.com/radian-software/straight.el/devel
     (setq gc-cons-threshold (* 2 1000 1000))
     (setq find-file-visit-truename nil)
   #+END_SRC
-** interface tweaks
-*** window decorations
+  
+** Interface tweaks
+*** Window Decorations
     #+BEGIN_SRC emacs-lisp
       (menu-bar-mode -1)
       (add-to-list 'default-frame-alist '(alpha 99 99))
@@ -144,7 +144,8 @@ emacs	      "https://raw.githubusercontent.com/radian-software/straight.el/devel
 	:ensure t
 	:config (diminish 'eldoc-mode))
     #+END_SRC
-*** inhibit startup message
+    
+*** Inhibit Startup Message
     #+BEGIN_SRC emacs-lisp
       (setq inhibit-startup-message t)
       (fset 'yes-or-no-p 'y-or-n-p)
@@ -155,21 +156,23 @@ emacs	      "https://raw.githubusercontent.com/radian-software/straight.el/devel
       (global-set-key [C-mouse-4] 'text-scale-increase)
       (global-set-key [C-mouse-5] 'text-scale-decrease)
     #+END_SRC
-*** dim inactive buffer
+    
+*** Dim Inactive Buffer
     #+BEGIN_SRC emacs-lisp
       (use-package dimmer
 	:ensure t
 	:custom (dimmer-fraction 0.2)
 	:config (dimmer-mode))
     #+END_SRC
-*** theme
+    
+*** Themes
     #+BEGIN_SRC emacs-lisp
       (add-to-list 'custom-theme-load-path "~/emacs/vanilla.d/themes/")
       ;;(load-theme 'afternoon t)
       (load-theme 'zenburn t)
-
     #+END_SRC
-**** COMMENT use use-package to install and load theme
+    
+**** COMMENT Use =use-package= to install and load theme
      #+begin_src emacs-lisp
        (use-package ample-theme
 	 :ensure t
@@ -179,7 +182,8 @@ emacs	      "https://raw.githubusercontent.com/radian-software/straight.el/devel
 		      (enable-theme 'ample))
 	 :defer t)
      #+end_src
-**** COMMENT customize theme after loading theme
+     
+**** COMMENT Customize theme after loading theme
     #+begin_src emacs-lisp
       (with-eval-after-load "ample-theme"
 	;; add one of these blocks for each of the themes you want to customize
@@ -188,7 +192,8 @@ emacs	      "https://raw.githubusercontent.com/radian-software/straight.el/devel
 	  ;; this will overwride the color of strings just for ample-theme
 	  '(font-lock-string-face ((t (:foreground "#bdba81"))))))
     #+end_src
-*** paren matching
+    
+*** Paren matching
     #+BEGIN_SRC emacs-lisp
       (use-package smartparens-config
 	:ensure smartparens
@@ -230,17 +235,16 @@ emacs	      "https://raw.githubusercontent.com/radian-software/straight.el/devel
 
       ;;(add-hook 'prog-mode-hook 'turn-on-smartparens-strict-mode)
       ;;(add-hook 'markdown-mode-hook 'turn-on-smartparens-strict-mode)
-
     #+END_SRC
 
-*** marginalia
+*** Marginalia
     #+begin_src emacs-lisp
       (use-package marginalia
 	:ensure t
 	:config (marginalia-mode))
-
     #+end_src
-** text-encoding
+    
+** Text Encoding
    #+BEGIN_SRC emacs-lisp
      (set-charset-priority 'unicode)
      (setq locale-coding-system 'utf-8)
@@ -249,13 +253,14 @@ emacs	      "https://raw.githubusercontent.com/radian-software/straight.el/devel
      (set-selection-coding-system 'utf-8)
      (prefer-coding-system 'utf-8)
      (setq default-process-coding-system '(utf-8-unix . utf-8-unix))
-
    #+END_SRC
-** buffer-management
+   
+** Buffer Management
    #+begin_src emacs-lisp
      (global-set-key "\C-x\ \C-b" 'ibuffer)
    #+end_src
-** recent files
+   
+** Recent Files
    #+BEGIN_SRC emacs-lisp
      (require 'recentf)
      (add-to-list 'recentf-exclude "\\elpa")
@@ -265,7 +270,8 @@ emacs	      "https://raw.githubusercontent.com/radian-software/straight.el/devel
      (global-set-key "\C-x\ \C-r" 'recentf-open-files)
      (run-at-time nil (* 5 60) 'recentf-save-list)
    #+END_SRC
-** misc
+   
+** Misc
    #+BEGIN_SRC emacs-lisp
      (setq
       make-backup-files nil
@@ -273,7 +279,7 @@ emacs	      "https://raw.githubusercontent.com/radian-software/straight.el/devel
       create-lockfiles nil)
    #+END_SRC
 
-** COMMENT tabbed interface
+** COMMENT Tabbed Interface
   #+begin_src emacs-lisp
     (use-package centaur-tabs
       :ensure t
@@ -284,15 +290,15 @@ emacs	      "https://raw.githubusercontent.com/radian-software/straight.el/devel
       :bind
       ("C-<prior>" . centaur-tabs-backward)
       ("C-<next>" . centaur-tabs-forward))
-
   #+end_src
   
-** try
+** Try
    #+BEGIN_SRC emacs-lisp
      (use-package try
        :ensure t)
    #+END_SRC
-** which key
+   
+** Which Key
    Brings up some help
    #+BEGIN_SRC emacs-lisp
      (use-package which-key
@@ -301,15 +307,16 @@ emacs	      "https://raw.githubusercontent.com/radian-software/straight.el/devel
        (which-key-mode)
        (which-key-setup-side-window-bottom)
        :custom (which-key-idle-delay 1.2))
-
    #+END_SRC
-** very large files
+   
+** Very Large Files
    #+begin_src emacs-lisp
      (require 'vlf-setup)
      ;;(custom-set-variables
      ;; '(vlf-application 'dont-ask))
    #+end_src
-** clipetty
+   
+** Clipetty
    Clipetty is a minor mode for terminal (TTY) users that sends text that you kill in Emacs to your Operating System's clipboard. If you predominately use Emacs in GUI (X-Windows, macOS, Windows) frames you don't need Clipetty.
 
    For this to work you need to be using a terminal emulator that supports OSC 52 escape sequences. See the Terminals section below to check if your favorite terminal emulator is on the list.
@@ -319,10 +326,7 @@ emacs	      "https://raw.githubusercontent.com/radian-software/straight.el/devel
        :hook (after-init . global-clipetty-mode))
    #+end_src
 
-   #+RESULTS:
-   | global-clipetty-mode | #[0 \303\211\235\203 \304"\301\305!\210\210	\205 \306 \210\307\211\207 [command-line-args desktop-save-mode inhibit-startup-screen --no-desktop delete 0 desktop-read t] 4] | x-wm-set-size-hint | tramp-register-archive-file-name-handler | magit-maybe-define-global-key-bindings | magit-auto-revert-mode--init-kludge | magit-startup-asserts | magit-version | table--make-cell-map |
-
-** hl-todo
+** Highlight TODO
    Highlight TODO and similar keywords in comments and strings.
    Look into this for starting emacs extension development
    #+begin_src emacs-lisp
@@ -337,7 +341,7 @@ emacs	      "https://raw.githubusercontent.com/radian-software/straight.el/devel
 	       ("STUB"   . "#1E90FF"))))
    #+end_src
 
-** anzu 
+** Anzu 
    #+begin_src emacs-lisp
      (use-package anzu
        :ensure t
@@ -360,7 +364,7 @@ emacs	      "https://raw.githubusercontent.com/radian-software/straight.el/devel
    #+end_src
 
 * Navigation
-** avy 
+** Avy 
    #+begin_src emacs-lisp
      (use-package avy
        :ensure t
@@ -373,7 +377,7 @@ emacs	      "https://raw.githubusercontent.com/radian-software/straight.el/devel
        ("C-c C-j" . 'avy-resume))
    #+end_src
 
-** link-hint
+** Link Hint
    #+begin_src emacs-lisp
      (use-package link-hint
        :ensure t
@@ -382,7 +386,7 @@ emacs	      "https://raw.githubusercontent.com/radian-software/straight.el/devel
        ("C-c l c" . link-hint-copy-link))
    #+end_src
 
-** projectile
+** Projectile
    #+begin_src emacs-lisp
      (use-package projectile
        :ensure t
@@ -400,14 +404,12 @@ emacs	      "https://raw.githubusercontent.com/radian-software/straight.el/devel
   #+end_src
 
 * Input system
-** tamil
+** Tamil
    #+begin_src emacs-lisp
      (set-fontset-font "fontset-default" 'tamil "Noto Sans Tamil")
      ;;(use-package ibus
      ;; :ensure t
      ;;  :config (add-hook 'after-init-hook 'ibus-mode-on))
-
-     
    #+end_src
 * Cryptography
   #+begin_src emacs-lisp
@@ -417,7 +419,6 @@ emacs	      "https://raw.githubusercontent.com/radian-software/straight.el/devel
       (setq epa-gpg-program "gpg2")
       (setq epa-pinentry-mode 'loopback)
       (setenv "GPG_AGENT_INFO" nil))
-
   #+end_src
 
 * Auto-completion 
@@ -442,6 +443,7 @@ emacs	      "https://raw.githubusercontent.com/radian-software/straight.el/devel
 			     `(lambda () (interactive) (company-complete-number ,x))))
 	       (number-sequence 0 9))))
    #+end_src
+   
 * Dired
   #+BEGIN_SRC emacs-lisp
     (use-package dired
@@ -480,8 +482,9 @@ emacs	      "https://raw.githubusercontent.com/radian-software/straight.el/devel
     (use-package ledger-mode
       :ensure t)
   #+end_src
+  
 * Programming
-** crontab editing
+** Crontab editing
    #+begin_src emacs-lisp
      (defun crontab-e ()
 	 "Run `crontab -e' in a emacs buffer."
@@ -489,7 +492,7 @@ emacs	      "https://raw.githubusercontent.com/radian-software/straight.el/devel
 	 (with-editor-async-shell-command "crontab -e"))
    #+end_src
 
-** programming languages
+** Programming languages
    #+begin_src emacs-lisp
 
      (use-package typescript-mode)
@@ -519,7 +522,7 @@ emacs	      "https://raw.githubusercontent.com/radian-software/straight.el/devel
      (slime-setup)
    #+end_src
 
-** magit
+** Magit
    #+BEGIN_SRC emacs-lisp
      (use-package magit
        :ensure t
@@ -533,7 +536,7 @@ emacs	      "https://raw.githubusercontent.com/radian-software/straight.el/devel
      ;;  :after (magit libgit))
    #+END_SRC
    
-** syntax highlighting
+** Syntax Highlighting
    #+begin_src emacs-lisp
      (use-package rainbow-delimiters
        :ensure t
@@ -541,7 +544,7 @@ emacs	      "https://raw.githubusercontent.com/radian-software/straight.el/devel
        (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
    #+end_src
    
-** minibuffer completion
+** Minibuffer completion
    #+begin_src emacs-lisp
      ;; Completions with counsel
      (use-package counsel
@@ -569,9 +572,9 @@ emacs	      "https://raw.githubusercontent.com/radian-software/straight.el/devel
        (global-set-key (kbd "C-c C-r") 'ivy-resume)
        (global-set-key (kbd "<f6>") 'ivy-resume)
        (global-set-key (kbd "M-x") 'counsel-M-x))
-
    #+end_src
-** align-non-space
+   
+** Align Non Space
    [[https://blog.lambda.cx/posts/emacs-align-columns/][Aligning columns in Emacs]]
    #+begin_src emacs-lisp
      (defun align-non-space (BEG END)
@@ -579,6 +582,7 @@ emacs	      "https://raw.githubusercontent.com/radian-software/straight.el/devel
        (interactive "r")
        (align-regexp BEG END "\\(\\s-*\\)\\S-+" 1 1 t))
    #+end_src
+   
 * Reading and Writing
 ** Reading
 ** Writing
@@ -605,7 +609,6 @@ emacs	      "https://raw.githubusercontent.com/radian-software/straight.el/devel
 	       #'TeX-revert-document-buffer)
 
      (add-hook 'pdf-view-mode-hook (lambda() (linum-mode -1)))
-
    #+end_src
    
 ** Nov.el
@@ -620,7 +623,6 @@ emacs	      "https://raw.githubusercontent.com/radian-software/straight.el/devel
        :config
        (add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode))
        (setq nov-text-width 80))
-
    #+end_src
    
 *** COMMENT more config
@@ -672,6 +674,7 @@ emacs	      "https://raw.githubusercontent.com/radian-software/straight.el/devel
 	      ("<f7>" . flyspell-word)
 	      ("C-;" . flyspell-auto-correct-previous-word)))
    #+end_src
+   
 ** Distraction Free Editing
    #+begin_src emacs-lisp
      ;; Distraction-free screen
@@ -698,10 +701,11 @@ emacs	      "https://raw.githubusercontent.com/radian-software/straight.el/devel
    #+end_src
    
 * Search
-#+begin_src emacs-lisp
-  (use-package deadgrep
-     :ensure t)
-#+end_src
+  #+begin_src emacs-lisp
+    (use-package deadgrep
+       :ensure t)
+  #+end_src
+
 * Syntax Highlighting
   #+begin_src emacs-lisp
     (use-package rainbow-delimiters
@@ -710,127 +714,128 @@ emacs	      "https://raw.githubusercontent.com/radian-software/straight.el/devel
       (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
 
   #+end_src
-* mu4e
-  Install =mu4e= for =mu= and =mu4e= and install =isync= packages for =mbsync=
-  #+begin_src bash :results output code
-    sudo apt-get install mu4e isync
-  #+end_src
   
-  Configure =mbsync= using =.mbsyncrc=
-  #+begin_src conf :tangle ~/aalar/.mbsyncrc
-    IMAPAccount personal-gmail
-    Host imap.gmail.com
-    User selva.personals@gmail.com
-    PassCmd "cat ~/ko-pa-ni/thani/kadavu/mbsync.karunthulai.selva.personals.txt"
-    SSLType IMAPS
-    CertificateFile /etc/ssl/certs/ca-certificates.crt
-    PipelineDepth 1
+* Email with mu4e
+** Install =mu4e= for =mu= and =mu4e= and install =isync= packages for =mbsync=
+   #+begin_src bash :results output code
+     sudo apt-get install mu4e isync
+   #+end_src
+  
+** Configure =mbsync= using =.mbsyncrc=
+   #+begin_src conf :tangle ~/aalar/.mbsyncrc
+     IMAPAccount personal-gmail
+     Host imap.gmail.com
+     User selva.personals@gmail.com
+     PassCmd "cat ~/ko-pa-ni/thani/kadavu/mbsync.karunthulai.selva.personals.txt"
+     SSLType IMAPS
+     CertificateFile /etc/ssl/certs/ca-certificates.crt
+     PipelineDepth 1
 
-    IMAPStore personal-gmail-remote
-    Account personal-gmail
+     IMAPStore personal-gmail-remote
+     Account personal-gmail
 
-    MaildirStore personal-gmail-local
-    Subfolders Verbatim
-    Path ~/mail/personal-gmail/
-    Inbox ~/mail/personal-gmail/Inbox
+     MaildirStore personal-gmail-local
+     Subfolders Verbatim
+     Path ~/mail/personal-gmail/
+     Inbox ~/mail/personal-gmail/Inbox
 
-    Channel personal-gmail
-    Master :personal-gmail-remote:
-    Slave :personal-gmail-local:
-    Patterns * ![Gmail]* "[Gmail]/Sent Mail" "[Gmail]/Starred" "[Gmail]/All Mail" "[Gmail]/Trash"
-    Create Both
-    SyncState *
+     Channel personal-gmail
+     Master :personal-gmail-remote:
+     Slave :personal-gmail-local:
+     Patterns * ![Gmail]* "[Gmail]/Sent Mail" "[Gmail]/Starred" "[Gmail]/All Mail" "[Gmail]/Trash"
+     Create Both
+     SyncState *
 
 
-    IMAPAccount developer-gmail
-    Host imap.gmail.com
-    User selva.developer@gmail.com
-    PassCmd "cat ~/ko-pa-ni/thani/kadavu/mbsync.karunthulai.selva.developer.txt"
-    SSLType IMAPS
-    CertificateFile /etc/ssl/certs/ca-certificates.crt
-    PipelineDepth 1
+     IMAPAccount developer-gmail
+     Host imap.gmail.com
+     User selva.developer@gmail.com
+     PassCmd "cat ~/ko-pa-ni/thani/kadavu/mbsync.karunthulai.selva.developer.txt"
+     SSLType IMAPS
+     CertificateFile /etc/ssl/certs/ca-certificates.crt
+     PipelineDepth 1
 
-    IMAPStore developer-gmail-remote
-    Account developer-gmail
+     IMAPStore developer-gmail-remote
+     Account developer-gmail
 
-    MaildirStore developer-gmail-local
-    Subfolders Verbatim
-    Path ~/mail/developer-gmail/
-    Inbox ~/mail/developer-gmail/Inbox
+     MaildirStore developer-gmail-local
+     Subfolders Verbatim
+     Path ~/mail/developer-gmail/
+     Inbox ~/mail/developer-gmail/Inbox
 
-    Channel developer-gmail
-    Master :developer-gmail-remote:
-    Slave :developer-gmail-local:
-    Patterns * ![Gmail]* "[Gmail]/Sent Mail" "[Gmail]/Starred" "[Gmail]/All Mail" "[Gmail]/Trash"
-    Create Both
-    SyncState *	
+     Channel developer-gmail
+     Master :developer-gmail-remote:
+     Slave :developer-gmail-local:
+     Patterns * ![Gmail]* "[Gmail]/Sent Mail" "[Gmail]/Starred" "[Gmail]/All Mail" "[Gmail]/Trash"
+     Create Both
+     SyncState *	
+   #+end_src
 
-  #+end_src
+** Configure mu4e
+   #+begin_src emacs-lisp
+     (use-package mu4e
+       :ensure nil
+       ;;:load-path "/usr/share/emacs/site-lisp/mu4e/"
+       ;; :defer 20 ; Wait until 20 seconds after startup
+       :config
 
-  Configure mu4e
-  #+begin_src emacs-lisp
-    (use-package mu4e
-      :ensure nil
-      ;;:load-path "/usr/share/emacs/site-lisp/mu4e/"
-      ;; :defer 20 ; Wait until 20 seconds after startup
-      :config
+       ;; This is set to 't' to avoid mail syncing issues when using mbsync
+       (setq mu4e-change-filenames-when-moving t)
 
-      ;; This is set to 't' to avoid mail syncing issues when using mbsync
-      (setq mu4e-change-filenames-when-moving t)
+       ;; Refresh mail using isync every 10 minutes
+       (setq mu4e-update-interval (* 10 60))
+       (setq mu4e-get-mail-command "mbsync -a")
+       (setq mu4e-maildir "~/mail/")
 
-      ;; Refresh mail using isync every 10 minutes
-      (setq mu4e-update-interval (* 10 60))
-      (setq mu4e-get-mail-command "mbsync -a")
-      (setq mu4e-maildir "~/mail/")
+       (setq mu4e-contexts
+	     (list
+	      ;; personals account
+	      (make-mu4e-context
+	       :name "personal"
+	       :match-func
+	       (lambda (msg)
+		 (when msg
+		   (string-prefix-p "/personal-gmail" (mu4e-message-field msg :maildir))))
+	       :vars '((user-mail-address . "selva.personal@gmail.com")
+		       (user-full-name    . "Selvakumar Murugan")
+		       (smtpmail-smtp-server  . "smtp.gmail.com")
+		       (smtpmail-smtp-service . 465)
+		       (smtpmail-stream-type  . ssl)
+		       (mu4e-drafts-folder  . "/personal-gmail/[Gmail]/Drafts")
+		       (mu4e-sent-folder  . "/personal-gmail/[Gmail]/Sent Mail")
+		       (mu4e-refile-folder  . "/personal-gmail/[Gmail]/All Mail")
+		       (mu4e-trash-folder  . "/personal-gmail/[Gmail]/Trash")))
 
-      (setq mu4e-contexts
-	    (list
-	     ;; personals account
-	     (make-mu4e-context
-	      :name "personal"
-	      :match-func
-	      (lambda (msg)
-		(when msg
-		  (string-prefix-p "/personal-gmail" (mu4e-message-field msg :maildir))))
-	      :vars '((user-mail-address . "selva.personal@gmail.com")
-		      (user-full-name    . "Selvakumar Murugan")
-		      (smtpmail-smtp-server  . "smtp.gmail.com")
-		      (smtpmail-smtp-service . 465)
-		      (smtpmail-stream-type  . ssl)
-		      (mu4e-drafts-folder  . "/personal-gmail/[Gmail]/Drafts")
-		      (mu4e-sent-folder  . "/personal-gmail/[Gmail]/Sent Mail")
-		      (mu4e-refile-folder  . "/personal-gmail/[Gmail]/All Mail")
-		      (mu4e-trash-folder  . "/personal-gmail/[Gmail]/Trash")))
+	      ;; developer account
+	      (make-mu4e-context
+	       :name "developer"
+	       :match-func
+	       (lambda (msg)
+		 (when msg
+		   (string-prefix-p "/developer-gmail" (mu4e-message-field msg :maildir))))
+	       :vars '((user-mail-address . "selva.developer@gmail.com")
+		       (user-full-name    . "Selvakumar Murugan")
+		       (smtpmail-smtp-server  . "smtp.gmail.com")
+		       (smtpmail-smtp-service . 465)
+		       (smtpmail-stream-type  . ssl)
+		       (mu4e-drafts-folder  . "/developer-gmail/[Gmail]/Drafts")
+		       (mu4e-sent-folder  . "/developer-gmail/[Gmail]/Sent Mail")
+		       (mu4e-refile-folder  . "/developer-gmail/[Gmail]/All Mail")
+		       (mu4e-trash-folder  . "/developer-gmail/[Gmail]/Trash")))
 
-	     ;; developer account
-	     (make-mu4e-context
-	      :name "developer"
-	      :match-func
-	      (lambda (msg)
-		(when msg
-		  (string-prefix-p "/developer-gmail" (mu4e-message-field msg :maildir))))
-	      :vars '((user-mail-address . "selva.developer@gmail.com")
-		      (user-full-name    . "Selvakumar Murugan")
-		      (smtpmail-smtp-server  . "smtp.gmail.com")
-		      (smtpmail-smtp-service . 465)
-		      (smtpmail-stream-type  . ssl)
-		      (mu4e-drafts-folder  . "/developer-gmail/[Gmail]/Drafts")
-		      (mu4e-sent-folder  . "/developer-gmail/[Gmail]/Sent Mail")
-		      (mu4e-refile-folder  . "/developer-gmail/[Gmail]/All Mail")
-		      (mu4e-trash-folder  . "/developer-gmail/[Gmail]/Trash")))
+	      ))
 
-	     ))
+       (setq mu4e-maildir-shortcuts
+	   '(("/Inbox"             . ?i)
+	     ("/[Gmail]/Sent Mail" . ?s)
+	     ("/[Gmail]/Trash"     . ?t)
+	     ("/[Gmail]/Drafts"    . ?d)
+	     ("/[Gmail]/All Mail"  . ?a))))
 
-      (setq mu4e-maildir-shortcuts
-	  '(("/Inbox"             . ?i)
-	    ("/[Gmail]/Sent Mail" . ?s)
-	    ("/[Gmail]/Trash"     . ?t)
-	    ("/[Gmail]/Drafts"    . ?d)
-	    ("/[Gmail]/All Mail"  . ?a))))
-
-  #+end_src
+   #+end_src
+   
 * Org
-** basic
+** Basic
    - org-cycle-separator-line https://stackoverflow.com/questions/40332479/org-mode-folding-considers-whitespace-as-content
   #+begin_src emacs-lisp
     (setq org-cycle-separator-lines 2)
@@ -838,13 +843,15 @@ emacs	      "https://raw.githubusercontent.com/radian-software/straight.el/devel
 	  '((heading . always)
 	   (plain-list-item . nil)))
   #+end_src
-** org-bullets
+  
+** Org-bullets
    #+begin_src emacs-lisp
      (use-package org-bullets
        :ensure t
        :config (add-hook 'org-mode-hook 'org-bullets-mode))
    #+end_src
-** org-download
+   
+** Org-download
    #+begin_src emacs-lisp
      (use-package org-download
        :ensure t
@@ -854,7 +861,7 @@ emacs	      "https://raw.githubusercontent.com/radian-software/straight.el/devel
 	 
    #+end_src
 
-** org-agenda
+** Org-agenda
    #+begin_src emacs-lisp
      (setq org-agenda-files
 	   '("~/org/personal.org"
@@ -880,13 +887,12 @@ emacs	      "https://raw.githubusercontent.com/radian-software/straight.el/devel
 	   org-agenda-start-day "-3d")
 
      (global-set-key (kbd "C-c a") 'org-agenda)
-
    #+end_src
 
 ** org-refile
 *** TODO 
-**** TODO find possible values for =org-refile-targets=
-*** config
+**** TODO Find possible values for =org-refile-targets=
+*** Config
     org-refile by default only targets current file and heading unless =org-refile-targets= is configured 
     #+begin_src emacs-lisp
       ;;use headings upto level 3
@@ -896,8 +902,9 @@ emacs	      "https://raw.githubusercontent.com/radian-software/straight.el/devel
       (setq org-refile-allow-creating-parent-nodes 'confirm) ;; allow creating new nodes on-fly
       (setq org-outline-path-complete-in-steps nil)         ; refile in a single go
     #+end_src
-** org-gcal
-   #+begin_src #emacs-lisp
+    
+** COMMENT Org-gcal
+   #+begin_src emacs-lisp
      (use-package org-gcal
        :ensure t
        :config 
@@ -907,7 +914,8 @@ emacs	      "https://raw.githubusercontent.com/radian-software/straight.el/devel
 				   ("selva.on.profession@gmail.com" .  "~/org/work.org")))
        )
    #+end_src
-** org-roam
+   
+** COMMENT Org-roam
    #+begin_src emacs-lisp
      (use-package org-roam
        :ensure t
@@ -918,23 +926,26 @@ emacs	      "https://raw.githubusercontent.com/radian-software/straight.el/devel
        (org-roam-directory "~/org/roam")
        (org-roam-completion-everywhere t)
        :bind (("C-c n l" . org-roam-buffer-toggle)
-	      ("C-c n f" . org-roam-node-find)
-	      ("C-c n i" . org-roam-node-insert)
-	      :map org-mode-map
-		   ("C-M-i"    . completion-at-point))
+              ("C-c n f" . org-roam-node-find)
+              ("C-c n i" . org-roam-node-insert)
+              :map org-mode-map
+                   ("C-M-i"    . completion-at-point))
        :config
        (org-roam-setup))
 
-     (require 'org-roam-protocol)
-     ;; 
-     (setq org-roam-capture-ref-templates 
-	   '("i" "internet" plain #'org-roam-capture--get-point "%?"
-	     :file-name "float/%<%Y%m%d%H%M>-${slug}"
-	     :head "#+title: ${title}\n#+roam_key: ${ref}%?"
-	     :unnarrowed t))
      (setq org-roam-v2-ack t)
+
+     (require 'org-roam-protocol)
+
+     (setq org-roam-capture-ref-templates 
+           '("i" "internet" plain #'org-roam-capture--get-point "%?"
+             :file-name "float/%<%Y%m%d%H%M>-${slug}"
+             :head "#+title: ${title}\n#+roam_key: ${ref}%?"
+             :unnarrowed t))
+
    #+end_src
-** org-roam-ui
+   
+** COMMENT Org-roam-ui
    #+begin_src emacs-lisp
      (use-package org-roam-ui
        ;;:straight
@@ -951,11 +962,173 @@ emacs	      "https://raw.githubusercontent.com/radian-software/straight.el/devel
 	     org-roam-ui-open-on-start t))
 
    #+end_src
-** org-capture
-*** org-capture
+   
+** Org-capture
+*** Org-capture
+
+**** Emacs daemon
+     From https://www.emacswiki.org/emacs/EmacsAsDaemon
+     
+     Systemd is the supported method of running applications at startup on most Linux distributions. The following configuration file emacs.service will be included in the standard Emacs installation as of 26.1.
+  
+***** All you need to do is copy this to ~/.config/systemd/user/emacs.service .
+      #+BEGIN_SRC conf :tangle ~/emacs/emacs.service
+        [Unit]
+        Description=Emacs text editor
+        Documentation=info:emacs man:emacs(1) https://gnu.org/software/emacs/
+
+        [Service]
+        Type=forking
+        ExecStart=/usr/bin/emacs --daemon
+        ExecStop=/usr/bin/emacsclient --eval "(kill-emacs)"
+        Environment=SSH_AUTH_SOCK=%t/keyring/ssh
+        Restart=on-failure
+
+        [Install]
+        WantedBy=default.target
+      #+END_SRC
+   
+***** And add the following to =.bashrc= in linux
+      From https://emacs.stackexchange.com/questions/24095/bashrc-script-to-automatically-create-emacs-server-session-on-startup
+      #+BEGIN_SRC bash 
+        export ALTERNATE_EDITOR=""
+        export VISUAL='emacsclient --alternate-editor='
+        export EDITOR='emacsclient --alternate-editor='
+      #+END_SRC
+   
+***** For windows add the following into =.emacs=
+      #+BEGIN_SRC emacs-lisp
+         (load "server")
+         (unless (server-running-p) (server-start))
+      #+END_SRC
+
+***** Note
+      Note that =~/.bashrc= runs every time you open a terminal, not when you log in. On normal Unix systems, the file that runs when you log in is =~/.profile= (or =~/.bash_profile=, =~/.profile=, etc. depending on your login shell), but OSX does things differently (and actually runs =~/.bash_profile= or =~/.profile= and not =~/.bashrc= when you open a terminal due to a combination of bad design in OSX and bad design in bash: OSX opens a login shell in each terminal and bash doesn't load =.bashrc= in login shells — see https://unix.stackexchange.com/questions/110998/missing-source-bashrc-mac-terminal-profile).
+
+**** Linux
+     Both of them working now.
+   
+***** Capture from browser (Firefox)
+      Can capture from browser
+    
+****** Create a =.desktop= file
+       From https://github.com/zv/dotfilez 
+     
+       #+BEGIN_SRC  conf 
+         [Desktop Entry]
+         Name=org-protocol
+         Exec=emacsclient --create-frame \
+         --socket-name 'capture' \
+         --alternate-editor='' \
+         --frame-parameters='(quote (name . "capture"))' \
+         --no-wait \
+         Type=Application
+         Terminal=false
+         Categories=System;
+         MimeType=x-scheme-handler/org-protocol;
+       #+END_SRC
+
+       Succinct version of the same code snippet as above.
+       #+BEGIN_SRC  conf :tangle ~/emacs/org-protocol.desktop
+         [Desktop Entry]
+         Name=org-protocol
+         Exec=emacsclient --create-frame --alternate-editor='' --frame-parameters='(quote (name . "capture"))' --no-wait  %u
+         Type=Application
+         Terminal=false
+         Categories=System;
+         MimeType=x-scheme-handler/org-protocol;
+       #+END_SRC
+     
+       And run the following
+
+       #+BEGIN_SRC bash
+         chmod a+x ~/emacs/org-protocol.desktop
+         ln -s ~/emacs/org-protocol.desktop ~/.local/share/applications/
+         update-desktop-database ~/.local/share/applications/
+       #+END_SRC
+
+       Org-capture book-marklet for firefox, add this to bookmark toolbar on firefox
+       #+BEGIN_SRC js
+         //org-protocol.desktop the one that works now
+         javascript:location.href = 'org-protocol://capture?template=l'\
+             + '&url='   + encodeURIComponent(location.href)\
+             + '&title=' + encodeURIComponent(document.title)\
+             + '&body='  + encodeURIComponent(window.getSelection())
+
+       #+END_SRC
+       
+***** Capture from desktop environment
+      - bind the following script to a shortcut
+      - no capture from browser
+
+      #+BEGIN_SRC bash  :tangle ~/emacs/org-protocol.sh
+        #!/bin/bash
+        set -euo pipefail
+
+        emacsclient --create-frame \
+                    --socket-name 'capture' \
+                    --alternate-editor='' \
+                    --frame-parameters='(quote (name . "capture"))' \
+                    --no-wait \
+                    --eval "(my/org-capture-frame)"
+
+      #+END_SRC
+
+      For opening and closing a separate frame for the capture.
+      From https://gist.github.com/progfolio/af627354f87542879de3ddc30a31adc1
+      #+BEGIN_SRC emacs-lisp
+        (defun my/delete-capture-frame (&rest _)
+          "Delete frame with its name frame-parameter set to \"capture\"."
+          (if (equal "capture" (frame-parameter nil 'name))
+              (delete-frame)))
+        (advice-add 'org-capture-finalize :after #'my/delete-capture-frame)
+
+        (defun my/org-capture-frame ()
+          "Run org-capture in its own frame."
+          (interactive)
+          (require 'cl-lib)
+          (select-frame-by-name "capture")
+          (delete-other-windows)
+          (cl-letf (((symbol-function 'switch-to-buffer-other-window) #'switch-to-buffer))
+            (condition-case err
+                (org-capture)
+              ;; "q" signals (error "Abort") in `org-capture'
+              ;; delete the newly created frame in this scenario.
+              (user-error (when (string= (cadr err) "Abort")
+                            (delete-frame))))))
+ 
+      #+END_SRC
+      
+**** Mac
+     https://www.reddit.com/r/emacs/comments/6lzyg2/heres_how_to_do_emacsclient_global_orgcapture/
+
+**** Windows
+     https://sachachua.com/blog/2015/11/capturing-links-quickly-with-emacsclient-org-protocol-and-chrome-shortcut-manager-on-microsoft-windows-8/
+
+**** Templates
+     #+BEGIN_SRC emacs-lisp
+       (require 'org-protocol)
+
+       (global-set-key (kbd "C-c c") 'org-capture)
+
+       (setq org-protocol-default-template-key "l")
+       (setq org-capture-templates
+	     '(("t" "Todo" entry
+		(file+headline "~/org/pidi.org" "Tasks")
+		"* TODO %?\n  %i\n  %a")
+
+	       ("l" "Link" entry 
+		(file+olp "~/org/pidi.org" "Web Links")
+		"* %a\n %?\n %i")
+
+	       ("j" "Journal" entry 
+		(file+datetree "~/org/pidi.org" "Journal")
+		"* %?\nEntered on %U\n  %i\n  %a")))
+     #+END_SRC
+    
 **** COMMENT html-capture 
-***** TODO try [[https://github.com/alphapapa/org-web-tools][org-web-tools]]
-***** eww and w3m org-web clipper from [[http://www.bobnewell.net/publish/35years/webclipper.html][Bob Newell]]
+***** TODO Try [[https://github.com/alphapapa/org-web-tools][org-web-tools]]
+***** EWW and w3m org-web clipper from [[http://www.bobnewell.net/publish/35years/webclipper.html][Bob Newell]]
       #+begin_src emacs-lisp
 
 	;; org-eww and org-w3m should be in your org distribution, but see
@@ -1010,7 +1183,7 @@ emacs	      "https://raw.githubusercontent.com/radian-software/straight.el/devel
 	)
       #+end_src
 
-***** the following [[org-protocol-capture-html][from alphapapa]] but doesn't suit my needs
+***** The following [[org-protocol-capture-html][from alphapapa]] but doesn't suit my needs
       #+begin_src emacs-lisp
 	(use-package org-protocol-capture-html
 	  :ensure t)
@@ -1025,78 +1198,35 @@ emacs	      "https://raw.githubusercontent.com/radian-software/straight.el/devel
 
       Firefox bookmarklet
       #+begin_src js
-	javascript:location.href = 'org-protocol://capture-html?template=w&url=' + encodeURIComponent(location.href) + '&title=' + encodeURIComponent(document.title || "[untitled page]") + '&body=' + encodeURIComponent(function () {var html = ""; if (typeof document.getSelection != "undefined") {var sel = document.getSelection(); if (sel.rangeCount) {var container = document.createElement("div"); for (var i = 0, len = sel.rangeCount; i < len; ++i) {container.appendChild(sel.getRangeAt(i).cloneContents());} html = container.innerHTML;}} else if (typeof document.selection != "undefined") {if (document.selection.type == "Text") {html = document.selection.createRange().htmlText;}} var relToAbs = function (href) {var a = document.createElement("a"); a.href = href; var abs = a.protocol + "//" + a.host + a.pathname + a.search + a.hash; a.remove(); return abs;}; var elementTypes = [['a', 'href'], ['img', 'src']]; var div = document.createElement('div'); div.innerHTML = html; elementTypes.map(function(elementType) {var elements = div.getElementsByTagName(elementType[0]); for (var i = 0; i < elements.length; i++) {elements[i].setAttribute(elementType[1], relToAbs(elements[i].getAttribute(elementType[1])));}}); return div.innerHTML;}());
-
+        javascript:location.href = 'org-protocol://capture-html?template=w&url=' + encodeURIComponent(location.href) + '&title=' + encodeURIComponent(document.title || "[untitled page]") + '&body=' + encodeURIComponent(function () {var html = ""; if (typeof document.getSelection != "undefined") {var sel = document.getSelection(); if (sel.rangeCount) {var container = document.createElement("div"); for (var i = 0, len = sel.rangeCount; i < len; ++i) {container.appendChild(sel.getRangeAt(i).cloneContents());} html = container.innerHTML;}} else if (typeof document.selection != "undefined") {if (document.selection.type == "Text") {html = document.selection.createRange().htmlText;}} var relToAbs = function (href) {var a = document.createElement("a"); a.href = href; var abs = a.protocol + "//" + a.host + a.pathname + a.search + a.hash; a.remove(); return abs;}; var elementTypes = [['a', 'href'], ['img', 'src']]; var div = document.createElement('div'); div.innerHTML = html; elementTypes.map(function(elementType) {var elements = div.getElementsByTagName(elementType[0]); for (var i = 0; i < elements.length; i++) {elements[i].setAttribute(elementType[1], relToAbs(elements[i].getAttribute(elementType[1])));}}); return div.innerHTML;}());
       #+end_src
 
-**** templates
-     #+BEGIN_SRC emacs-lisp
-       (require 'org-protocol)
-
-       (global-set-key (kbd "C-c c") 'org-capture)
-
-       (setq org-protocol-default-template-key "l")
-       (setq org-capture-templates
-	     '(("t" "Todo" entry
-		(file+headline "~/org/pidi.org" "Tasks")
-		"* TODO %?\n  %i\n  %a")
-
-	       ("l" "Link" entry 
-		(file+olp "~/org/pidi.org" "Web Links")
-		"* %a\n %?\n %i")
-
-	       ("j" "Journal" entry 
-		(file+datetree "~/org/pidi.org" "Journal")
-		"* %?\nEntered on %U\n  %i\n  %a")))
-
-     #+END_SRC
-
-*** for browser based interaction
-    from : https://gist.github.com/progfolio/af627354f87542879de3ddc30a31adc1
-    #+BEGIN_SRC emacs-lisp
-
-      (defun my/delete-capture-frame (&rest _)
-	"Delete frame with its name frame-parameter set to \"capture\"."
-	(if (equal "capture" (frame-parameter nil 'name))
-	    (delete-frame)))
-      (advice-add 'org-capture-finalize :after #'my/delete-capture-frame)
-
-      (defun my/org-capture-frame ()
-	"Run org-capture in its own frame."
-	(interactive)
-	(require 'cl-lib)
-	(select-frame-by-name "capture")
-	(delete-other-windows)
-	(cl-letf (((symbol-function 'switch-to-buffer-other-window) #'switch-to-buffer))
-	  (condition-case err
-	      (org-capture)
-	    ;; "q" signals (error "Abort") in `org-capture'
-	    ;; delete the newly created frame in this scenario.
-	    (user-error (when (string= (cadr err) "Abort")
-			  (delete-frame))))))
-    #+END_SRC
-** org-babel
+** Org-babel
+   #+begin_src bash :tangle ~/emacs/org-babel-stderr.sh
+     #!/bin/bash
+     {
+     bash $1
+     } 2>&1
+   #+end_src
+   
    #+begin_src emacs-lisp
      (setq org-babel-sh-command "~/emacs/org-babel-stderr.sh")
      (org-babel-do-load-languages 'org-babel-load-languages '((shell . t)
 							      ;;(ledger . t)
 							      (python . t)))
-
-
    #+end_src
 
-** tempo
+** Tempo
    #+begin_src emacs-lisp
      ;;(add-function :before-until electric-pair-inhibit-predicate
      ;;	   (lambda (c) (eq c ?<)))
 
      (require 'org-tempo)
-
    #+end_src
 
-** mathpix
+** COMMENT Mathpix
    Capture latex equations from browser
-   #+begin_src dummy
+   #+begin_src emacs-lisp
      (use-package mathpix.el
        :straight (:host github :repo "jethrokuan/mathpix.el")
        :custom ((mathpix-app-id "app-id")
@@ -1105,8 +1235,8 @@ emacs	      "https://raw.githubusercontent.com/radian-software/straight.el/devel
        ("C-x m" . mathpix-screenshot))
    #+end_src
    
-** org-media-note
-   #+begin_src dummy
+** COMMENT Org-media-note
+   #+begin_src emacs-lisp
      (use-package quelpa-use-package)  ;; to allow installation of github packages
      (use-package pretty-hydra)
      (use-package org-media-note
@@ -1117,7 +1247,7 @@ emacs	      "https://raw.githubusercontent.com/radian-software/straight.el/devel
        (setq org-media-note-screenshot-image-dir "~/kuri/images/"))
    #+end_src
 
-** treating webp as image
+** Treating webp as image
    #+begin_src emacs-lisp
      (setq image-file-name-regexps "\\.\\(GIF\\|JP\\(?:E?G\\)\\|P\\(?:BM\\|GM\\|N[GM]\\|PM\\)\\|SVG\\|TIFF?\\|X\\(?:[BP]M\\)\\|gif\\|jp\\(?:e?g\\)\\|p\\(?:bm\\|gm\\|n[gm]\\|pm\\)\\|webp\\|svg\\|tiff?\\|x\\(?:[bp]m\\)\\)\\'")
 
@@ -1128,7 +1258,7 @@ emacs	      "https://raw.githubusercontent.com/radian-software/straight.el/devel
 
    #+end_src
    
-** youtube link and mpv
+** Youtube link and mpv
    
 *** [[https://github.com/bitspook/spookmax.d/blob/5f1d71cf572cd18dc7d41f292753d4b7683877c3/readme.org#org-mode][from spookmax]]  [[[yt://www.youtube.com/watch?v=eaZUZCzaIgw][video]]]
     #+begin_src emacs-lisp
@@ -1154,12 +1284,8 @@ emacs	      "https://raw.githubusercontent.com/radian-software/straight.el/devel
 
     #+end_src
 
-    #+RESULTS:
-    | :follow | spook-org--follow-yt-link | :export | spook-org--export-yt-link |
-
-
 * Reference Management
-** bibtex
+** Bibtex
    =bibtex-autokey-*= variables are used while constructing the key for a bibtex entry automatically from the fields of the bibtex entry. The bibtex entries can be created from =doi=, =arxiv=
    #+begin_src emacs-lisp
      (use-package ivy-bibtex
@@ -1192,7 +1318,7 @@ emacs	      "https://raw.githubusercontent.com/radian-software/straight.el/devel
 	       (call-process "open" nil 0 nil fpath))))
    #+end_src
    
-** org-ref
+** Org-ref
    org-ref is very helpful when authoring papers. =org-ref-insert-link= function can be used to insert citations. The citations are looked up from list of =.bib= files as conigured in variable =bibtex-completion-bibliography=. org-ref has to be used in conjuction with =ivy-bibtex= package.
    org-ref enables us to insert citations, export them to latex and even non-latex exports consistently.
    #+begin_src emacs-lisp  
@@ -1203,7 +1329,7 @@ emacs	      "https://raw.githubusercontent.com/radian-software/straight.el/devel
      (use-package org-ref-ivy)
    #+end_src
 
-** ebib
+** Ebib
    #+begin_src emacs-lisp
      (use-package ebib
        :ensure t
@@ -1212,11 +1338,10 @@ emacs	      "https://raw.githubusercontent.com/radian-software/straight.el/devel
 
    #+end_src
 
-** ebib-biblio
+** Ebib-biblio
    When fetching entries via Biblio, Ebib checks for duplicates based on the key of the new entry. This will only work reliably if both Ebib and Biblio are configured to automatically generate BibTeX keys. Ebib does this by default (see the option ebib-autogenerate-keys), Biblio can be configured to do so by setting the option biblio-bibtex-use-autokey.
 
-
-* elfeed-org
+* Elfeed-org
   #+BEGIN_SRC emacs-lisp
     ;; Load elfeed-org
     (use-package elfeed-org
@@ -1231,7 +1356,8 @@ emacs	      "https://raw.githubusercontent.com/radian-software/straight.el/devel
     ;; Note: The customize interface is also supported.
     (setq rmh-elfeed-org-files (list "~/emacs/vanilla.d/elfeed.org"))
   #+END_SRC
-* emacs-everywhere
+
+* Emacs Everywhere
   install the following packages
   #+begin_src bash  :dir /sudo::  :results output
     apt-get install xclip xdotool xbindkeys #xprop xwininfo 
@@ -1242,13 +1368,13 @@ emacs	      "https://raw.githubusercontent.com/radian-software/straight.el/devel
       :ensure t)
   #+end_src
 
-* media
+* Media
   #+begin_src emacs-lisp
     (use-package mpv
       :ensure t)
   #+end_src
 
-** subed subtitle editor
+** Subed subtitle editor
    needs to imported from nongnu elpa. add the following to init.el
    #+begin_src emacs-lisp :tangle no
      (add-to-list 'package-archives '("nongnu" . "https://elpa.nongnu.org/nongnu/"))
