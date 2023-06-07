@@ -166,12 +166,53 @@ emacs	      "https://raw.githubusercontent.com/radian-software/straight.el/devel
     #+END_SRC
     
 *** Themes
+    Install SF onts
+    #+begin_src bash
+      mkdir -p ~/.fonts
+      git clone https://github.com/supercomputra/SF-Mono-Font /tmp/fonts
+      cp /tmp/fonts/* ~/.fonts/
+    #+end_src
+
+    #+RESULTS:
+    
     #+BEGIN_SRC emacs-lisp
       (add-to-list 'custom-theme-load-path "~/emacs/vanilla.d/themes/")
       ;;(load-theme 'afternoon t)
-      (load-theme 'zenburn t)
+      (load-file "~/emacs/vanilla.d/themes/bespoke-themes/bespoke-themes.el")
+      (load-file "~/emacs/vanilla.d/themes/bespoke-themes/bespoke-theme.el")
+      (setq bespoke-set-evil-cursors t)
+      ;; Set use of italics
+      (setq bespoke-set-italic-comments t
+	    bespoke-set-italic-keywords t)
+	;; Set variable pitch
+      (setq bespoke-set-variable-pitch t)
+      ;; Set initial theme variant
+      (setq bespoke-set-theme 'dark)
+      (load-theme 'bespoke t)
+
+      ;; Make a clean & minimalist frame
+      (use-package frame
+	:config
+	(setq-default default-frame-alist
+		      (append (list
+			       '(font . "SF Mono:style=medium:size=15") ;; NOTE: substitute whatever font you prefer here
+			       '(internal-border-width . 10)
+			       '(left-fringe    . 0)
+			       '(right-fringe   . 0)
+			       '(tool-bar-lines . 0)
+			       '(menu-bar-lines . 0)
+			       '(vertical-scroll-bars . nil))))
+	(setq-default window-resize-pixelwise t)
+	(setq-default frame-resize-pixelwise t)
+	:custom
+	(window-divider-default-right-width 12)
+	(window-divider-default-bottom-width 1)
+	(window-divider-default-places 'right-only)
+	(window-divider-mode t))
+
+      (add-hook 'before-make-frame-hook 'window-divider-mode)
     #+END_SRC
-    
+
 **** COMMENT Use =use-package= to install and load theme
      #+begin_src emacs-lisp
        (use-package ample-theme
@@ -918,6 +959,10 @@ emacs	      "https://raw.githubusercontent.com/radian-software/straight.el/devel
 
     #+begin_src bash
       chmod a+x ~/emacs/google-calendar.sh
+    #+end_src
+
+    #+begin_src conf 
+      5,20,35,50 * * * * ~/emacs/google-calendar.sh &> /dev/null #sync my org files
     #+end_src
 
 ** org-refile
