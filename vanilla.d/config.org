@@ -658,7 +658,6 @@
        (face-remap-add-relative 'variable-pitch :family "Liberation Serif"
 				:height 1.0))
      (add-hook 'nov-mode-hook 'my-nov-font-setup)
-
      (use-package nov
        :ensure t
        :config
@@ -756,13 +755,14 @@
 
   #+end_src
   
-* Email with mu4e
-** Install =mu4e= for =mu= and =mu4e= and install =isync= packages for =mbsync=
+* Communication
+** Email with mu4e
+*** Install =mu4e= for =mu= and =mu4e= and install =isync= packages for =mbsync=
    #+begin_src bash :results output code
      sudo apt-get install mu4e isync
    #+end_src
   
-** Configure =mbsync= using =.mbsyncrc=
+*** Configure =mbsync= using =.mbsyncrc=
    #+begin_src conf :tangle ~/aalar/.mbsyncrc
      IMAPAccount personal-gmail
      Host imap.gmail.com
@@ -812,7 +812,7 @@
      SyncState *	
    #+end_src
 
-** Configure mu4e
+*** Configure mu4e
    #+begin_src emacs-lisp
      (use-package mu4e
        :ensure nil
@@ -991,7 +991,7 @@
        )
    #+end_src
    
-** COMMENT Org-roam
+** Org-roam
    #+begin_src emacs-lisp
      (use-package org-roam
        :ensure t
@@ -1020,7 +1020,7 @@
              :unnarrowed t))
 
    #+end_src
-   
+
 ** COMMENT Org-roam-ui
    #+begin_src emacs-lisp
      (use-package org-roam-ui
