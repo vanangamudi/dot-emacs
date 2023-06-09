@@ -965,7 +965,9 @@
       5,20,35,50 * * * * ~/emacs/google-calendar.sh &> /dev/null #sync my org files
     #+end_src
 
-** org-refile
+**** Notes
+     - Apparently org file generated from gcal files maintains the order by which the events are added to the google calendar. e.g: CareerCoach Vikram Anand that happened way back in the month of May is registered in the file after Hybrid Investing workshop which has not yet happened
+** Org Refile
 *** TODO 
 **** TODO Find possible values for =org-refile-targets=
 *** Config
