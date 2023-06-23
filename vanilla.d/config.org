@@ -587,6 +587,19 @@
        (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
    #+end_src
    
+** Code folding
+   #+begin_src emacs-lisp
+     (use-package origami
+       :ensure t
+       :config
+       (add-hook 'prog-mode-hook #'origami-mode)
+       :bind (:map origami-mode-map
+                   ("C-<return>" . origami-toggle-node)
+                   ("C-M-<return>" . origami-toggle-all-nodes)
+                   ("C-<tab>" . origami-recursively-toggle-node)
+                   ("C-<iso-lefttab>" . origami-show-only-node)))
+   #+end_src
+
 ** Minibuffer completion
    #+begin_src emacs-lisp
      ;; Completions with counsel
