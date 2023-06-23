@@ -1301,13 +1301,19 @@
      bash $1
      } 2>&1
    #+end_src
-   
+
+   Since =ob-ledger= package is not there by default, download it from a source
+   #+begin_src bash
+     wget -c https://raw.githubusercontent.com/tkf/org-mode/master/lisp/ob-ledger.el -O ~/emacs/vanilla.d/lisp/ob-ledger.el
+   #+end_src
+
    #+begin_src emacs-lisp
      (setq org-babel-sh-command "~/emacs/org-babel-stderr.sh")
      (org-babel-do-load-languages 'org-babel-load-languages '((shell . t)
-							      ;;(ledger . t)
-							      (python . t)))
+                                                              (ledger . t)
+                                                              (python . t)))
    #+end_src
+
 
 ** Tempo
    #+begin_src emacs-lisp
