@@ -66,6 +66,8 @@
 * Package Management
    #+BEGIN_SRC emacs-lisp
      (setq use-package-always-ensure nil)
+     (setq use-package-always-defer nil)
+
      ;;; https://emacs.stackexchange.com/a/68302/8476
      (use-package quelpa-use-package
        :ensure t)
@@ -187,7 +189,7 @@
 	;; Set variable pitch
       (setq bespoke-set-variable-pitch t)
       ;; Set initial theme variant
-      (setq bespoke-set-theme 'dark)
+      (setq bespoke-set-theme 'light)
       (load-theme 'bespoke t)
 
       ;; Make a clean & minimalist frame
