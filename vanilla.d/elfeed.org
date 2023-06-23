@@ -47,3 +47,5 @@
 ** https://karthinks.com/index.xml :emacs:
 
 ** https://tratt.net/laurie/blog/blog.rss :programming:
+
+** http://www.numerical-tours.com/feed.xml  :math:
