@@ -1501,7 +1501,14 @@
     (use-package mpv
       :ensure t)
 
+    ;; to address Failed to connect to mpv error
+    (setq mpv-start-timeout 5)
 
+    (global-set-key (kbd "C-<f1> p") 'mpv-play)
+    (global-set-key (kbd "C-<f1> T") 'mpv-toggle-video)
+    (global-set-key (kbd "C-<f1> t") 'elfeed-tube-mpv)
+
+    ;; START from: https://github.com/NapoleonWils0n/cerberus/blob/master/emacs/mpv-timer.org
     ;; frame step forward
     (with-eval-after-load 'mpv
       (defun mpv-frame-step ()
@@ -1534,7 +1541,7 @@
         (mpv--enqueue '("set_property" "osd-level" "3") #'ignore)))
 
 
-    (defhydra hydra-mpv (global-map "<f2>")
+    (defhydra hydra-mpv (global-map "<M-S-f2>")
       "
       ^Seek^                    ^Actions^                ^General^
       ^^^^^^^^---------------------------------------------------------------------------
@@ -1556,6 +1563,7 @@
       ("i" my/mpv-insert-playback-position)
       ("o" mpv-osd)
       ("n" end-of-line-and-indented-new-line))
+    ;; END : https://github.com/NapoleonWils0n/cerberus/blob/master/emacs/mpv-timer.org
   #+end_src  
   
 *** COMMENT Ytel - Youtube client for emacs
