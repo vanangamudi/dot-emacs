@@ -5,6 +5,8 @@
 ** [[http://orgmode.org][Org Mode Links supported as well]]
 ** Software Development                                                 :dev:
 *** Emacs                                                    :emacs:mustread:
+
+**** [[https://www.youtube.com/feeds/videos.xml?channel_id=UCriRR_CzOny-akXyk1R-oDQ][NapoleonWils0n  ]]                                               :youtube:
 **** [[https://emacs.cafe/feed.xml][emacs cafe]]
 **** http://www.terminally-incoherent.com/blog/feed
 **** http://nullprogram.com/feed
