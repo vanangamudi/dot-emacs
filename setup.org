@@ -286,6 +286,11 @@
        C-x C-f ~/.emacs.d/lisp/elfeed-org.el <ENTER>
        M-x package-install-from-buffer <ENTER>
      #+END_SRC
+     
+**** Map =~/.elfeed= directory to within aalar dir
+     #+begin_src bash
+       ln -s ~/aalar/emacs/elfeed ~/.elfeed
+     #+end_src
 
 *** Configuration
     #+BEGIN_SRC emacs-lisp
