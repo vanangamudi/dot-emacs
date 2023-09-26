@@ -1215,7 +1215,7 @@
 		"* %a\n %?\n %i")
 
 	       ("j" "Journal" entry 
-		(file+datetree "~/org/pidi.org" "Journal")
+		(file+olp+datetree "~/org/pidi.org" "Journal")
 		"* %?\nEntered on %U\n  %i\n  %a")))
      #+END_SRC
     
