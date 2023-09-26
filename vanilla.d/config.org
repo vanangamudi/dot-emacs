@@ -189,7 +189,7 @@
 	;; Set variable pitch
       (setq bespoke-set-variable-pitch t)
       ;; Set initial theme variant
-      (setq bespoke-set-theme 'light)
+      (setq bespoke-set-theme 'dark)
       (load-theme 'bespoke t)
 
       ;; Make a clean & minimalist frame
