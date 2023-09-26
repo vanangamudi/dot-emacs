@@ -1311,9 +1311,10 @@
      (setq org-babel-sh-command "~/emacs/org-babel-stderr.sh")
      (org-babel-do-load-languages 'org-babel-load-languages '((shell . t)
                                                               (ledger . t)
+                                                              (ditaa . t)
+                                                              (octave . t)
                                                               (python . t)))
    #+end_src
-
 
 ** Tempo
    #+begin_src emacs-lisp
