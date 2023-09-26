@@ -286,6 +286,11 @@
        C-x C-f ~/.emacs.d/lisp/elfeed-org.el <ENTER>
        M-x package-install-from-buffer <ENTER>
      #+END_SRC
+     
+**** Map =~/.elfeed= directory to within aalar dir
+     #+begin_src bash
+       ln -s ~/aalar/emacs/elfeed ~/.elfeed
+     #+end_src
 
 *** Configuration
     #+BEGIN_SRC emacs-lisp
@@ -380,5 +385,16 @@
      export LANG=C.UTF-8
      export ISSO_SETTINGS=/etc/isso.cfg
      exec gunicorn -n gunicorn-isso -b 127.0.0.1:1927 --preload -w 4 --log-file /var/log/isso/isso.log isso.dispatch 2>>/var/log/isso/isso.log
+   #+end_src
+   
+   
+** mpv
+   #+begin_src bash :tangle ~/.config/mpv/mpv.conf
+     # Guide:
+     # https://mpv.io/manual/stable/#configuration-files
+     # Use GPU-accelerated video output by default.
+     vo=gpu
+     # Use quotes for text that can contain spaces:
+     term-status-msg="Time: ${time-pos}"
    #+end_src
    

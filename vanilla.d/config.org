@@ -174,8 +174,6 @@
       git clone https://github.com/supercomputra/SF-Mono-Font /tmp/fonts
       cp /tmp/fonts/* ~/.fonts/
     #+end_src
-
-    #+RESULTS:
     
     #+BEGIN_SRC emacs-lisp
       (add-to-list 'custom-theme-load-path "~/emacs/vanilla.d/themes/")
@@ -185,8 +183,8 @@
       (setq bespoke-set-evil-cursors t)
       ;; Set use of italics
       (setq bespoke-set-italic-comments t
-	    bespoke-set-italic-keywords t)
-	;; Set variable pitch
+            bespoke-set-italic-keywords t)
+        ;; Set variable pitch
       (setq bespoke-set-variable-pitch t)
       ;; Set initial theme variant
       (setq bespoke-set-theme 'dark)
@@ -194,23 +192,23 @@
 
       ;; Make a clean & minimalist frame
       (use-package frame
-	:config
-	(setq-default default-frame-alist
-		      (append (list
-			       '(font . "SF Mono:style=medium:size=15") ;; NOTE: substitute whatever font you prefer here
-			       '(internal-border-width . 10)
-			       '(left-fringe    . 0)
-			       '(right-fringe   . 0)
-			       '(tool-bar-lines . 0)
-			       '(menu-bar-lines . 0)
-			       '(vertical-scroll-bars . nil))))
-	(setq-default window-resize-pixelwise t)
-	(setq-default frame-resize-pixelwise t)
-	:custom
-	(window-divider-default-right-width 12)
-	(window-divider-default-bottom-width 1)
-	(window-divider-default-places 'right-only)
-	(window-divider-mode t))
+        :config
+        (setq-default default-frame-alist
+                      (append (list
+                               ;;'(font . "SF Mono:style=medium:size=15") ;; NOTE: substitute whatever font you prefer here
+                               '(internal-border-width . 10)
+                               '(left-fringe    . 0)
+                               '(right-fringe   . 0)
+                               '(tool-bar-lines . 0)
+                               '(menu-bar-lines . 0)
+                               '(vertical-scroll-bars . nil))))
+        (setq-default window-resize-pixelwise t)
+        (setq-default frame-resize-pixelwise t)
+        :custom
+        (window-divider-default-right-width 12)
+        (window-divider-default-bottom-width 1)
+        (window-divider-default-places 'right-only)
+        (window-divider-mode t))
 
       (add-hook 'before-make-frame-hook 'window-divider-mode)
     #+END_SRC
@@ -236,7 +234,7 @@
 	  '(font-lock-string-face ((t (:foreground "#bdba81"))))))
     #+end_src
     
-*** Paren matching
+*** COMMENT Paren matching
     #+BEGIN_SRC emacs-lisp
       (use-package smartparens-config
 	:ensure smartparens
@@ -771,7 +769,7 @@
   #+end_src
   
 * Communication
-** Email with mu4e
+** COMMENT Email with mu4e
 *** Install =mu4e= for =mu= and =mu4e= and install =isync= packages for =mbsync=
    #+begin_src bash :results output code
      sudo apt-get install mu4e isync
@@ -1314,6 +1312,7 @@
                                                               (ditaa . t)
                                                               (octave . t)
                                                               (python . t)))
+                                                              (python . python3)))
    #+end_src
 
 ** Tempo
@@ -1324,6 +1323,7 @@
      (require 'org-tempo)
    #+end_src
 
+   
 ** COMMENT Mathpix
    Capture latex equations from browser
    #+begin_src emacs-lisp
@@ -1425,7 +1425,8 @@
      (use-package org-ref
        :ensure  t
        :bind (:map org-mode-map
-		   ("C-c ]" . org-ref-insert-link-hydra/body)))
+                   ("C-c C-S-r" . org-ref-bibtex-new-entry/body)
+                   ("C-c ]" . org-ref-insert-link-hydra/body)))
      (use-package org-ref-ivy)
    #+end_src
 
@@ -1454,7 +1455,35 @@
     ;; Optionally specify a number of files containing elfeed
     ;; configuration. If not set then the location below is used.
     ;; Note: The customize interface is also supported.
-    (setq rmh-elfeed-org-files (list "~/emacs/vanilla.d/elfeed.org"))
+    (setq rmh-elfeed-org-files (list "~/emacs/elfeed-db/elfeed.org"))
+
+
+    (use-package elfeed-tube
+      :ensure t ;; or :straight t
+      :after elfeed
+      :demand t
+      :config
+      ;; (setq elfeed-tube-auto-save-p nil) ; default value
+      ;; (setq elfeed-tube-auto-fetch-p t)  ; default value
+      (elfeed-tube-setup)
+
+      :bind (:map elfeed-show-mode-map
+                  ("F" . elfeed-tube-fetch)
+                  ([remap save-buffer] . elfeed-tube-save)
+                  :map elfeed-search-mode-map
+                  ("F" . elfeed-tube-fetch)
+                  ([remap save-buffer] . elfeed-tube-save)))
+
+    (use-package elfeed-tube-mpv
+      :ensure t ;; or :straight t
+      :bind (:map elfeed-show-mode-map
+                  ("C-c C-f" . elfeed-tube-mpv-follow-mode)
+                  ("C-c C-w" . elfeed-tube-mpv-where)))
+
+    (setq elfeed-tube-auto-save-p nil)
+    (setq elfeed-tube-auto-fetch-p nil)
+    (setq elfeed-tube-captions-languages
+          '("en" "english (auto generated)"))
   #+END_SRC
 
 * Emacs Everywhere
@@ -1472,7 +1501,78 @@
   #+begin_src emacs-lisp
     (use-package mpv
       :ensure t)
-  #+end_src
+
+    ;; to address Failed to connect to mpv error
+    (setq mpv-start-timeout 5)
+
+    (global-set-key (kbd "C-<f1> p") 'mpv-play)
+    (global-set-key (kbd "C-<f1> T") 'mpv-toggle-video)
+    (global-set-key (kbd "C-<f1> t") 'elfeed-tube-mpv)
+
+    ;; START from: https://github.com/NapoleonWils0n/cerberus/blob/master/emacs/mpv-timer.org
+    ;; frame step forward
+    (with-eval-after-load 'mpv
+      (defun mpv-frame-step ()
+        "Step one frame forward."
+        (interactive)
+        (mpv--enqueue '("frame-step") #'ignore)))
+
+
+    ;; frame step backward
+    (with-eval-after-load 'mpv
+      (defun mpv-frame-back-step ()
+        "Step one frame backward."
+        (interactive)
+        (mpv--enqueue '("frame-back-step") #'ignore)))
+
+
+    ;; mpv take a screenshot
+    (with-eval-after-load 'mpv
+      (defun mpv-screenshot ()
+        "Take a screenshot"
+        (interactive)
+        (mpv--enqueue '("screenshot") #'ignore)))
+
+
+    ;; mpv show osd
+    (with-eval-after-load 'mpv
+      (defun mpv-osd ()
+        "Show the osd"
+        (interactive)
+        (mpv--enqueue '("set_property" "osd-level" "3") #'ignore)))
+
+
+    (defhydra hydra-mpv (global-map "<M-S-f2>")
+      "
+      ^Seek^                    ^Actions^                ^General^
+      ^^^^^^^^---------------------------------------------------------------------------
+      _h_: seek back -5         _,_: back frame          _i_: insert playback position
+      _j_: seek back -60        _._: forward frame       _n_: insert a newline
+      _k_: seek forward 60      _SPC_: pause             _s_: take a screenshot
+      _l_: seek forward 5       _q_: quit mpv            _o_: show the osd
+      ^
+      "
+      ("h" mpv-seek-backward "-5")
+      ("j" mpv-seek-backward "-60")
+      ("k" mpv-seek-forward "60")
+      ("l" mpv-seek-forward "5")
+      ("," mpv-frame-back-step)
+      ("." mpv-frame-step)
+      ("SPC" mpv-pause)
+      ("q" mpv-kill)
+      ("s" mpv-screenshot)
+      ("i" my/mpv-insert-playback-position)
+      ("o" mpv-osd)
+      ("n" end-of-line-and-indented-new-line))
+    ;; END : https://github.com/NapoleonWils0n/cerberus/blob/master/emacs/mpv-timer.org
+  #+end_src  
+  
+*** COMMENT Ytel - Youtube client for emacs
+    #+begin_src emacs-lisp
+      (use-package ytel-show
+        :after ytel
+        :bind (:map ytel-mode-map ("RET" . ytel-show)))
+    #+end_src
 
 ** Subed subtitle editor
    needs to imported from nongnu elpa. add the following to init.el
@@ -1493,3 +1593,8 @@
       ;; Break lines at 40 characters
       (add-hook 'subed-mode-hook (lambda () (setq-local fill-column 40))))
   #+end_src
+
+
+
+
+  
