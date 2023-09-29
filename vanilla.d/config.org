@@ -41,18 +41,15 @@
 
   Find this work.org
   #+begin_src emacs-lisp
-    (defhydra hydra-open-stdfiles  (global-map "M-o")
+    (defhydra hydra-open-stdfiles  (:color "pink")
       "Open File"
       ("w" (find-file "~/org/work.org") "Work Tasks")
       ("f" (find-file "~/emacs/elfeed-db/elfeed.org") "RSS Feeds")
       ("e" (find-file "~/emacs/vanilla.d/config.org") "Emacs Config"))
 
-    ;; for some reason the following won't work
-    ;; throws the following error
-    ;; command-execute: Wrong type argument: commandp, hydra-open-stdfiles
-    ;; (global-set-key (kbd "M-o") 'hydra-open-stdfiles)
+    (global-set-key (kbd "M-o") 'hydra-open-stdfiles/body)
   #+end_src
-
+  
 * Emacs
   Custom set variables are moved here from =init.el= where they were placed automatically by certain packages like =vlf-setup=
   #+begin_src emacs-lisp
@@ -1318,7 +1315,6 @@
                                                               (ditaa . t)
                                                               (octave . t)
                                                               (python . t)))
-                                                              (python . python3)))
    #+end_src
 
 ** Tempo
