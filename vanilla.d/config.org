@@ -512,11 +512,19 @@
       :config
       ;; Doesn't work as expected!
       ;;(add-to-list 'dired-open-functions #'dired-open-xdg t)
-      (setq dired-open-extensions '(("mkv" . "vlc")
-				    ("webm" . "vlc")
-				    ("mp4" . "vlc")
+      (setq dired-open-extensions '(("mkv" . "mpv")
+				    ("webm" . "mpv")
+				    ("mp4" . "mpv")
 				    ("png" . "geeqie"))))
   #+END_SRC
+
+* Dirvish
+   #+begin_src emacs-lisp
+     (use-package dirvish
+       :ensure t
+       :init
+       (dirvish-override-dired-mode))
+   #+end_src
 
 * Accounting
   #+begin_src emacs-lisp

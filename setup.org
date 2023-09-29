@@ -396,5 +396,6 @@
      vo=gpu
      # Use quotes for text that can contain spaces:
      term-status-msg="Time: ${time-pos}"
+     screenshot-directory="~/Pictures/mpv"
    #+end_src
    
