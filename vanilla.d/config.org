@@ -234,9 +234,6 @@ One problem is that it is difficult to switch font in emacs. Here's a elisp code
     #+begin_src emacs-lisp
       (set-face-attribute 'default nil :font "Noto Sans Mono" :height 160)
     #+end_src
-
-    #+RESULTS:
-
     
     For Iosevka fonts
     #+begin_src bash
@@ -264,7 +261,7 @@ One problem is that it is difficult to switch font in emacs. Here's a elisp code
         :config
         (setq-default default-frame-alist
                       (append (list
-                               ;;'(font . "SF Mono:style=medium:size=15") ;; NOTE: substitute whatever font you prefer here
+                               '(font . "Noto Sans Mono:style=medium:size=13") ;; NOTE: substitute whatever font you prefer here
                                '(internal-border-width . 10)
                                '(left-fringe    . 0)
                                '(right-fringe   . 0)
