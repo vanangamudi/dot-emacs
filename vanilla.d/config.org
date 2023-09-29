@@ -41,10 +41,16 @@
 
   Find this work.org
   #+begin_src emacs-lisp
-    (defun find-work-file ()
-      (interactive)
-      (find-file "~/org/work.org"))
-    (global-set-key (kbd "C-c w") 'find-work-file)
+    (defhydra hydra-open-stdfiles  (global-map "M-o")
+      "Open File"
+      ("w" (find-file "~/org/work.org") "Work Tasks")
+      ("f" (find-file "~/emacs/elfeed-db/elfeed.org") "RSS Feeds")
+      ("e" (find-file "~/emacs/vanilla.d/config.org") "Emacs Config"))
+
+    ;; for some reason the following won't work
+    ;; throws the following error
+    ;; command-execute: Wrong type argument: commandp, hydra-open-stdfiles
+    ;; (global-set-key (kbd "M-o") 'hydra-open-stdfiles)
   #+end_src
 
 * Emacs
