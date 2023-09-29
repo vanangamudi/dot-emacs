@@ -41,12 +41,15 @@
 
   Find this work.org
   #+begin_src emacs-lisp
-    (defun find-work-file ()
-      (interactive)
-      (find-file "~/org/work.org"))
-    (global-set-key (kbd "C-c w") 'find-work-file)
-  #+end_src
+    (defhydra hydra-open-stdfiles  (:color "pink")
+      "Open File"
+      ("w" (find-file "~/org/work.org") "Work Tasks")
+      ("f" (find-file "~/emacs/elfeed-db/elfeed.org") "RSS Feeds")
+      ("e" (find-file "~/emacs/vanilla.d/config.org") "Emacs Config"))
 
+    (global-set-key (kbd "M-o") 'hydra-open-stdfiles/body)
+  #+end_src
+  
 * Emacs
   Custom set variables are moved here from =init.el= where they were placed automatically by certain packages like =vlf-setup=
   #+begin_src emacs-lisp
@@ -1319,7 +1322,7 @@
                                                               (ledger . t)
                                                               (ditaa . t)
                                                               (octave . t)
-                                                              (python . python3)))
+                                                              (python . t)))
    #+end_src
 
 ** Tempo
