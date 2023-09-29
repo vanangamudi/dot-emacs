@@ -12,7 +12,9 @@
   - https://github.com/daedreth/UncleDavesEmacs
   - https://github.com/larstvei/dot-emacs#meta
   - https://github.com/skx/dotfiles/blob/master/.emacs.d/init.md#org-mode-and-blank-lines
-    
+  
+** Eyecandy
+- https://lepisma.xyz/2017/10/28/ricing-org-mode/index.html
 * Tips
 ** Debug your config.org with =M-x org-lint=
    - https://emacs.stackexchange.com/questions/63003/org-babel-tangle-error
@@ -171,13 +173,77 @@
     #+END_SRC
     
 *** Themes
-    Install SF onts
+**** Fonts
+***** COMMENT Font Cycling
+****** [[https://comp.lang.lisp.narkive.com/gVFOnOLz/best-unicode-font-for-emacs-font-cycling-elisp-code][best unicode font for emacs & font cycling elisp code]] -- xah lee 
+*******  Quickly Switching Fonts
+When coding in Python or viewing directories, mono-spaced font is necessary. However, proportional font works great in coding too. Try it. You may be surprised. 
+Proportional font is easier to read, and shows more characters per line. I got used to using proportional fonts for html, xml, perl, lisp...
+One problem is that it is difficult to switch font in emacs. Here's a elisp code that cycle fonts.
+
+ #+begin_src emacs-lisp
+   (defun cycle-font ()
+     "Change font in current frame. When called repeatedly, cycle thru a predefined set of fonts. Warning: tested on Windows Vista only."
+     (interactive)
+
+     (let (fontList fontToUse currentState)
+       ;; states starts from 1.
+       (setq fontList (font-family-list))
+       ;;(setq fontList (list "Courier New-10" "Arial Unicode MS-10" "Unifont-12" "FixedsysTTF-11" "Code2000-11" "Lucida Sans Unicode-10"))
+       (setq currentState (if (get this-command 'state)
+                              (get this-command 'state) 1))
+       (setq fontToUse (nth (1- currentState) fontList))
+
+       (set-frame-parameter nil 'font fontToUse)
+       (message "Current font is: %s" fontToUse)
+       (put this-command 'state (1+ (% currentState (length fontList))))
+       (redraw-frame (selected-frame))))
+ #+end_src
+ 
+ Modify the line on fontList so that you can use this function to cycle  among the fonts of your choice. You can set a shortcut key like this:
+ 
+ #+begin_src emacs-lisp
+ (global-set-key (kbd "<C-f9>") 'cycle-font) ; Ctrl+F9
+ #+end_src
+ 
+ (See: Defining Your Own Keyboard Shortcuts)
+ 
+ Also, if you are not using emacs 23, you probably should upgrade, because emacs 23 switched its internal char encoding to Unicode (utf-8), and has a new font engine that supports operating system's fonts and anti-aliasing. (see: New Features in Emacs 23)
+
+**** COMMENT Install SF fonts
     #+begin_src bash
       mkdir -p ~/.fonts
       git clone https://github.com/supercomputra/SF-Mono-Font /tmp/fonts
       cp /tmp/fonts/* ~/.fonts/
     #+end_src
+
+    For Dejavu Fonts
+    From https://community.jaspersoft.com/wiki/configuring-jasperreports-server-use-dejavu-fonts
+    #+begin_src bash :dir /sudo::
+      #Get the Dejavu distribution
+      cd /tmp/
+      wget http://sourceforge.net/projects/dejavu/files/dejavu/2.37/dejavu-fonts-ttf-2.37.tar.bz2 
+      #Unpack it
+      tar -xf dejavu-fonts-ttf-2.37.tar.bz2
+      #Move to fonts folder
+      mv dejavu-fonts-ttf-2.37/ttf/ /usr/share/fonts/dejavu
+      #Update fonts cache
+      fc-cache /usr/share/fonts/dejavu
+    #+end_src
+
+    #+begin_src emacs-lisp
+      (set-face-attribute 'default nil :font "Noto Sans Mono" :height 160)
+    #+end_src
+
+    #+RESULTS:
+
     
+    For Iosevka fonts
+    #+begin_src bash
+      curl -s 'https://api.github.com/repos/be5invis/Iosevka/releases/latest' | jq -r ".assets[] | .browser_download_url" | grep ttf-iosevka | xargs -n 1 curl -L -O --fail --silent --show-error
+    #+end_src
+    
+**** Bespoke Theme
     #+BEGIN_SRC emacs-lisp
       (add-to-list 'custom-theme-load-path "~/emacs/vanilla.d/themes/")
       ;;(load-theme 'afternoon t)
@@ -905,8 +971,15 @@
   #+begin_src emacs-lisp
     (setq org-cycle-separator-lines 2)
     (setq org-blank-before-new-entry
-	  '((heading . always)
-	   (plain-list-item . nil)))
+          '((heading . always)
+           (plain-list-item . nil)))
+
+    (setq org-startup-indented t
+          org-ellipsis "  " ;; folding symbol
+          org-pretty-entities t
+          org-fontify-whole-heading-line t
+          org-fontify-done-headline t
+          org-fontify-quote-and-verse-blocks t)
   #+end_src
   
 ** Org-bullets
