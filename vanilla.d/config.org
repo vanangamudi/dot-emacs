@@ -2,178 +2,187 @@
 #+OPTIONS: tex:t
 
 * Summary
-  The emacs config is written from scratch or should I say built ground up by copying from several sources listed under [[*Inspirations][Inspirations]] section. 
+The emacs config is written from scratch or should I say built ground up by copying from several sources listed under [[*Inspirations][Inspirations]] section. 
 
   
 * Inspirations
-  - https://blog.sumtypeofway.com/posts/emacs-config.html
-  - https://github.com/trev-dev/emacs
-  - https://github.com/daviwil/emacs-from-scratch
-  - https://github.com/daedreth/UncleDavesEmacs
-  - https://github.com/larstvei/dot-emacs#meta
-  - https://github.com/skx/dotfiles/blob/master/.emacs.d/init.md#org-mode-and-blank-lines
-  
+- https://blog.sumtypeofway.com/posts/emacs-config.html
+- https://github.com/trev-dev/emacs
+- https://github.com/daviwil/emacs-from-scratch
+- https://github.com/daedreth/UncleDavesEmacs
+- https://github.com/larstvei/dot-emacs#meta
+- https://github.com/skx/dotfiles/blob/master/.emacs.d/init.md#org-mode-and-blank-lines
+
 ** Eyecandy
 - https://lepisma.xyz/2017/10/28/ricing-org-mode/index.html
 * Tips
 ** Debug your config.org with =M-x org-lint=
-   - https://emacs.stackexchange.com/questions/63003/org-babel-tangle-error
-  
+- https://emacs.stackexchange.com/questions/63003/org-babel-tangle-error
+
 * TODO List
 ** TODO use vertico, consult, embark combo
-   - how to intergrate with [[org-ref]]
-     
+- how to intergrate with [[org-ref]]
+
 * Open this =config.org= file
-  Find this config file
-  #+begin_src emacs-lisp
-    (defun find-config-file ()
-      (interactive)
-      (find-file "~/emacs/vanilla.d/config.org"))
-    (global-set-key (kbd "C-c e") 'find-config-file)
-  #+end_src
+Find this config file
+#+begin_src emacs-lisp
+  (defun find-config-file ()
+    (interactive)
+    (find-file "~/emacs/vanilla.d/config.org"))
+  (global-set-key (kbd "C-c e") 'find-config-file)
+#+end_src
   
-  #+begin_src emacs-lisp
-    (defun reload-config ()
-      "Reloads this config.org at runtime"
-      (interactive)
-      (org-babel-load-file (expand-file-name "~/emacs/vanilla.d/config.org")))
-    (global-set-key (kbd "C-c r") 'reload-config)
+#+begin_src emacs-lisp
+  (defun reload-config ()
+    "Reloads this config.org at runtime"
+    (interactive)
+    (org-babel-load-file (expand-file-name "~/emacs/vanilla.d/config.org")))
+  (global-set-key (kbd "C-c r") 'reload-config)
 
-  #+end_src
+#+end_src
 
-  Find this work.org
-  #+begin_src emacs-lisp
-    (defhydra hydra-open-stdfiles  (:color "pink")
-      "Open File"
-      ("w" (find-file "~/org/work.org") "Work Tasks")
-      ("f" (find-file "~/emacs/elfeed-db/elfeed.org") "RSS Feeds")
-      ("e" (find-file "~/emacs/vanilla.d/config.org") "Emacs Config"))
+Find this work.org
+#+begin_src emacs-lisp
+  (defhydra hydra-open-stdfiles  (:color "pink")
+    "Open File"
+    ("w" (find-file "~/org/work.org") "Work Tasks")
+    ("f" (find-file "~/emacs/elfeed-db/elfeed.org") "RSS Feeds")
+    ("e" (find-file "~/emacs/vanilla.d/config.org") "Emacs Config"))
 
-    (global-set-key (kbd "M-o") 'hydra-open-stdfiles/body)
-  #+end_src
+  (global-set-key (kbd "M-o") 'hydra-open-stdfiles/body)
+#+end_src
   
 * Emacs
-  Custom set variables are moved here from =init.el= where they were placed automatically by certain packages like =vlf-setup=
-  #+begin_src emacs-lisp
-    (custom-set-variables
-     ;; custom-set-variables was added by Custom.
-     ;; If you edit it by hand, you could mess it up, so be careful.
-     ;; Your init file should contain only one such instance.
-     ;; If there is more than one, they won't work right.
-     '(fci-rule-color "#14151E")
-     '(inhibit-startup-screen t)
-     '(vc-annotate-very-old-color nil)
-     '(warning-suppress-log-types '((comp))))
+Custom set variables are moved here from =init.el= where they were placed automatically by certain packages like =vlf-setup=
+#+begin_src emacs-lisp
+  (custom-set-variables
+   ;; custom-set-variables was added by Custom.
+   ;; If you edit it by hand, you could mess it up, so be careful.
+   ;; Your init file should contain only one such instance.
+   ;; If there is more than one, they won't work right.
+   '(fci-rule-color "#14151E")
+   '(inhibit-startup-screen t)
+   '(vc-annotate-very-old-color nil)
+   '(warning-suppress-log-types '((comp))))
 
-    (add-to-list 'load-path "~/emacs/vanilla.d/lisp")
-  #+end_src
+  (add-to-list 'load-path "~/emacs/vanilla.d/lisp")
+#+end_src
   
 * Package Management
-   #+BEGIN_SRC emacs-lisp
-     (setq use-package-always-ensure nil)
-     (setq use-package-always-defer nil)
 
-     ;;; https://emacs.stackexchange.com/a/68302/8476
-     (use-package quelpa-use-package
-       :ensure t)
-   #+END_SRC
-   
+** Use Package
+#+begin_src emacs-lisp
+  (setq use-package-always-ensure t)
+#+end_src
+
 ** COMMENT straight.el
-   [[https://github.com/radian-software/straight.el#getting-started][Getting started with straight.el]] there are variables that can be set to customize straight.el but must be set before the following bootstrapping code
-   #+begin_src emacs-lisp
-     (defvar bootstrap-version)
-     (let ((bootstrap-file
-            (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
-           (bootstrap-version 6))
-       (unless (file-exists-p bootstrap-file)
-         (with-current-buffer
-             (url-retrieve-synchronously
-              emacs	      "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
-              'silent 'inhibit-cookies)
-           (goto-char (point-max))
-           (eval-print-last-sexp)))
-       (load bootstrap-file nil 'nomessage))
-   #+end_src
-   
+[[https://github.com/radian-software/straight.el#getting-started][Getting started with straight.el]] there are variables that can be set to customize straight.el but must be set before the following bootstrapping code
+#+begin_src emacs-lisp
+  (defvar bootstrap-version)
+  (let ((bootstrap-file
+         (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+        (bootstrap-version 6))
+    (unless (file-exists-p bootstrap-file)
+      (with-current-buffer
+          (url-retrieve-synchronously
+           emacs	      "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
+           'silent 'inhibit-cookies)
+        (goto-char (point-max))
+        (eval-print-last-sexp)))
+    (load bootstrap-file nil 'nomessage))
+#+end_src
+
 * Basic settings
 ** Remove startup welcome screen
-   The code block below toggle off the welcome startup screen.
-   #+BEGIN_SRC emacs-lisp
-     (custom-set-variables
-      '(inhibit-startup-screen t))
-   #+END_SRC
+The code block below toggle off the welcome startup screen.
+#+BEGIN_SRC emacs-lisp
+  (custom-set-variables
+   '(inhibit-startup-screen t))
+#+END_SRC
    
 ** Minibuffer setup
-   #+begin_src emacs-lisp
-     (add-hook 'minibuffer-setup-hook 'va-minibuffer-setup)
-     (defun va-minibuffer-setup ()
-	    (set (make-local-variable 'face-remapping-alist)
-	       '((default :height 1.25))))
-   #+end_src
+#+begin_src emacs-lisp
+  (add-hook 'minibuffer-setup-hook 'va-minibuffer-setup)
+  (defun va-minibuffer-setup ()
+    (set (make-local-variable 'face-remapping-alist)
+         '((default :height 1.25))))
+#+end_src
    
 ** Debug
-    #+BEGIN_SRC emacs-lisp
-    ;; Profile emacs startup
-    (add-hook 'emacs-startup-hook
-	      (lambda ()
-		(message "Emacs loaded in %s."
-			 (emacs-init-time))))
-    
-    (setq debug-on-error nil)
-    (setq gc-cons-threshold (* 2 1000 1000))
-    (setq find-file-visit-truename nil)
-  #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  ;; Profile emacs startup
+  (add-hook 'emacs-startup-hook
+            (lambda ()
+              (message "Emacs loaded in %s."
+                       (emacs-init-time))))
+
+  (setq debug-on-error nil)
+  (setq gc-cons-threshold (* 2 1000 1000))
+  (setq find-file-visit-truename nil)
+#+END_SRC
   
 ** Interface tweaks
 *** Window Decorations
-    #+BEGIN_SRC emacs-lisp
-      (menu-bar-mode -1)
-      (add-to-list 'default-frame-alist '(alpha 99 99))
+#+BEGIN_SRC emacs-lisp
+  (menu-bar-mode -1)
+  (add-to-list 'default-frame-alist '(alpha 99 99))
 
-      (when (window-system)
-	(tool-bar-mode -1)
-	(scroll-bar-mode -1)
-	(tooltip-mode -1))
+  (when (window-system)
+    (tool-bar-mode -1)
+    (scroll-bar-mode -1)
+    (tooltip-mode -1))
 
-      (use-package all-the-icons
-	:ensure t)
+  (use-package all-the-icons)
+  (use-package all-the-icons-dired
+    :after all-the-icons
+    :hook (dired-mode . all-the-icons-dired-mode))
 
-      (use-package all-the-icons-dired
-	:ensure t
-	:after all-the-icons
-	:hook (dired-mode . all-the-icons-dired-mode))
-
-      (use-package doom-modeline
-	:ensure t
-	:config (doom-modeline-mode))
-
-      (use-package diminish
-	:ensure t
-	:config (diminish 'eldoc-mode))
-    #+END_SRC
+  (use-package doom-modeline
+    :config (doom-modeline-mode))
+  
+  (use-package diminish
+    :config (diminish 'eldoc-mode))
+#+END_SRC
     
 *** Inhibit Startup Message
-    #+BEGIN_SRC emacs-lisp
-      (setq inhibit-startup-message t)
-      (fset 'yes-or-no-p 'y-or-n-p)
-      (global-set-key (kbd "<f5>") 'revert-buffer)
-      (add-hook 'text-mode-hook 'turn-on-visual-line-mode)
-      (add-hook 'org-mode-hook 'turn-on-visual-line-mode)
+#+BEGIN_SRC emacs-lisp
+  (setq inhibit-startup-message t)
+  (fset 'yes-or-no-p 'y-or-n-p)
+  (global-set-key (kbd "<f5>") 'revert-buffer)
+  (add-hook 'text-mode-hook 'turn-on-visual-line-mode)
+  (add-hook 'org-mode-hook 'turn-on-visual-line-mode)
 
-      (global-set-key [C-mouse-4] 'text-scale-increase)
-      (global-set-key [C-mouse-5] 'text-scale-decrease)
-    #+END_SRC
+  (global-set-key [C-mouse-4] 'text-scale-increase)
+  (global-set-key [C-mouse-5] 'text-scale-decrease)
+#+END_SRC
     
 *** Dim Inactive Buffer
-    #+BEGIN_SRC emacs-lisp
-      (use-package dimmer
-	:ensure t
-	:custom (dimmer-fraction 0.2)
-	:config (dimmer-mode))
-    #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (use-package dimmer
+    :ensure t
+    :custom (dimmer-fraction 0.2)
+    :config (dimmer-mode))
+#+END_SRC
     
+*** Pulsar
+#+begin_src emacs-lisp
+  (use-package pulsar
+    :ensure t
+    :custom
+    (setq pulsar-pulse t)
+    (setq pulsar-delay 0.055)
+    (setq pulsar-iterations 10)
+    (setq pulsar-face 'pulsar-magenta)
+    (setq pulsar-highlight-face 'pulsar-yellow)
+    :config
+    (pulsar-global-mode 1))
+#+end_src
+
 *** Themes
 **** Fonts
+***** Notes
+- [[https://gist.github.com/equwal/89b1ef5ac8d4d737cfd37f66e9ba4895][Selecting and trying out different fonts in Emacs -- equwal/fonts.el]]
+- [[https://protesilaos.com/codelog/2022-05-14-re-emacs-font/][Protesilaos Stavrou]]
 ***** COMMENT Font Cycling
 ****** [[https://comp.lang.lisp.narkive.com/gVFOnOLz/best-unicode-font-for-emacs-font-cycling-elisp-code][best unicode font for emacs & font cycling elisp code]] -- xah lee 
 *******  Quickly Switching Fonts
