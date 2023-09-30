@@ -1,6 +1,6 @@
 [Desktop Entry]
 Name=org-protocol
-Exec=emacsclient --create-frame --alternate-editor='' --no-wait %u
+Exec=emacsclient --alternate-editor='' --no-wait %u
 Type=Application
 Terminal=false
 Categories=System;
