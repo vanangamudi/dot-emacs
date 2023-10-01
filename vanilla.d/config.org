@@ -53,7 +53,10 @@ Find this work.org
 #+end_src
   
 * Emacs
-Custom set variables are moved here from =init.el= where they were placed automatically by certain packages like =vlf-setup=
+#+begin_src emacs-lisp
+  ;; -*- mode: Lisp; coding: utf-8; -*-
+#+end_src
+stom set variables are moved here from =init.el= where they were placed automatically by certain packages like =vlf-setup=
 #+begin_src emacs-lisp
   (custom-set-variables
    ;; custom-set-variables was added by Custom.
@@ -130,7 +133,8 @@ The code block below toggle off the welcome startup screen.
   (when (window-system)
     (tool-bar-mode -1)
     (scroll-bar-mode -1)
-    (tooltip-mode -1))
+    (tooltip-mode -1)
+    (set-fringe-mode 10))
 
   (use-package all-the-icons)
   (use-package all-the-icons-dired
@@ -139,10 +143,63 @@ The code block below toggle off the welcome startup screen.
 
   (use-package doom-modeline
     :config (doom-modeline-mode))
-  
+
   (use-package diminish
     :config (diminish 'eldoc-mode))
+
+  (global-display-line-numbers-mode t)
+
+  ;; Disable line numbers for some modes
+  (dolist (mode '(org-mode-hook
+                  term-mode-hook
+                  shell-mode-hook
+                  treemacs-mode-hook
+                  eshell-mode-hook))
+    (add-hook mode (lambda () (display-line-numbers-mode 0))))
+
+  (defvar van/frame-transparency '(95 . 95))
+  ;; Set frame transparency
+  (set-frame-parameter (selected-frame) 'alpha van/frame-transparency)
+  (add-to-list 'default-frame-alist `(alpha . ,van/frame-transparency))
+  (set-frame-parameter (selected-frame) 'fullscreen 'maximized)
+  (add-to-list 'default-frame-alist '(fullscreen . maximized))
 #+END_SRC
+#+begin_src emacs-lisp
+  ;; my very first own emacs-lisp functionality :)
+  ;; for watching naruto underneath
+  (defvar van/frame-opacity '95)
+  (defun van/frame-opacity-increase ()
+    (interactive)
+    (if (< van/frame-opacity 100)
+        (setq van/frame-opacity (+ van/frame-opacity 5)))
+    (message "%s" van/frame-opacity)
+    (set-frame-parameter (selected-frame) 'alpha (cons van/frame-opacity van/frame-opacity)))
+
+  (defun van/frame-opacity-decrease ()
+    (interactive)
+    (if (> van/frame-opacity 50)
+        (setq van/frame-opacity (- van/frame-opacity 5)))
+    (message "%s" van/frame-opacity)
+    (set-frame-parameter (selected-frame) 'alpha (cons van/frame-opacity van/frame-opacity)))
+
+  (global-set-key (kbd "C-M-S-O") 'van/frame-opacity-increase)
+  (global-set-key (kbd "C-M-o") 'van/frame-opacity-decrease)
+#+end_src
+
+*** Keycast mode
+#+begin_src emacs-lisp
+(use-package keycast
+  :config
+   (define-minor-mode keycast-mode
+    "Show current command and its key binding in the mode line."
+    :global t
+    (require 'keycast)
+    (if keycast-mode
+        (add-hook 'pre-command-hook 'keycast-mode-line-update)
+        (remove-hook 'pre-command-hook 'keycast-mode-line-update)))
+
+  (add-to-list 'global-mode-string '("" mode-line-keycast " ")))
+#+end_src
     
 *** Inhibit Startup Message
 #+BEGIN_SRC emacs-lisp
@@ -267,6 +324,7 @@ For Iosevka fonts
 
   ;; Make a clean & minimalist frame
   (use-package frame
+    :ensure nil
     :config
     (setq-default default-frame-alist
                   (append (list
@@ -308,7 +366,7 @@ For Iosevka fonts
      '(font-lock-string-face ((t (:foreground "#bdba81"))))))
 #+end_src
     
-*** COMMENT Paren matching
+*** Paren matching
 #+BEGIN_SRC emacs-lisp
   (use-package smartparens-config
     :ensure smartparens
@@ -362,6 +420,7 @@ For Iosevka fonts
 #+BEGIN_SRC emacs-lisp
   (set-charset-priority 'unicode)
   (setq locale-coding-system 'utf-8)
+  (set-default-coding-systems 'utf-8)
   (set-terminal-coding-system 'utf-8)
   (set-keyboard-coding-system 'utf-8)
   (set-selection-coding-system 'utf-8)
@@ -943,7 +1002,7 @@ Clone [[https://github.com/slime/slime.git][Slime repository]] into ~/code/clone
             (plain-list-item . nil)))
 
     (setq org-startup-indented t
-          org-ellipsis "  " ;; folding symbol
+          ;;org-ellipsis "..." ;; folding symbol
           org-pretty-entities t
           org-fontify-whole-heading-line t
           org-fontify-done-headline t
@@ -1470,7 +1529,7 @@ org-ref enables us to insert citations, export them to latex and even non-latex 
     :bind (:map org-mode-map
                 ("C-c C-S-r" . org-ref-bibtex-new-entry/body)
                 ("C-c ]" . org-ref-insert-link-hydra/body)))
-  (use-package org-ref-ivy)
+  ;;(use-package org-ref-ivy)
 #+end_src
 
 ** Ebib
