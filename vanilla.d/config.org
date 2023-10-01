@@ -195,7 +195,7 @@ The code block below toggle off the welcome startup screen.
 
   (defun van/frame-opacity-decrease ()
     (interactive)
-    (if (> van/frame-opacity 50)
+    (if (> van/frame-opacity 30)
         (setq van/frame-opacity (- van/frame-opacity 5)))
     (message "%s" van/frame-opacity)
     (set-frame-parameter (selected-frame) 'alpha (cons van/frame-opacity van/frame-opacity)))
@@ -995,12 +995,26 @@ Clone [[https://github.com/slime/slime.git][Slime repository]] into ~/code/clone
           org-fontify-quote-and-verse-blocks t)
   #+end_src
   
-** Org-bullets
+** Org Superstar
 #+begin_src emacs-lisp
-  (use-package org-bullets
-    :config (add-hook 'org-mode-hook 'org-bullets-mode))
+    (use-package org-modern
+      :hook (org-mode . org-modern-mode))
+
+  (use-package org-superstar
+    :init
+    (setq org-superstar-special-todo-items t)
+    (setq org-superstar-lightweight-lists t)
+    :hook (org-mode . org-superstar-mode))
 #+end_src
-   
+  
+** Org Sticky Headers
+#+begin_src emacs-lisp
+  (use-package org-sticky-header
+    :init (setq org-sticky-header-mode t))
+  (use-package org-table-sticky-header
+    :init (setq org-table-sticky-header-mode t))
+#+end_src
+
 ** Org-download
 #+begin_src emacs-lisp
   (use-package org-download
