@@ -830,7 +830,13 @@ Clone [[https://github.com/slime/slime.git][Slime repository]] into ~/code/clone
            ("<f7>" . flyspell-word)
            ("C-;" . flyspell-auto-correct-previous-word)))
 #+end_src
-   
+
+*** Latex Equation Previews
+#+begin_src emacs-lisp
+  (use-package org-fragtog
+    :config (add-hook 'org-mode-hook 'org-fragtog-mode))
+#+end_src
+
 ** COMMENT Latex and pdf-tools
 #+begin_src emacs-lisp
   (use-package tex
