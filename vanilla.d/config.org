@@ -3,7 +3,6 @@
 
 * Summary
 The emacs config is written from scratch or should I say built ground up by copying from several sources listed under [[*Inspirations][Inspirations]] section. 
-
   
 * Inspirations
 - https://blog.sumtypeofway.com/posts/emacs-config.html
@@ -15,15 +14,24 @@ The emacs config is written from scratch or should I say built ground up by copy
 
 ** Eyecandy
 - https://lepisma.xyz/2017/10/28/ricing-org-mode/index.html
+  
 * Tips
+- https://practical.li/spacemacs/alternative-tooling/org-easy-templates/
 ** Debug your config.org with =M-x org-lint=
 - https://emacs.stackexchange.com/questions/63003/org-babel-tangle-error
+  
+* Emacs
+#+begin_src emacs-lisp
+  ;; -*- mode: Lisp; coding: utf-8; -*-
+#+end_src
+
 
 * TODO List
 ** TODO use vertico, consult, embark combo
-- how to intergrate with [[org-ref]]
+- how to intergrate with org-ref
 
 * Open this =config.org= file
+Functions to open some list of standard files quickly, like =config.org=, =work.org=, =elfeed.org=
 Find this config file
 #+begin_src emacs-lisp
   (defun find-config-file ()
@@ -31,17 +39,17 @@ Find this config file
     (find-file "~/emacs/vanilla.d/config.org"))
   (global-set-key (kbd "C-c e") 'find-config-file)
 #+end_src
-  
+
+Reload the config.org
 #+begin_src emacs-lisp
   (defun reload-config ()
     "Reloads this config.org at runtime"
     (interactive)
     (org-babel-load-file (expand-file-name "~/emacs/vanilla.d/config.org")))
   (global-set-key (kbd "C-c r") 'reload-config)
-
 #+end_src
 
-Find this work.org
+Hydra menu for opening the files. Add more files to the menu and you can open them quickly using the keybinding below, =M-o=
 #+begin_src emacs-lisp
   (defhydra hydra-open-stdfiles  (:color "pink")
     "Open File"
@@ -52,11 +60,8 @@ Find this work.org
   (global-set-key (kbd "M-o") 'hydra-open-stdfiles/body)
 #+end_src
   
-* Emacs
-#+begin_src emacs-lisp
-  ;; -*- mode: Lisp; coding: utf-8; -*-
-#+end_src
-stom set variables are moved here from =init.el= where they were placed automatically by certain packages like =vlf-setup=
+* Custom Variables
+Custom set variables are moved here from =init.el= where they were placed automatically by certain packages like =vlf-setup=
 #+begin_src emacs-lisp
   (custom-set-variables
    ;; custom-set-variables was added by Custom.
@@ -72,14 +77,15 @@ stom set variables are moved here from =init.el= where they were placed automati
 #+end_src
   
 * Package Management
-
 ** Use Package
 #+begin_src emacs-lisp
   (setq use-package-always-ensure t)
 #+end_src
 
 ** COMMENT straight.el
-[[https://github.com/radian-software/straight.el#getting-started][Getting started with straight.el]] there are variables that can be set to customize straight.el but must be set before the following bootstrapping code
+[[https://github.com/radian-software/straight.el#getting-started][Getting started with straight.el]], there are variables that can be set to customize straight.el but must be set before the following. 
+
+*** Bootstrapping code
 #+begin_src emacs-lisp
   (defvar bootstrap-version)
   (let ((bootstrap-file
@@ -111,7 +117,7 @@ The code block below toggle off the welcome startup screen.
          '((default :height 1.25))))
 #+end_src
    
-** Debug
+** Debugging
 #+BEGIN_SRC emacs-lisp
   ;; Profile emacs startup
   (add-hook 'emacs-startup-hook
@@ -125,6 +131,18 @@ The code block below toggle off the welcome startup screen.
 #+END_SRC
   
 ** Interface tweaks
+*** Inhibit Startup Message
+#+BEGIN_SRC emacs-lisp
+  (setq inhibit-startup-message t)
+  (fset 'yes-or-no-p 'y-or-n-p)
+  (global-set-key (kbd "<f5>") 'revert-buffer)
+  (add-hook 'text-mode-hook 'turn-on-visual-line-mode)
+  (add-hook 'org-mode-hook 'turn-on-visual-line-mode)
+
+  (global-set-key [C-mouse-4] 'text-scale-increase)
+  (global-set-key [C-mouse-5] 'text-scale-decrease)
+#+END_SRC
+    
 *** Window Decorations
 #+BEGIN_SRC emacs-lisp
   (menu-bar-mode -1)
@@ -201,18 +219,6 @@ The code block below toggle off the welcome startup screen.
   (add-to-list 'global-mode-string '("" mode-line-keycast " ")))
 #+end_src
     
-*** Inhibit Startup Message
-#+BEGIN_SRC emacs-lisp
-  (setq inhibit-startup-message t)
-  (fset 'yes-or-no-p 'y-or-n-p)
-  (global-set-key (kbd "<f5>") 'revert-buffer)
-  (add-hook 'text-mode-hook 'turn-on-visual-line-mode)
-  (add-hook 'org-mode-hook 'turn-on-visual-line-mode)
-
-  (global-set-key [C-mouse-4] 'text-scale-increase)
-  (global-set-key [C-mouse-5] 'text-scale-decrease)
-#+END_SRC
-    
 *** Dim Inactive Buffer
 #+BEGIN_SRC emacs-lisp
   (use-package dimmer
@@ -288,11 +294,14 @@ From https://community.jaspersoft.com/wiki/configuring-jasperreports-server-use-
 #+begin_src bash :dir /sudo::
   #Get the Dejavu distribution
   cd /tmp/
-  wget http://sourceforge.net/projects/dejavu/files/dejavu/2.37/dejavu-fonts-ttf-2.37.tar.bz2 
+  wget http://sourceforge.net/projects/dejavu/files/dejavu/2.37/dejavu-fonts-ttf-2.37.tar.bz2
+
   #Unpack it
   tar -xf dejavu-fonts-ttf-2.37.tar.bz2
+
   #Move to fonts folder
   mv dejavu-fonts-ttf-2.37/ttf/ /usr/share/fonts/dejavu
+  
   #Update fonts cache
   fc-cache /usr/share/fonts/dejavu
 #+end_src
@@ -371,40 +380,19 @@ For Iosevka fonts
   (use-package smartparens-config
     :ensure smartparens
     :config
-    (progn (show-smartparens-global-mode t)
-           ;; emacs regexp parens
-           ;; (sp-pair "\\\\(" . "\\\\)")
-
-           ;; latex literal braces in    math mode
-           ;; (sp-pair "\\\\{"   . "\\\\}"  )
-
-           ;; capture parens in regexp in various languages
-           ;; (sp-pair "\\("   . "\\)"  )
-
-           ;; escaped quotes in strings
-           ;; (sp-pair "\\\""  . "\\\"" )
-
-           ;; string double quotes
-           ;; (sp-pair "\""    . "\""   )
-
-           ;; string single quotes/character quotes
-           ;; (sp-pair "'"     . "'"    )
-
-           ;; parens (yay lisp)
-           ;; (sp-pair "("     . ")"    )
-
-           ;; brackets
-           ;; (sp-pair "["     . "]"    )
-
-           ;; braces (a.k.a. curly brackets)
-           ;; (sp-pair "{"     . "}"    )
-
-           ;; latex strings. tap twice for latex double quotes
-           ;; (sp-pair "`"     . "`"    )
-
-           (smartparens-global-mode t)
-           )
-    )
+    (progn
+      ;; (sp-pair "\\\\(" . "\\\\)")      ;; emacs regexp parens
+      ;; (sp-pair "\\\\{"   . "\\\\}")    ;; latex literal braces in    math mode
+      ;; (sp-pair "\\("   . "\\)"  )      ;; capture parens in regexp in various languages
+      ;; (sp-pair "\\\""  . "\\\"" )      ;; escaped quotes in strings
+      ;; (sp-pair "\""    . "\""   )      ;; string double quotes
+      ;; (sp-pair "'"     . "'"    )      ;; string single quotes/character quotes
+      ;; (sp-pair "("     . ")"    )      ;; parens (yay lisp)
+      ;; (sp-pair "["     . "]"    )      ;; brackets
+      ;; (sp-pair "{"     . "}"    )      ;; braces (a.k.a. curly brackets)
+      ;; (sp-pair "`"     . "`"    )      ;; latex strings. tap twice for latex double quotes
+      (show-smartparens-global-mode t)
+      (smartparens-global-mode t)))
 
   ;;(add-hook 'prog-mode-hook 'turn-on-smartparens-strict-mode)
   ;;(add-hook 'markdown-mode-hook 'turn-on-smartparens-strict-mode)
@@ -574,6 +562,7 @@ install w3m via apt/dnf
   ;;(use-package ibus
   ;;  :config (add-hook 'after-init-hook 'ibus-mode-on))
 #+end_src
+
 * Cryptography
 #+begin_src emacs-lisp
   (use-package epa
@@ -605,7 +594,8 @@ install w3m via apt/dnf
             (number-sequence 0 9))))
 #+end_src
    
-* Dired
+* Directory Management
+** Dired
 #+BEGIN_SRC emacs-lisp
   (use-package dired
     :ensure nil
@@ -635,11 +625,16 @@ install w3m via apt/dnf
                                   ("png" . "geeqie"))))
 #+END_SRC
 
-* Dirvish
+** Dirvish
 #+begin_src emacs-lisp
   (use-package dirvish
     :init
     (dirvish-override-dired-mode))
+#+end_src
+
+* Search
+#+begin_src emacs-lisp
+  (use-package deadgrep)
 #+end_src
 
 * Accounting
@@ -699,7 +694,7 @@ Clone [[https://github.com/slime/slime.git][Slime repository]] into ~/code/clone
     :config
     (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
 #+end_src
-   
+  
 ** Code folding
 #+begin_src emacs-lisp
   (use-package origami
@@ -749,33 +744,32 @@ Clone [[https://github.com/slime/slime.git][Slime repository]] into ~/code/clone
 #+end_src
    
 * Reading and Writing
-** Reading
-** Writing
-** COMMENT Latex and pdf-tools
+** Distraction Free Editing
 #+begin_src emacs-lisp
-  (use-package tex
-    :ensure auctex)
-
-  (use-package pdf-tools
-    :pin manual
+  ;; Distraction-free screen
+  (use-package olivetti
+    :init
+    (setq olivetti-body-width .5)
     :config
-    (pdf-tools-install)
-    (setq-default pdf-view-display-size 'fit-width)
-    (define-key pdf-view-mode-map (kbd "C-s") 'isearch-forward)
-    :custom
-    (pdf-annot-activate-created-annotations t "automatically annotate highlights"))
-
-  (setq TeX-view-program-selection '((output-pdf "PDF Tools"))
-        TeX-view-program-list '(("PDF Tools" TeX-pdf-tools-sync-view))
-        TeX-source-correlate-start-server t)
-
-  (add-hook 'TeX-after-compilation-finished-functions
-            #'TeX-revert-document-buffer)
-
-  (add-hook 'pdf-view-mode-hook (lambda() (linum-mode -1)))
+    (defun distraction-free ()
+      "Distraction-free writing environment"
+      (interactive)
+      (if (equal olivetti-mode nil)
+          (progn
+            (window-configuration-to-register 1)
+            (delete-other-windows)
+            (text-scale-increase 2)
+            (olivetti-mode t))
+        (progn
+          (jump-to-register 1)
+          (olivetti-mode 0)
+          (text-scale-decrease 2))))
+    :bind
+    (("<f9>" . distraction-free)))
 #+end_src
-   
-** Nov.el
+
+** Reading
+*** Nov.el
 #+begin_src emacs-lisp
   (defun my-nov-font-setup ()
     (face-remap-add-relative 'variable-pitch :family "Liberation Serif"
@@ -820,7 +814,8 @@ Clone [[https://github.com/slime/slime.git][Slime repository]] into ~/code/clone
 
 #+end_src
 
-** Spellcheck
+** Writing
+*** Spellcheck
 #+begin_src emacs-lisp
   (use-package flyspell
     :config
@@ -836,42 +831,33 @@ Clone [[https://github.com/slime/slime.git][Slime repository]] into ~/code/clone
            ("C-;" . flyspell-auto-correct-previous-word)))
 #+end_src
    
-** Distraction Free Editing
+** COMMENT Latex and pdf-tools
 #+begin_src emacs-lisp
-  ;; Distraction-free screen
-  (use-package olivetti
-    :init
-    (setq olivetti-body-width .5)
+  (use-package tex
+    :ensure auctex)
+
+  (use-package pdf-tools
+    :pin manual
     :config
-    (defun distraction-free ()
-      "Distraction-free writing environment"
-      (interactive)
-      (if (equal olivetti-mode nil)
-          (progn
-            (window-configuration-to-register 1)
-            (delete-other-windows)
-            (text-scale-increase 2)
-            (olivetti-mode t))
-        (progn
-          (jump-to-register 1)
-          (olivetti-mode 0)
-          (text-scale-decrease 2))))
-    :bind
-    (("<f9>" . distraction-free)))
-#+end_src
-   
-* Search
-#+begin_src emacs-lisp
-  (use-package deadgrep)
+    (pdf-tools-install)
+    (setq-default pdf-view-display-size 'fit-width)
+    (define-key pdf-view-mode-map (kbd "C-s") 'isearch-forward)
+    :custom
+    (pdf-annot-activate-created-annotations t "automatically annotate highlights"))
+
+  (setq TeX-view-program-selection '((output-pdf "PDF Tools"))
+        TeX-view-program-list '(("PDF Tools" TeX-pdf-tools-sync-view))
+        TeX-source-correlate-start-server t)
+
+  (add-hook 'TeX-after-compilation-finished-functions
+            #'TeX-revert-document-buffer)
+
+  (add-hook 'pdf-view-mode-hook (lambda() (linum-mode -1)))
 #+end_src
 
-* Syntax Highlighting
-#+begin_src emacs-lisp
-  (use-package rainbow-delimiters
-    :config
-    (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
-#+end_src
-  
+#+RESULTS:
+| lambda | nil | (linum-mode -1) |
+   
 * Communication
 ** COMMENT Email with mu4e
 *** Install =mu4e= for =mu= and =mu4e= and install =isync= packages for =mbsync=
@@ -1054,6 +1040,17 @@ Clone [[https://github.com/slime/slime.git][Slime repository]] into ~/code/clone
   (global-set-key (kbd "C-c a") 'org-agenda)
 #+end_src
 
+** COMMENT Org-gcal
+#+begin_src emacs-lisp
+  (use-package org-gcal
+    :config 
+    (setq org-gcal-client-id "691697679170-vfhv024f23jmjbpmoh891u9bt0mhe1nb.apps.googleusercontent.com"
+          org-gcal-client-secret "kK9mdg6MK4g_zYkFBHcDRV0P"
+          org-gcal-file-alist '(("selva.developer@gmail.com" .  "~/org/work.org")
+                                ("selva.on.profession@gmail.com" .  "~/org/work.org")))
+    )
+#+end_src
+   
 *** Google Calendar Integration
 #+begin_src bash :dir /sudo::/ :result code
   pip3 install ical2orgpy
@@ -1089,6 +1086,7 @@ Clone [[https://github.com/slime/slime.git][Slime repository]] into ~/code/clone
 
 **** Notes
 - Apparently org file generated from gcal files maintains the order by which the events are added to the google calendar. e.g: CareerCoach Vikram Anand that happened way back in the month of May is registered in the file after Hybrid Investing workshop which has not yet happened
+  
 ** Org Refile
 *** TODO 
 **** TODO Find possible values for =org-refile-targets=
@@ -1103,17 +1101,6 @@ org-refile by default only targets current file and heading unless =org-refile-t
   (setq org-outline-path-complete-in-steps nil)         ; refile in a single go
 #+end_src
     
-** COMMENT Org-gcal
-#+begin_src emacs-lisp
-  (use-package org-gcal
-    :config 
-    (setq org-gcal-client-id "691697679170-vfhv024f23jmjbpmoh891u9bt0mhe1nb.apps.googleusercontent.com"
-          org-gcal-client-secret "kK9mdg6MK4g_zYkFBHcDRV0P"
-          org-gcal-file-alist '(("selva.developer@gmail.com" .  "~/org/work.org")
-                                ("selva.on.profession@gmail.com" .  "~/org/work.org")))
-    )
-#+end_src
-   
 ** Org-roam
 #+begin_src emacs-lisp
   (use-package org-roam
@@ -1143,7 +1130,7 @@ org-refile by default only targets current file and heading unless =org-refile-t
 
 #+end_src
 
-** COMMENT Org-roam-ui
+** COMMENT Org Roam UI
 #+begin_src emacs-lisp
   (use-package org-roam-ui
     ;;:straight
@@ -1161,15 +1148,13 @@ org-refile by default only targets current file and heading unless =org-refile-t
 
 #+end_src
    
-** Org-capture
-*** Org-capture
-
-**** Emacs daemon
+** Org Capture
+*** Emacs daemon
 From https://www.emacswiki.org/emacs/EmacsAsDaemon
      
 Systemd is the supported method of running applications at startup on most Linux distributions. The following configuration file emacs.service will be included in the standard Emacs installation as of 26.1.
   
-***** All you need to do is copy this to ~/.config/systemd/user/emacs.service .
+**** All you need to do is copy this to ~/.config/systemd/user/emacs.service .
 #+BEGIN_SRC conf :tangle ~/emacs/emacs.service
   [Unit]
   Description=Emacs text editor
@@ -1186,7 +1171,7 @@ Systemd is the supported method of running applications at startup on most Linux
   WantedBy=default.target
 #+END_SRC
    
-***** And add the following to =.bashrc= in linux
+**** And add the following to =.bashrc= in linux
 From https://emacs.stackexchange.com/questions/24095/bashrc-script-to-automatically-create-emacs-server-session-on-startup
 #+BEGIN_SRC bash 
   export ALTERNATE_EDITOR=""
@@ -1194,22 +1179,22 @@ From https://emacs.stackexchange.com/questions/24095/bashrc-script-to-automatica
   export EDITOR='emacsclient --alternate-editor='
 #+END_SRC
    
-***** For windows add the following into =.emacs=
+**** For windows add the following into =.emacs=
 #+BEGIN_SRC emacs-lisp
   (load "server")
   (unless (server-running-p) (server-start))
 #+END_SRC
 
-***** Note
+**** Note
 Note that =~/.bashrc= runs every time you open a terminal, not when you log in. On normal Unix systems, the file that runs when you log in is =~/.profile= (or =~/.bash_profile=, =~/.profile=, etc. depending on your login shell), but OSX does things differently (and actually runs =~/.bash_profile= or =~/.profile= and not =~/.bashrc= when you open a terminal due to a combination of bad design in OSX and bad design in bash: OSX opens a login shell in each terminal and bash doesn't load =.bashrc= in login shells — see https://unix.stackexchange.com/questions/110998/missing-source-bashrc-mac-terminal-profile).
 
-**** Linux
+*** Linux
 Both of them working now.
    
-***** Capture from browser (Firefox)
+**** Capture from browser (Firefox)
 Can capture from browser
     
-****** Create a =.desktop= file
+***** Create a =.desktop= file
 From https://github.com/zv/dotfilez 
      
 #+BEGIN_SRC  conf 
@@ -1238,7 +1223,6 @@ Succinct version of the same code snippet as above.
 #+END_SRC
      
 And run the following
-
 #+BEGIN_SRC bash
   chmod a+x ~/emacs/org-protocol.desktop
   ln -s ~/emacs/org-protocol.desktop ~/.local/share/applications/
@@ -1255,7 +1239,7 @@ Org-capture book-marklet for firefox, add this to bookmark toolbar on firefox
 
 #+END_SRC
        
-***** Capture from desktop environment
+**** Capture from desktop environment
   - bind the following script to a shortcut
   - no capture from browser
 
@@ -1296,14 +1280,14 @@ Org-capture book-marklet for firefox, add this to bookmark toolbar on firefox
                         (delete-frame))))))
 
   #+END_SRC
-
-**** Mac
+  
+*** Mac
 https://www.reddit.com/r/emacs/comments/6lzyg2/heres_how_to_do_emacsclient_global_orgcapture/
 
-**** Windows
+*** Windows
 https://sachachua.com/blog/2015/11/capturing-links-quickly-with-emacsclient-org-protocol-and-chrome-shortcut-manager-on-microsoft-windows-8/
 
-**** Templates
+*** Templates
 #+BEGIN_SRC emacs-lisp
   (require 'org-protocol)
 
@@ -1324,9 +1308,9 @@ https://sachachua.com/blog/2015/11/capturing-links-quickly-with-emacsclient-org-
            "* %?\nEntered on %U\n  %i\n  %a")))
 #+END_SRC
     
-**** COMMENT html-capture 
-***** TODO Try [[https://github.com/alphapapa/org-web-tools][org-web-tools]]
-***** EWW and w3m org-web clipper from [[http://www.bobnewell.net/publish/35years/webclipper.html][Bob Newell]]
+*** COMMENT html-capture 
+**** TODO Try [[https://github.com/alphapapa/org-web-tools][org-web-tools]]
+**** EWW and w3m org-web clipper from [[http://www.bobnewell.net/publish/35years/webclipper.html][Bob Newell]]
 #+begin_src emacs-lisp
 
   ;; org-eww and org-w3m should be in your org distribution, but see
@@ -1381,7 +1365,7 @@ https://sachachua.com/blog/2015/11/capturing-links-quickly-with-emacsclient-org-
     )
 #+end_src
 
-***** The following [[org-protocol-capture-html][from alphapapa]] but doesn't suit my needs
+**** The following [[org-protocol-capture-html][from alphapapa]] but doesn't suit my needs
 #+begin_src emacs-lisp
   (use-package org-protocol-capture-html)
 #+end_src
@@ -1398,7 +1382,8 @@ Firefox bookmarklet
   javascript:location.href = 'org-protocol://capture-html?template=w&url=' + encodeURIComponent(location.href) + '&title=' + encodeURIComponent(document.title || "[untitled page]") + '&body=' + encodeURIComponent(function () {var html = ""; if (typeof document.getSelection != "undefined") {var sel = document.getSelection(); if (sel.rangeCount) {var container = document.createElement("div"); for (var i = 0, len = sel.rangeCount; i < len; ++i) {container.appendChild(sel.getRangeAt(i).cloneContents());} html = container.innerHTML;}} else if (typeof document.selection != "undefined") {if (document.selection.type == "Text") {html = document.selection.createRange().htmlText;}} var relToAbs = function (href) {var a = document.createElement("a"); a.href = href; var abs = a.protocol + "//" + a.host + a.pathname + a.search + a.hash; a.remove(); return abs;}; var elementTypes = [['a', 'href'], ['img', 'src']]; var div = document.createElement('div'); div.innerHTML = html; elementTypes.map(function(elementType) {var elements = div.getElementsByTagName(elementType[0]); for (var i = 0; i < elements.length; i++) {elements[i].setAttribute(elementType[1], relToAbs(elements[i].getAttribute(elementType[1])));}}); return div.innerHTML;}());
 #+end_src
 
-** Org-babel
+** Org Babel
+[[https://orgmode.org/worg/org-contrib/babel/languages/lang-compat.html][Babel: Language Compatability]]
 #+begin_src bash :tangle ~/emacs/org-babel-stderr.sh
   #!/bin/bash
   {
@@ -1462,8 +1447,7 @@ Capture latex equations from browser
 
 #+end_src
    
-** Youtube link and mpv
-   
+** Youtube link and mpv   
 *** [[https://github.com/bitspook/spookmax.d/blob/5f1d71cf572cd18dc7d41f292753d4b7683877c3/readme.org#org-mode][from spookmax]]  [[[yt://www.youtube.com/watch?v=eaZUZCzaIgw][video]]]
 #+begin_src emacs-lisp
   (defun spook-org--follow-yt-link (path prefix)
@@ -1485,7 +1469,6 @@ Capture latex equations from browser
          url desc))))
 
   (org-link-set-parameters "yt" :follow #'spook-org--follow-yt-link :export #'spook-org--export-yt-link)
-
 #+end_src
 
 * Reference Management
@@ -1543,6 +1526,30 @@ org-ref enables us to insert citations, export them to latex and even non-latex 
 When fetching entries via Biblio, Ebib checks for duplicates based on the key of the new entry. This will only work reliably if both Ebib and Biblio are configured to automatically generate BibTeX keys. Ebib does this by default (see the option ebib-autogenerate-keys), Biblio can be configured to do so by setting the option biblio-bibtex-use-autokey.
 
 * Elfeed-org
+** Installation
+*** Download elfeed-org
+#+BEGIN_SRC bash
+  cd ~/.emacs.d/lisp
+  #wget https://github.com/remyhonig/elfeed-org/blob/master/elfeed-org.el
+  wget https://raw.githubusercontent.com/remyhonig/elfeed-org/master/elfeed-org.el
+#+END_SRC
+
+*** Install the package in Emacs
+#+BEGIN_SRC text
+  C-x C-f ~/.emacs.d/lisp/elfeed-org.el <ENTER>
+  M-x package-install-from-buffer <ENTER>
+#+END_SRC
+     
+*** elfeed-db store
+[[https://github.com/vanangamudi/elfeed-db/][My elfeed-db repo]]
+Clone and map =elfeed-db= to  =~/.elfeed= directory
+#+begin_src bash
+  cd ~/emacs/
+  git clone git@github.com:vanangamudi/elfeed-db.git
+  ln -s ~/aalar/emacs/elfeed ~/.elfeed
+#+end_src
+
+*** Elfeed config
 #+BEGIN_SRC emacs-lisp
   ;; Load elfeed-org
   (use-package elfeed-org)
@@ -1555,7 +1562,6 @@ When fetching entries via Biblio, Ebib checks for duplicates based on the key of
   ;; configuration. If not set then the location below is used.
   ;; Note: The customize interface is also supported.
   (setq rmh-elfeed-org-files (list "~/emacs/elfeed-db/elfeed.org"))
-
 
   (use-package elfeed-tube
     :after elfeed
@@ -1584,16 +1590,30 @@ When fetching entries via Biblio, Ebib checks for duplicates based on the key of
 #+END_SRC
 
 * Emacs Everywhere
-install the following packages
+
+** Install the following packages
 #+begin_src bash  :dir /sudo::  :results output
   apt-get install xclip xdotool xbindkeys #xprop xwininfo 
 #+end_src
 
+** Config
 #+begin_src emacs-lisp
   (use-package emacs-everywhere)
 #+end_src
 
 * Media
+  
+** mpv
+#+begin_src bash :tangle ~/.config/mpv/mpv.conf
+  # Guide:
+  # https://mpv.io/manual/stable/#configuration-files
+  # Use GPU-accelerated video output by default.
+  vo=gpu
+  # Use quotes for text that can contain spaces:
+  term-status-msg="Time: ${time-pos}"
+  screenshot-directory="~/Pictures/mpv"
+#+end_src   
+
 #+begin_src emacs-lisp
   (use-package mpv)
 
