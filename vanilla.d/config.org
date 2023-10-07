@@ -524,6 +524,11 @@ Look into this for starting emacs extension development
 #+end_src
 
 * Navigation
+** C-x 1 reversal
+#+begin_src emacs-lisp
+  (use-package zygospore)
+  (global-set-key (kbd "C-x 1") 'zygospore-toggle-delete-other-windows)
+#+end_src
 ** Avy 
 #+begin_src emacs-lisp
   (use-package avy
