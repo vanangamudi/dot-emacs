@@ -25,7 +25,6 @@ The emacs config is written from scratch or should I say built ground up by copy
   ;; -*- mode: Lisp; coding: utf-8; -*-
 #+end_src
 
-
 * TODO List
 ** TODO use vertico, consult, embark combo
 - how to intergrate with org-ref
@@ -242,6 +241,12 @@ The code block below toggle off the welcome startup screen.
 #+end_src
 
 *** Themes
+There are several themes I have grown to like. Here is the some of them.
+- [[https://github.com/kunalb/poet][poet]]
+- bespoke
+- afternoon
+- lueven
+- [[https://github.com/mauforonda/emacs][mauforonda]]
 **** Fonts
 ***** Notes
 - [[https://gist.github.com/equwal/89b1ef5ac8d4d737cfd37f66e9ba4895][Selecting and trying out different fonts in Emacs -- equwal/fonts.el]]
