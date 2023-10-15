@@ -124,7 +124,7 @@ The code block below toggle off the welcome startup screen.
               (message "Emacs loaded in %s."
                        (emacs-init-time))))
 
-  (setq debug-on-error nil)
+  (setq debug-on-error t)
   (setq gc-cons-threshold (* 2 1000 1000))
   (setq find-file-visit-truename nil)
 #+END_SRC
@@ -321,6 +321,12 @@ For Iosevka fonts
 #+end_src
     
 **** Bespoke Theme
+Download theme
+#+begin_src bash
+  cd ~/aalar/emacs/vanilla.d/themes/
+  git clone https://github.com/mclear-tools/bespoke-themes
+#+end_src
+
 #+BEGIN_SRC emacs-lisp
   (add-to-list 'custom-theme-load-path "~/emacs/vanilla.d/themes/")
   ;;(load-theme 'afternoon t)
@@ -1061,7 +1067,7 @@ Clone [[https://github.com/slime/slime.git][Slime repository]] into ~/code/clone
   #+begin_src emacs-lisp
     (setq org-cycle-separator-lines 2)
     (setq org-blank-before-new-entry
-          '((heading . always)
+          '((heading . auto)
             (plain-list-item . nil)))
 
     (setq org-startup-indented t
@@ -1482,6 +1488,7 @@ Firefox bookmarklet
   } 2>&1
 #+end_src
 
+*** COMMENT Ledger
 Since =ob-ledger= package is not there by default, download it from a source
 #+begin_src bash
   wget -c https://raw.githubusercontent.com/tkf/org-mode/master/lisp/ob-ledger.el -O ~/emacs/vanilla.d/lisp/ob-ledger.el
