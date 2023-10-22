@@ -320,7 +320,7 @@ For Iosevka fonts
   curl -s 'https://api.github.com/repos/be5invis/Iosevka/releases/latest' | jq -r ".assets[] | .browser_download_url" | grep ttf-iosevka | xargs -n 1 curl -L -O --fail --silent --show-error
 #+end_src
     
-**** Bespoke Theme
+**** COMMENT Bespoke Theme
 Download theme
 #+begin_src bash
   cd ~/aalar/emacs/vanilla.d/themes/
@@ -341,7 +341,17 @@ Download theme
   ;; Set initial theme variant
   (setq bespoke-set-theme 'dark)
   (load-theme 'bespoke t)
+#+END_SRC
 
+**** Gruvbox Theme
+#+begin_src emacs-lisp
+  (use-package gruvbox-theme
+    :init
+    (load-theme 'gruvbox-light-soft t))
+#+end_src
+**** Frame and Window configuration
+Where did I steal this from?
+#+begin_src emacs-lisp
   ;; Make a clean & minimalist frame
   (use-package frame
     :ensure nil
@@ -361,10 +371,10 @@ Download theme
     (window-divider-default-right-width 12)
     (window-divider-default-bottom-width 1)
     (window-divider-default-places 'right-only)
-    (window-divider-mode t))
+    (window-divider-mode nil))
 
   (add-hook 'before-make-frame-hook 'window-divider-mode)
-#+END_SRC
+#+end_src
 
 **** COMMENT Use =use-package= to install and load theme
 #+begin_src emacs-lisp
