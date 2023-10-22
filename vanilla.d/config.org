@@ -1271,6 +1271,13 @@ org-refile by default only targets current file and heading unless =org-refile-t
 
 #+end_src
    
+** Org Cliplink
+[[https://github.com/rexim/org-cliplink][GitHub - rexim/org-cliplink: Insert org-mode links from clipboard]]
+#+begin_src emacs-lisp
+  (use-package org-cliplink
+    :bind (("C-c l i" . org-cliplink)))
+#+end_src
+
 ** Org Capture
 *** Emacs daemon
 From https://www.emacswiki.org/emacs/EmacsAsDaemon
