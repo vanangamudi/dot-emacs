@@ -581,6 +581,82 @@ install w3m via apt/dnf
   sudo apt install w3m
 #+end_src
 
+** EWW
+#+begin_src emacs-lisp
+  (setq browse-url-browser-function 'eww-browse-url)
+#+end_src
+
+*** Prot extras for EWW
+#+begin_src bash
+  wget https://gitlab.com/protesilaos/dotfiles/-/raw/master/emacs/.emacs.d/prot-lisp/prot-eww.el?ref_type=heads -O ~/emacs/vanilla.d/lisp/prot-eww.el
+  wget https://gitlab.com/protesilaos/dotfiles/-/raw/master/emacs/.emacs.d/prot-lisp/prot-common.el?ref_type=heads -O ~/emacs/vanilla.d/lisp/prot-common.el
+#+end_src
+
+#+RESULTS:
+
+#+begin_src emacs-lisp
+  (require 'prot-common)
+  (require 'prot-eww)
+#+end_src
+
+** Search Engines
+#+begin_src emacs-lisp
+  (use-package engine-mode
+    :ensure t
+    :bind-keymap ("C-c s" . engine-mode-prefixed-map)
+    :config
+    (engine-mode t)
+    (setq engine/browser-function 'eww-browse-url))
+
+  (defengine amazon
+             "https://www.amazon.com/s/ref=nb_sb_noss?url=search-alias%3Daps&field-keywords=%s")
+
+  (defengine duckduckgo
+             "https://duckduckgo.com/?q=%s"
+             :keybinding "d")
+
+  (defengine github
+             "https://github.com/search?ref=simplesearch&q=%s")
+
+  (defengine google
+             "https://www.google.com/search?ie=utf-8&oe=utf-8&q=%s"
+             :keybinding "g")
+
+  (defengine google-images
+             "https://www.google.com/images?hl=en&source=hp&biw=1440&bih=795&gbv=2&aq=f&aqi=&aql=&oq=&q=%s")
+
+  (defengine google-maps
+             "https://maps.google.com/maps?q=%s"
+             :docstring "Mappin' it up."
+             :keybinding "m")
+
+  (defengine project-gutenberg
+             "https://www.gutenberg.org/ebooks/search/?query=%s")
+
+  (defengine qwant
+             "https://www.qwant.com/?q=%s")
+
+  (defengine stack-overflow
+             "https://stackoverflow.com/search?q=%s")
+
+  (defengine twitter
+             "https://twitter.com/search?q=%s")
+
+  (defengine wikipedia
+             "https://www.wikipedia.org/search-redirect.php?language=en&go=Go&search=%s"
+             :docstring "Searchin' the wikis."
+             :keybinding "w")
+
+  (defengine wiktionary
+             "https://www.wikipedia.org/search-redirect.php?family=wiktionary&language=en&go=Go&search=%s")
+
+  (defengine wolfram-alpha
+             "https://www.wolframalpha.com/input/?i=%s")
+
+  (defengine youtube
+             "https://www.youtube.com/results?aq=f&oq=&search_query=%s")
+#+end_src
+
 * Input system
 ** Tamil
 #+begin_src emacs-lisp
@@ -769,66 +845,6 @@ Clone [[https://github.com/slime/slime.git][Slime repository]] into ~/code/clone
     (align-regexp BEG END "\\(\\s-*\\)\\S-+" 1 1 t))
 #+end_src
 
-
-* Browsing
-
-** Search Engines
-#+begin_src emacs-lisp
-  (use-package engine-mode
-    :ensure t
-    :bind-keymap ("C-c s" . engine-mode-prefixed-map)
-    :config
-    (engine-mode t)
-    (setq engine/browser-function 'eww-browse-url))
-
-  (defengine amazon
-             "https://www.amazon.com/s/ref=nb_sb_noss?url=search-alias%3Daps&field-keywords=%s")
-
-  (defengine duckduckgo
-             "https://duckduckgo.com/?q=%s"
-             :keybinding "d")
-
-  (defengine github
-             "https://github.com/search?ref=simplesearch&q=%s")
-
-  (defengine google
-             "https://www.google.com/search?ie=utf-8&oe=utf-8&q=%s"
-             :keybinding "g")
-
-  (defengine google-images
-             "https://www.google.com/images?hl=en&source=hp&biw=1440&bih=795&gbv=2&aq=f&aqi=&aql=&oq=&q=%s")
-
-  (defengine google-maps
-             "https://maps.google.com/maps?q=%s"
-             :docstring "Mappin' it up."
-             :keybinding "m")
-
-  (defengine project-gutenberg
-             "https://www.gutenberg.org/ebooks/search/?query=%s")
-
-  (defengine qwant
-             "https://www.qwant.com/?q=%s")
-
-  (defengine stack-overflow
-             "https://stackoverflow.com/search?q=%s")
-
-  (defengine twitter
-             "https://twitter.com/search?q=%s")
-
-  (defengine wikipedia
-             "https://www.wikipedia.org/search-redirect.php?language=en&go=Go&search=%s"
-             :docstring "Searchin' the wikis."
-             :keybinding "w")
-
-  (defengine wiktionary
-             "https://www.wikipedia.org/search-redirect.php?family=wiktionary&language=en&go=Go&search=%s")
-
-  (defengine wolfram-alpha
-             "https://www.wolframalpha.com/input/?i=%s")
-
-  (defengine youtube
-             "https://www.youtube.com/results?aq=f&oq=&search_query=%s")
-#+end_src
 
 * Reading and Writing
 ** Distraction Free Editing
