@@ -1513,13 +1513,6 @@ Firefox bookmarklet
 #+end_src
 
 ** Org Babel
-[[https://orgmode.org/worg/org-contrib/babel/languages/lang-compat.html][Babel: Language Compatability]]
-#+begin_src bash :tangle ~/emacs/org-babel-stderr.sh
-  #!/bin/bash
-  {
-      bash $1
-  } 2>&1
-#+end_src
 
 *** COMMENT Ledger
 Since =ob-ledger= package is not there by default, download it from a source
@@ -1530,10 +1523,36 @@ Since =ob-ledger= package is not there by default, download it from a source
 #+begin_src emacs-lisp
   (setq org-babel-sh-command "~/emacs/org-babel-stderr.sh")
   (org-babel-do-load-languages 'org-babel-load-languages '((shell . t)
-                                                           (ledger . t)
-                                                           (ditaa . t)
-                                                           (octave . t)
-                                                           (python . t)))
+							   ;;(ledger . t)
+							   (ditaa . t)
+							   (octave . t)
+							   (python . t)))
+#+end_src
+
+*** ob-async
+#+begin_src emacs-lisp
+  (use-package ob-async
+    :custom
+    (setq ob-async-no-async-languages-alist '("ipython")))
+#+end_src
+
+**** COMMENT ob-async-pre-execute-src-block-hook
+Some org-babel languages require additional user configuration. For example, ob-julia requires inferior-julia-program-name to be defined. Normally you would define such variables in your init.el, but src block execution occurs in an Emacs subprocess which does not evaluate init.el on startup. Instead, you can place initialization logic in ob-async-pre-execute-src-block-hook, which runs before execution of every src block.
+
+Example:
+#+begin_src emacs-lisp
+  (add-hook 'ob-async-pre-execute-src-block-hook
+          '(lambda ()
+             (setq inferior-julia-program-name "/usr/local/bin/julia")))
+
+#+end_src
+
+[[https://orgmode.org/worg/org-contrib/babel/languages/lang-compat.html][Babel: Language Compatability]]
+#+begin_src bash :tangle ~/emacs/org-babel-stderr.sh
+  #!/bin/bash
+  {
+      bash $1
+  } 2>&1
 #+end_src
 
 ** Tempo
