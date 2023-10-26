@@ -542,7 +542,13 @@ Look into this for starting emacs extension development
             ("FIXME"  . "#FF0000")
             ("DEBUG"  . "#A020F0")
             ("GOTCHA" . "#FF4500")
-            ("STUB"   . "#1E90FF"))))
+            ("STUB"   . "#1E90FF")))
+    :hook (prog-mode . hl-todo-mode))
+
+  (define-globalized-minor-mode va-global-hl-line-mode hl-line-mode
+    (lambda () (hl-line-mode 1)))
+
+  (va-global-hl-line-mode 1)
 #+end_src
 
 ** Anzu 
