@@ -580,6 +580,17 @@ Look into this for starting emacs extension development
   ("M-q" . unfill-toggle)
   ("M-Q" . unfill-paragraph))
 #+end_src
+** Multiple cursors
+When you want to add multiple cursors not based on continuous lines, but based on keywords in the buffer use =C-</C->=. First mark the word, then add more cursors. To get out of multiple-cursors-mode, press <return> or C-g. The latter will first disable multiple regions before disabling multiple cursors. If you want to insert a newline in multiple-cursors-mode, use C-j.
+#+begin_src emacs-lisp
+  (use-package multiple-cursors
+    :bind
+    ("C-S-c C-S-c" . 'mc/edit-lines)
+    ("C-c C-<" . 'mc/mark-all-like-this)
+    ("C-<" . 'mc/mark-previous-like-this)
+    ("C->" . 'mc/mark-next-like-this))
+#+end_src
+
 ** Regex
 *** Visual Regex on Steroid
 #+begin_src emacs-lisp
