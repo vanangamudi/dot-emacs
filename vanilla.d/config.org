@@ -1885,6 +1885,31 @@ Clone and map =elfeed-db= to  =~/.elfeed= directory
 #+END_SRC
 
 * Emacs Everywhere
+** Yequake
+The =yequake-org-capture= function is suitable for use in a Yequake frame used for Org Capture. It calls =org-capture= and sets =org-capture-after-finalize-hook= to close the Yequake frame after the capture is finalized or canceled. (Note that if another Yequake frame is toggled before the capture is finalized, when the capture is finalized, the wrong Yequake frame will be toggled.) For example, with this configuration:
+#+begin_src emacs-lisp
+  (use-package yequake
+    ;;:quelpa (yequake :fetcher github :repo "alphapapa/yequake")
+
+    :custom
+    (yequake-frames
+     '(("org-capture" 
+        (buffer-fns . (yequake-org-capture))
+        (width . 0.75)
+        (height . 0.5)
+        (alpha . 0.95)
+        (frame-parameters . ((undecorated . t)
+                             (skip-taskbar . t)
+                             (sticky . t)))))))
+#+end_src
+
+You could then run:
+#+begin_src sh
+  emacsclient -n -e '(yequake-toggle "org-capture")'
+#+end_src
+
+And after the capture is finalized or canceled, the frame will be closed.
+
 ** Install the following packages
 #+begin_src bash  :dir /sudo::  :results output
   apt-get install xclip xdotool xbindkeys #xprop xwininfo 
