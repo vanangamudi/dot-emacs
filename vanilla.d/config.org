@@ -1993,3 +1993,25 @@ needs to imported from nongnu elpa. add the following to init.el
 * Notes
 ** Difference between visual-line-mode and auto-fill-mode
 auto-fill-mode breaks sentence introducing line-breaks, or newline after a certain number of characters. Visual line mode does not alter the number of lines but only visually wraps text so that it is easier to look at
+**  [[https://www.masteringemacs.org/article/speed-up-emacs-libjansson-native-elisp-compilation][Speed up Emacs with libjansson and native elisp compilation - Mastering Emacs]]
+ 
+The whole process may take a while. Native compilation is, as of Emacs 28.1, automatic, and runs in the background. There is nothing for you to do to make it work as it will compile stuff in the background while you’re using Emacs.
+ 
+To test that both the fast JSON and native compilation is working you can evaluate the following elisp in Emacs:
+
+ #+begin_src emacs-lisp
+   (if (and (fboundp 'native-comp-available-p)
+            (native-comp-available-p))
+     (message "Native compilation is available")
+   (message "Native complation is *not* available"))
+ #+end_src
+ 
+ And for the JSON:
+
+ #+begin_src emacs-lisp
+   (if (functionp 'json-serialize)
+       (message "Native JSON is available")
+   (message "Native JSON is *not* available"))
+ #+end_src
+ 
+ And.. that’s that. Enjoy your souped-up Emacs.
