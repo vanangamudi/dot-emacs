@@ -11,6 +11,9 @@ The emacs config is written from scratch or should I say built ground up by copy
 - https://github.com/daedreth/UncleDavesEmacs
 - https://github.com/larstvei/dot-emacs#meta
 - https://github.com/skx/dotfiles/blob/master/.emacs.d/init.md#org-mode-and-blank-lines
+- https://zzamboni.org/post/my-emacs-configuration-with-commentary/
+- https://miikanissi.com/blog/website-with-emacs/
+- https://rgoswami.me/posts/org-note-workflow/#basic-variables
 
 ** Eyecandy
 - https://lepisma.xyz/2017/10/28/ricing-org-mode/index.html
@@ -151,7 +154,7 @@ The code block below toggle off the welcome startup screen.
     (tool-bar-mode -1)
     (scroll-bar-mode -1)
     (tooltip-mode -1)
-    (set-fringe-mode 10))
+    (set-fringe-mode 5))
 
   (use-package all-the-icons)
   (use-package all-the-icons-dired
@@ -251,6 +254,27 @@ There are several themes I have grown to like. Here is the some of them.
 ***** Notes
 - [[https://gist.github.com/equwal/89b1ef5ac8d4d737cfd37f66e9ba4895][Selecting and trying out different fonts in Emacs -- equwal/fonts.el]]
 - [[https://protesilaos.com/codelog/2022-05-14-re-emacs-font/][Protesilaos Stavrou]]
+***** Variable Pitch Mode
+#+begin_src emacs-lisp
+  (dolist (hook '(erc-mode-hook
+          LaTeX-mode-hook
+          org-mode-hook
+          edit-server-start-hook
+          markdown-mode-hook))
+    (add-hook hook (lambda () (variable-pitch-mode t))))
+#+end_src
+
+***** Mixed Pitch Fonts
+#+begin_src emacs-lisp
+  (use-package mixed-pitch
+    :defer
+    :config
+    (setq mixed-pitch-variable-pitch-cursor nil)
+    :hook
+    (org-mode . mixed-pitch-mode)
+    (text-mode . mixed-pitch-mode))
+#+end_src
+
 ***** COMMENT Font Cycling
 ****** [[https://comp.lang.lisp.narkive.com/gVFOnOLz/best-unicode-font-for-emacs-font-cycling-elisp-code][best unicode font for emacs & font cycling elisp code]] -- xah lee 
 *******  Quickly Switching Fonts
@@ -349,6 +373,8 @@ Download theme
     :init
     (load-theme 'gruvbox-light-soft t))
 #+end_src
+
+
 **** Frame and Window configuration
 Where did I steal this from?
 #+begin_src emacs-lisp
@@ -358,7 +384,7 @@ Where did I steal this from?
     :config
     (setq-default default-frame-alist
                   (append (list
-                           '(font . "Noto Sans Mono:style=medium:size=13") ;; NOTE: substitute whatever font you prefer here
+                           '(font . "Noto Sans Mono:style=medium:size=16") ;; NOTE: substitute whatever font you prefer here
                            '(internal-border-width . 10)
                            '(left-fringe    . 0)
                            '(right-fringe   . 0)
@@ -499,6 +525,7 @@ Brings up some help
 Clipetty is a minor mode for terminal (TTY) users that sends text that you kill in Emacs to your Operating System's clipboard. If you predominately use Emacs in GUI (X-Windows, macOS, Windows) frames you don't need Clipetty.
 
 For this to work you need to be using a terminal emulator that supports OSC 52 escape sequences. See the Terminals section below to check if your favorite terminal emulator is on the list.
+
 #+begin_src emacs-lisp
   (use-package clipetty
     :hook (after-init . global-clipetty-mode))
@@ -537,6 +564,23 @@ Look into this for starting emacs extension development
 
     (define-key isearch-mode-map [remap isearch-query-replace]  #'anzu-isearch-query-replace)
     (define-key isearch-mode-map [remap isearch-query-replace-regexp] #'anzu-isearch-query-replace-regexp))
+#+end_src
+
+* Text Editing
+** Unfill Paragraph
+#+begin_src emacs-lisp
+(use-package unfill
+  :bind
+  ("M-q" . unfill-toggle)
+  ("M-Q" . unfill-paragraph))
+#+end_src
+** Regex
+*** Visual Regex on Steroid
+#+begin_src emacs-lisp
+  (use-package visual-regexp-steroids
+    :bind (("C-c R"  . 'vr/replace)
+           ("C-c q"  . 'vr/query-replace)
+           ("C-c m`" . 'vr/mc-mark)))
 #+end_src
 
 * Navigation
@@ -641,9 +685,15 @@ Look into this for starting emacs extension development
 #+end_src
 
 * Browsing
+
+** Emacs-w3m
 install w3m via apt/dnf
-#+begin_src bash
-  sudo apt install w3m
+#+begin_src sh :dir /sudo::
+  apt install w3m
+#+end_src
+
+#+begin_src emacs-lisp
+  (use-package w3m)
 #+end_src
 
 ** EWW
@@ -828,6 +878,15 @@ install w3m via apt/dnf
 #+end_src
 
 *** Python
+**** Inspirations
+- https://robbmann.io/posts/006_emacs_2_python/
+- https://medium.com/analytics-vidhya/managing-a-python-development-environment-in-emacs-43897fd48c6a
+**** MyPy
+#+begin_src sh :dir /sudo::
+  apt install mypy
+#+end_src
+
+**** Blacken
 #+begin_src emacs-lisp
   (use-package blacken
     :hook ((python-mode . blacken-mode)))
@@ -860,6 +919,10 @@ Clone [[https://github.com/slime/slime.git][Slime repository]] into ~/code/clone
   (use-package rainbow-delimiters
     :config
     (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
+
+  (use-package rainbow-blocks
+    :config
+    (add-hook 'prog-mode-hook #'rainbow-blocks-mode))
 #+end_src
   
 ** Code folding
@@ -909,7 +972,6 @@ Clone [[https://github.com/slime/slime.git][Slime repository]] into ~/code/clone
     (interactive "r")
     (align-regexp BEG END "\\(\\s-*\\)\\S-+" 1 1 t))
 #+end_src
-
 
 * Reading and Writing
 ** Distraction Free Editing
@@ -1029,9 +1091,6 @@ Clone [[https://github.com/slime/slime.git][Slime repository]] into ~/code/clone
   (add-hook 'pdf-view-mode-hook (lambda() (linum-mode -1)))
 #+end_src
 
-#+RESULTS:
-| lambda | nil | (linum-mode -1) |
-   
 * Communication
 ** COMMENT Email with mu4e
 *** Install =mu4e= for =mu= and =mu4e= and install =isync= packages for =mbsync=
@@ -1167,6 +1226,8 @@ Clone [[https://github.com/slime/slime.git][Slime repository]] into ~/code/clone
           org-fontify-whole-heading-line t
           org-fontify-done-headline t
           org-fontify-quote-and-verse-blocks t)
+    
+    (set-face-attribute 'org-table nil :inherit 'fixed-pitch)
   #+end_src
   
 ** Org Superstar
@@ -1578,7 +1639,8 @@ Firefox bookmarklet
 #+end_src
 
 ** Org Babel
-
+*** Notes
+- https://pank.eu/blog/pretty-babel-src-blocks.html
 *** COMMENT Ledger
 Since =ob-ledger= package is not there by default, download it from a source
 #+begin_src bash
@@ -1588,10 +1650,11 @@ Since =ob-ledger= package is not there by default, download it from a source
 #+begin_src emacs-lisp
   (setq org-babel-sh-command "~/emacs/org-babel-stderr.sh")
   (org-babel-do-load-languages 'org-babel-load-languages '((shell . t)
-							   ;;(ledger . t)
-							   (ditaa . t)
-							   (octave . t)
-							   (python . t)))
+                                                           ;;(ledger . t)
+                                                           (ditaa . t)
+                                                           (bash . t)
+                                                           (octave . t)
+                                                           (python . t)))
 #+end_src
 
 *** ob-async
@@ -1686,8 +1749,8 @@ Capture latex equations from browser
   (org-link-set-parameters "yt" :follow #'spook-org--follow-yt-link :export #'spook-org--export-yt-link)
 #+end_src
 
-* Reference Management
-** Bibtex
+** Reference Management
+*** Bibtex
 =bibtex-autokey-*= variables are used while constructing the key for a bibtex entry automatically from the fields of the bibtex entry. The bibtex entries can be created from =doi=, =arxiv=
 #+begin_src emacs-lisp
   (use-package ivy-bibtex
@@ -1719,7 +1782,7 @@ Capture latex equations from browser
             (call-process "open" nil 0 nil fpath))))
 #+end_src
    
-** Org-ref
+*** Org-ref
 org-ref is very helpful when authoring papers. =org-ref-insert-link= function can be used to insert citations. The citations are looked up from list of =.bib= files as conigured in variable =bibtex-completion-bibliography=. org-ref has to be used in conjuction with =ivy-bibtex= package.
 org-ref enables us to insert citations, export them to latex and even non-latex exports consistently.
 #+begin_src emacs-lisp  
@@ -1730,14 +1793,14 @@ org-ref enables us to insert citations, export them to latex and even non-latex 
   ;;(use-package org-ref-ivy)
 #+end_src
 
-** Ebib
+*** Ebib
 #+begin_src emacs-lisp
   (use-package ebib
     :config
     (setq ebib-bibtex-dialect 'biblatex))
 #+end_src
 
-** Ebib-biblio
+*** Ebib-biblio
 When fetching entries via Biblio, Ebib checks for duplicates based on the key of the new entry. This will only work reliably if both Ebib and Biblio are configured to automatically generate BibTeX keys. Ebib does this by default (see the option ebib-autogenerate-keys), Biblio can be configured to do so by setting the option biblio-bibtex-use-autokey.
 
 * Elfeed-org
@@ -1805,7 +1868,6 @@ Clone and map =elfeed-db= to  =~/.elfeed= directory
 #+END_SRC
 
 * Emacs Everywhere
-
 ** Install the following packages
 #+begin_src bash  :dir /sudo::  :results output
   apt-get install xclip xdotool xbindkeys #xprop xwininfo 
@@ -1817,7 +1879,6 @@ Clone and map =elfeed-db= to  =~/.elfeed= directory
 #+end_src
 
 * Media
-  
 ** mpv
 #+begin_src bash :tangle ~/.config/mpv/mpv.conf
   # Guide:
@@ -1923,7 +1984,6 @@ needs to imported from nongnu elpa. add the following to init.el
     (add-hook 'subed-mode-hook (lambda () (setq-local fill-column 40))))
 #+end_src
 
-
-
-
-  
+* Notes
+** Difference between visual-line-mode and auto-fill-mode
+auto-fill-mode breaks sentence introducing line-breaks, or newline after a certain number of characters. Visual line mode does not alter the number of lines but only visually wraps text so that it is easier to look at
