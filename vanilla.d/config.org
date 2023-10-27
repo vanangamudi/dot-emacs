@@ -1666,12 +1666,14 @@ Since =ob-ledger= package is not there by default, download it from a source
 
 #+begin_src emacs-lisp
   (setq org-babel-sh-command "~/emacs/org-babel-stderr.sh")
-  (org-babel-do-load-languages 'org-babel-load-languages '((shell . t)
-                                                           ;;(ledger . t)
-                                                           (ditaa . t)
-                                                           (bash . t)
-                                                           (octave . t)
-                                                           (python . t)))
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((shell . t)
+     ;;(ledger . t)
+     (ditaa . t)
+     (bash . t)
+     (octave . t)
+     (python . t)))
 #+end_src
 
 *** ob-async
