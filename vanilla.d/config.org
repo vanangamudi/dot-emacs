@@ -14,6 +14,7 @@ The emacs config is written from scratch or should I say built ground up by copy
 - https://zzamboni.org/post/my-emacs-configuration-with-commentary/
 - https://miikanissi.com/blog/website-with-emacs/
 - https://rgoswami.me/posts/org-note-workflow/#basic-variables
+- https://github.com/sergeyklay/.emacs.d
 
 ** Eyecandy
 - https://lepisma.xyz/2017/10/28/ricing-org-mode/index.html
@@ -174,6 +175,7 @@ The code block below toggle off the welcome startup screen.
                   term-mode-hook
                   shell-mode-hook
                   treemacs-mode-hook
+                  eww-mode-hook
                   eshell-mode-hook))
     (add-hook mode (lambda () (display-line-numbers-mode 0))))
 
@@ -184,6 +186,7 @@ The code block below toggle off the welcome startup screen.
   (set-frame-parameter (selected-frame) 'fullscreen 'maximized)
   (add-to-list 'default-frame-alist '(fullscreen . maximized))
 #+END_SRC
+
 #+begin_src emacs-lisp
   ;; my very first own emacs-lisp functionality :)
   ;; for watching naruto underneath
@@ -941,7 +944,21 @@ Clone [[https://github.com/slime/slime.git][Slime repository]] into ~/code/clone
     :config
     (add-hook 'prog-mode-hook #'rainbow-blocks-mode))
 #+end_src
-  
+
+*** Rainbow blocks visual inspection
+#+begin_src python
+  if name == noname:
+      function_call(second_function(third_function(fourth_function(fifth_one(sixth_maybe(seventh_again(eighth_call(nineth_one()))))))))
+
+      if name == nonameagain:
+          with enter_one_more as f:
+              fine = by me
+              if var:
+                  var = True
+                  if makedirs:
+                      temp = dump
+#+end_src
+
 ** Code folding
 #+begin_src emacs-lisp
   (use-package origami
@@ -988,6 +1005,12 @@ Clone [[https://github.com/slime/slime.git][Slime repository]] into ~/code/clone
     "Align non-space columns in region BEG END."
     (interactive "r")
     (align-regexp BEG END "\\(\\s-*\\)\\S-+" 1 1 t))
+#+end_src
+
+** Markdown mode
+#+begin_src emacs-lisp
+  (use-package markdown-mode)
+  (add-to-list 'auto-mode-alist '("\\.mmd\\'" . markdown-mode))
 #+end_src
 
 * Reading and Writing
@@ -1671,7 +1694,7 @@ Since =ob-ledger= package is not there by default, download it from a source
    '((shell . t)
      ;;(ledger . t)
      (ditaa . t)
-     (bash . t)
+     ;;(bash . t)
      (octave . t)
      (python . t)))
 #+end_src
