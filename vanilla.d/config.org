@@ -887,6 +887,10 @@ install w3m via apt/dnf
     (interactive)
     (with-editor-async-shell-command "crontab -e"))
 #+end_src
+** Sloccount
+#+begin_src emacs-lisp
+  (use-package cloc)
+#+end_src
 
 ** Programming languages
 #+begin_src emacs-lisp
@@ -2030,6 +2034,23 @@ And after the capture is finalized or canceled, the frame will be closed.
   (use-package ytel-show
     :after ytel
     :bind (:map ytel-mode-map ("RET" . ytel-show)))
+#+end_src
+** Bongo Music Player
+#+begin_src emacs-lisp
+  (use-package bongo
+    :config
+    (setq-default bongo-enabled-backends '(mpv))
+    (setq bongo-custom-backend-matchers
+          '((mpv local-file "m4b")
+            (ignore local-file "ignore"))))
+#+end_src
+*** COMMENT hook
+#+begin_src emacs-lisp
+  (add-hook 'dired-mode-hook                                                     
+            (lambda ()
+              (setq cur dired-directory)
+              (cond ((string= cur "/mnt/D/music") (bongo-dired-library-mode))
+                    (t "default"))))   
 #+end_src
 
 ** Subed subtitle editor
