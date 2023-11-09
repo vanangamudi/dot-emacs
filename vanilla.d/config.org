@@ -15,6 +15,7 @@ The emacs config is written from scratch or should I say built ground up by copy
 - https://miikanissi.com/blog/website-with-emacs/
 - https://rgoswami.me/posts/org-note-workflow/#basic-variables
 - https://github.com/sergeyklay/.emacs.d
+- https://github.com/chongchonghe/emacs-dotfile
 
 ** Eyecandy
 - https://lepisma.xyz/2017/10/28/ricing-org-mode/index.html
@@ -86,7 +87,7 @@ Custom set variables are moved here from =init.el= where they were placed automa
 #+end_src
 ** Elpaca
 #+begin_src emacs-lisp
-    (defvar elpaca-installer-version 0.5)
+  (defvar elpaca-installer-version 0.5)
   (defvar elpaca-directory (expand-file-name "elpaca/" user-emacs-directory))
   (defvar elpaca-builds-directory (expand-file-name "builds/" elpaca-directory))
   (defvar elpaca-repos-directory (expand-file-name "repos/" elpaca-directory))
