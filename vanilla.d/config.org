@@ -652,6 +652,17 @@ When you want to add multiple cursors not based on continuous lines, but based o
            ("C-c q"  . 'vr/query-replace)
            ("C-c m`" . 'vr/mc-mark)))
 #+end_src
+** Outshine an Outline alternative
+#+begin_src emacs-lisp
+  (use-package outshine)
+  (defvar outline-minor-mode-prefix "\M-#")
+  (add-hook 'emacs-lisp-mode-hook 'outshine-mode)
+  (define-key input-decode-map "\e\eOA" [(meta up)])
+  (define-key input-decode-map "\e\eOB" [(meta down)])
+#+end_src
+
+#+RESULTS:
+: [M-down]
 
 * Navigation
 ** Display Buffer List
