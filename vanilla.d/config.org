@@ -1653,6 +1653,11 @@ https://sachachua.com/blog/2015/11/capturing-links-quickly-with-emacsclient-org-
            (file+olp "~/org/pidi.org" "Web Links")
            "* %a\n %?\n %i")
 
+          ("n" "Note" plain 
+           (file+olp "~/org/note.org" "Note")
+           "%a\n %?\n %i")
+
+
           ("j" "Journal" entry 
            (file+olp+datetree "~/org/pidi.org" "Journal")
            "* %?\nEntered on %U\n  %i\n  %a")))
