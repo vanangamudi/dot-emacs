@@ -2127,6 +2127,11 @@ needs to imported from nongnu elpa. add the following to init.el
     (add-hook 'subed-mode-hook (lambda () (setq-local fill-column 40))))
 #+end_src
 
+* Torrent Client - Transmission
+#+begin_src emacs-lisp
+  (use-package transmission)
+#+end_src
+
 * Notes
 ** Difference between visual-line-mode and auto-fill-mode
 auto-fill-mode breaks sentence introducing line-breaks, or newline after a certain number of characters. Visual line mode does not alter the number of lines but only visually wraps text so that it is easier to look at
