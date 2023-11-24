@@ -1320,6 +1320,25 @@ Clone [[https://github.com/slime/slime.git][Slime repository]] into ~/code/clone
 #+end_src
 
 * Communication
+
+** IRC chat
+#+begin_src emacs-lisp
+  (setq erc-server "irc.libera.chat"
+        erc-nick "vanangamudi"    
+        erc-user-full-name "vanangamudi"
+        erc-track-shorten-start 8
+        erc-autojoin-channels-alist '(("irc.libera.chat" "#emacs"))
+        erc-kill-buffer-on-part t
+        erc-join-buffer 'window
+        erc-auto-query 'window)
+#+end_src
+
+** Matrix client
+#+begin_src emacs-lisp
+  (use-package ement
+    :elpaca (:host github :repo "alphapapa/ement.el"))
+#+end_src
+
 ** COMMENT Email with mu4e
 *** Install =mu4e= for =mu= and =mu4e= and install =isync= packages for =mbsync=
 #+begin_src bash :results output code
@@ -1454,14 +1473,14 @@ Clone [[https://github.com/slime/slime.git][Slime repository]] into ~/code/clone
           org-fontify-whole-heading-line t
           org-fontify-done-headline t
           org-fontify-quote-and-verse-blocks t)
-    
+
     (set-face-attribute 'org-table nil :inherit 'fixed-pitch)
   #+end_src
   
 ** Org Superstar
 #+begin_src emacs-lisp
-    (use-package org-modern
-      :hook (org-mode . org-modern-mode))
+  (use-package org-modern
+    :hook (org-mode . org-modern-mode))
 
   (use-package org-superstar
     :init
