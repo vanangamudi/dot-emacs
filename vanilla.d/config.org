@@ -263,17 +263,17 @@ The code block below toggle off the welcome startup screen.
 
 *** Keycast mode
 #+begin_src emacs-lisp
-(use-package keycast
-  :config
-   (define-minor-mode keycast-mode
-    "Show current command and its key binding in the mode line."
-    :global t
-    (require 'keycast)
-    (if keycast-mode
-        (add-hook 'pre-command-hook 'keycast-mode-line-update)
+  (use-package keycast
+    :config
+    (define-minor-mode keycast-mode
+      "Show current command and its key binding in the mode line."
+      :global t
+      (require 'keycast)
+      (if keycast-mode
+          (add-hook 'pre-command-hook 'keycast-mode-line-update)
         (remove-hook 'pre-command-hook 'keycast-mode-line-update)))
 
-  (add-to-list 'global-mode-string '("" mode-line-keycast " ")))
+    (add-to-list 'global-mode-string '("" mode-line-keycast " ")))
 #+end_src
     
 *** Dim Inactive Buffer
@@ -312,10 +312,10 @@ There are several themes I have grown to like. Here is the some of them.
 ***** Variable Pitch Mode
 #+begin_src emacs-lisp
   (dolist (hook '(erc-mode-hook
-          LaTeX-mode-hook
-          org-mode-hook
-          edit-server-start-hook
-          markdown-mode-hook))
+                  LaTeX-mode-hook
+                  org-mode-hook
+                  edit-server-start-hook
+                  markdown-mode-hook))
     (add-hook hook (lambda () (variable-pitch-mode t))))
 #+end_src
 
@@ -385,7 +385,7 @@ From https://community.jaspersoft.com/wiki/configuring-jasperreports-server-use-
 
   #Move to fonts folder
   mv dejavu-fonts-ttf-2.37/ttf/ /usr/share/fonts/dejavu
-  
+
   #Update fonts cache
   fc-cache /usr/share/fonts/dejavu
 #+end_src
