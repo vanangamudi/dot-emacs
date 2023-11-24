@@ -2316,19 +2316,19 @@ The whole process may take a while. Native compilation is, as of Emacs 28.1, aut
  
 To test that both the fast JSON and native compilation is working you can evaluate the following elisp in Emacs:
 
- #+begin_src emacs-lisp
-   (if (and (fboundp 'native-comp-available-p)
-            (native-comp-available-p))
-     (message "Native compilation is available")
-   (message "Native complation is *not* available"))
- #+end_src
+#+begin_src emacs-lisp
+  (if (and (fboundp 'native-comp-available-p)
+           (native-comp-available-p))
+      (message "Native compilation is available")
+    (message "Native complation is *not* available"))
+#+end_src
  
- And for the JSON:
+And for the JSON:
 
- #+begin_src emacs-lisp
-   (if (functionp 'json-serialize)
-       (message "Native JSON is available")
-   (message "Native JSON is *not* available"))
- #+end_src
+#+begin_src emacs-lisp
+  (if (functionp 'json-serialize)
+      (message "Native JSON is available")
+    (message "Native JSON is *not* available"))
+#+end_src
  
- And.. that’s that. Enjoy your souped-up Emacs.
+And.. that’s that. Enjoy your souped-up Emacs.
