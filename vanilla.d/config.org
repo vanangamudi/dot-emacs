@@ -577,7 +577,8 @@ Brings up some help
     :config
     (which-key-mode)
     (which-key-setup-side-window-bottom)
-    :custom (which-key-idle-delay 1.2))
+    :custom
+    (which-key-idle-delay 1.2))
 #+END_SRC
    
 ** Very Large Files
@@ -641,10 +642,10 @@ Look into this for starting emacs extension development
 * Text Editing
 ** Unfill Paragraph
 #+begin_src emacs-lisp
-(use-package unfill
-  :bind
-  ("M-q" . unfill-toggle)
-  ("M-Q" . unfill-paragraph))
+  (use-package unfill
+    :bind
+    ("M-q" . unfill-toggle)
+    ("M-Q" . unfill-paragraph))
 #+end_src
 ** Multiple cursors
 When you want to add multiple cursors not based on continuous lines, but based on keywords in the buffer use =C-</C->=. First mark the word, then add more cursors. To get out of multiple-cursors-mode, press <return> or C-g. The latter will first disable multiple regions before disabling multiple cursors. If you want to insert a newline in multiple-cursors-mode, use C-j.
@@ -674,18 +675,28 @@ When you want to add multiple cursors not based on continuous lines, but based o
   (define-key input-decode-map "\e\eOB" [(meta down)])
 #+end_src
 
-#+RESULTS:
-: [M-down]
-
 * Navigation
+
+** COMMENT Ace window
+#+begin_src emacs-lisp
+  (use-package ace-window
+    :init (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)
+                aw-char-position 'left
+                aw-ignore-current nil
+                aw-leading-char-style 'char
+                aw-scope 'frame)
+    :bind (("M-o" . ace-window)
+           ("M-O" . ace-swap-window)))
+#+end_src
+
 ** Display Buffer List
 #+begin_src emacs-lisp
   (add-to-list 'display-buffer-alist
                '("\\*e?shell\\*"
                  (display-buffer-in-side-window)
-                 (side . bottom)
+                 (side . right)
                  (slot . -1) ;; -1 == L  0 == Mid 1 == R
-                 (window-height . 0.33) ;; take 2/3 on bottom left
+                 (window-height . 0.4) ;; take 2/3 on bottom left
                  (window-parameters
                   (no-delete-other-windows . nil))))
 
@@ -818,52 +829,52 @@ install w3m via apt/dnf
     (setq engine/browser-function 'eww-browse-url))
 
   (defengine amazon
-             "https://www.amazon.com/s/ref=nb_sb_noss?url=search-alias%3Daps&field-keywords=%s")
+    "https://www.amazon.com/s/ref=nb_sb_noss?url=search-alias%3Daps&field-keywords=%s")
 
   (defengine duckduckgo
-             "https://duckduckgo.com/?q=%s"
-             :keybinding "d")
+    "https://duckduckgo.com/?q=%s"
+    :keybinding "d")
 
   (defengine github
-             "https://github.com/search?ref=simplesearch&q=%s")
+    "https://github.com/search?ref=simplesearch&q=%s")
 
   (defengine google
-             "https://www.google.com/search?ie=utf-8&oe=utf-8&q=%s"
-             :keybinding "g")
+    "https://www.google.com/search?ie=utf-8&oe=utf-8&q=%s"
+    :keybinding "g")
 
   (defengine google-images
-             "https://www.google.com/images?hl=en&source=hp&biw=1440&bih=795&gbv=2&aq=f&aqi=&aql=&oq=&q=%s")
+    "https://www.google.com/images?hl=en&source=hp&biw=1440&bih=795&gbv=2&aq=f&aqi=&aql=&oq=&q=%s")
 
   (defengine google-maps
-             "https://maps.google.com/maps?q=%s"
-             :docstring "Mappin' it up."
-             :keybinding "m")
+    "https://maps.google.com/maps?q=%s"
+    :docstring "Mappin' it up."
+    :keybinding "m")
 
   (defengine project-gutenberg
-             "https://www.gutenberg.org/ebooks/search/?query=%s")
+    "https://www.gutenberg.org/ebooks/search/?query=%s")
 
   (defengine qwant
-             "https://www.qwant.com/?q=%s")
+    "https://www.qwant.com/?q=%s")
 
   (defengine stack-overflow
-             "https://stackoverflow.com/search?q=%s")
+    "https://stackoverflow.com/search?q=%s")
 
   (defengine twitter
-             "https://twitter.com/search?q=%s")
+    "https://twitter.com/search?q=%s")
 
   (defengine wikipedia
-             "https://www.wikipedia.org/search-redirect.php?language=en&go=Go&search=%s"
-             :docstring "Searchin' the wikis."
-             :keybinding "w")
+    "https://www.wikipedia.org/search-redirect.php?language=en&go=Go&search=%s"
+    :docstring "Searchin' the wikis."
+    :keybinding "w")
 
   (defengine wiktionary
-             "https://www.wikipedia.org/search-redirect.php?family=wiktionary&language=en&go=Go&search=%s")
+    "https://www.wikipedia.org/search-redirect.php?family=wiktionary&language=en&go=Go&search=%s")
 
   (defengine wolfram-alpha
-             "https://www.wolframalpha.com/input/?i=%s")
+    "https://www.wolframalpha.com/input/?i=%s")
 
   (defengine youtube
-             "https://www.youtube.com/results?aq=f&oq=&search_query=%s")
+    "https://www.youtube.com/results?aq=f&oq=&search_query=%s")
 #+end_src
 
 * Input system
@@ -987,9 +998,9 @@ install w3m via apt/dnf
 **** Blacken
 #+begin_src emacs-lisp
   (use-package blacken
-      :hook ((python-mode . blacken-mode)
-             (python-mode . outshine-mode)))
-          ;; (python-mode . (lambda ()(setq outline-heading-end-regexp ":[^\n]*\n")))))
+    :hook ((python-mode . blacken-mode)
+           (python-mode . outshine-mode)))
+  ;; (python-mode . (lambda ()(setq outline-heading-end-regexp ":[^\n]*\n")))))
   (use-package pyvenv)
   (setq-default indent-tabs-mode nil)
 #+end_src
@@ -1043,22 +1054,19 @@ Emacs side of things
 ***** COMMENT Debuging
 [[https://github.com/jorgenschaefer/elpy/issues/1727#issuecomment-564248584][jorgenschaefer/elpy#1727 Problems with elpy and virtual environment]]
 #+begin_src emacs-lisp
-(progn
-  (message "python env: %s" pyvenv-virtual-env)
-  (message "python env (env var): %s" (getenv "VIRTUAL_ENV"))
-  (message "python exec: %s" python-shell-interpreter)
-  (message "python exec (full): %s" (executable-find python-shell-interpreter))
-  (message "python rpc exec: %s" elpy-rpc-python-command)
-  (message "python rpc exec (full): %s"
-           (executable-find elpy-rpc-python-command))
-  (message "rpc-virtualenv-path: %s" elpy-rpc-virtualenv-path)
-  (message "python rpc venv location : %s" (elpy-rpc-get-or-create-virtualenv))
-  (with-elpy-rpc-virtualenv-activated
-   (message "python venv exec: %s" (executable-find elpy-rpc-python-command))))
+  (progn
+    (message "python env: %s" pyvenv-virtual-env)
+    (message "python env (env var): %s" (getenv "VIRTUAL_ENV"))
+    (message "python exec: %s" python-shell-interpreter)
+    (message "python exec (full): %s" (executable-find python-shell-interpreter))
+    (message "python rpc exec: %s" elpy-rpc-python-command)
+    (message "python rpc exec (full): %s"
+             (executable-find elpy-rpc-python-command))
+    (message "rpc-virtualenv-path: %s" elpy-rpc-virtualenv-path)
+    (message "python rpc venv location : %s" (elpy-rpc-get-or-create-virtualenv))
+    (with-elpy-rpc-virtualenv-activated
+     (message "python venv exec: %s" (executable-find elpy-rpc-python-command))))
 #+end_src
-
-#+RESULTS:
-: python venv exec: /usr/bin/python
 
 ** COMMENT Slime for common-lisp
 Clone [[https://github.com/slime/slime.git][Slime repository]] into ~/code/cloned/slime and add to load path
@@ -1069,7 +1077,7 @@ Clone [[https://github.com/slime/slime.git][Slime repository]] into ~/code/clone
   (slime-setup)
 #+end_src
 
-** Magit
+**  Magit
 #+BEGIN_SRC emacs-lisp
   (use-package magit
     :bind (("C-c g" . #'magit-status)))
