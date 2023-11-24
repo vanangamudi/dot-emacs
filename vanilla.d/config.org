@@ -1087,7 +1087,17 @@ Clone [[https://github.com/slime/slime.git][Slime repository]] into ~/code/clone
   ;; (use-package magit-libgit
   ;;  :after (magit libgit))
 #+END_SRC
-   
+
+** Ediff - File comparison
+#+begin_src emacs-lisp
+  (setq ediff-keep-variants nil)
+  (setq ediff-make--buffers-readonly-at-startup nil)
+  (setq ediff-merge-revisions-with-ancestor t)
+  (setq ediff-show-clashes-only t)
+  (setq ediff-split-window-function 'split-window-horizontally)
+  (setq ediff-window-setup-function 'ediff-setup-windows-plain)
+#+end_src
+
 ** Syntax Highlighting
 #+begin_src emacs-lisp
   (use-package rainbow-delimiters
