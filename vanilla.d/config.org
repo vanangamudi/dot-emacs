@@ -1929,6 +1929,7 @@ Since =ob-ledger= package is not there by default, download it from a source
      (ditaa . t)
      ;;(bash . t)
      (octave . t)
+     (jupyter . t)
      (python . t)))
 #+end_src
 
@@ -1945,8 +1946,8 @@ Some org-babel languages require additional user configuration. For example, ob-
 Example:
 #+begin_src emacs-lisp
   (add-hook 'ob-async-pre-execute-src-block-hook
-          '(lambda ()
-             (setq inferior-julia-program-name "/usr/local/bin/julia")))
+            '(lambda ()
+               (setq inferior-julia-program-name "/usr/local/bin/julia")))
 
 #+end_src
 
