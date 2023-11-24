@@ -127,12 +127,14 @@ Custom set variables are moved here from =init.el= where they were placed automa
 
 Enable =use-package= integration
 #+begin_src emacs-lisp
+  ;;(elpaca use-package :elpaca t)
   ;; Install use-package support
   (elpaca elpaca-use-package
     ;; Enable :elpaca use-package keyword.
     (elpaca-use-package-mode))
-    ;; Assume :elpaca t unless otherwise specified.
-    ;;(setq elpaca-use-package-by-default t))
+  ;; Assume :elpaca t unless otherwise specified.
+  ;;(setq elpaca-use-package-by-default t))
+  (elpaca-wait)
 #+end_src
 
 ** COMMENT straight.el
