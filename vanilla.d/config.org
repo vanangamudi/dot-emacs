@@ -418,17 +418,16 @@ Download theme
   ;; Set variable pitch
   (setq bespoke-set-variable-pitch t)
   ;; Set initial theme variant
-  (setq bespoke-set-theme 'dark)
+  (setq bespoke-set-theme 'light)
   (load-theme 'bespoke t)
 #+END_SRC
 
-**** Gruvbox Theme
+****  COMMENT Solarized Theme
 #+begin_src emacs-lisp
-  (use-package gruvbox-theme
+  (use-package solarized-theme
     :init
-    (load-theme 'gruvbox-light-soft t))
+    (load-theme 'solarized-light t))
 #+end_src
-
 
 **** Frame and Window configuration
 Where did I steal this from?
