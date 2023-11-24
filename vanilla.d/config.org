@@ -521,7 +521,19 @@ Where did I steal this from?
 #+begin_src emacs-lisp
   (global-set-key "\C-x\ \C-b" 'ibuffer)
 #+end_src
-   
+
+** Workspaces
+*** Perspective 
+#+begin_src emacs-lisp
+  (use-package perspective
+    :bind
+    ("C-x C-b" . persp-list-buffers)  ; or use a nicer switcher, see below
+    :custom
+    (persp-mode-prefix-key (kbd "M-P"))  ; pick your own prefix key here
+    :init
+    (persp-mode))
+#+end_src   
+
 ** Recent Files
 #+BEGIN_SRC emacs-lisp
   (require 'recentf)
