@@ -1741,10 +1741,17 @@ Org-capture book-marklet for firefox, add this to bookmark toolbar on firefox
       + '&body='  + encodeURIComponent(window.getSelection())
 
 #+END_SRC
-       
+
+#+begin_src js
+  emacsclient 'org-protocol://capture?template=l&url=URL&title=TITLE&body=BODY'
+#+end_src
+
+#+begin_src sh
+  gtk-launch org-protocol2  'org-protocol://capture?template=l&url=URL&title=TITLE&body=BODY'
+#+end_src
 **** Capture from desktop environment
-  - bind the following script to a shortcut
-  - no capture from browser
+- bind the following script to a shortcut
+- no capture from browser
 
   #+BEGIN_SRC bash  :tangle ~/emacs/org-protocol.sh
     #!/bin/bash
@@ -1810,12 +1817,26 @@ https://sachachua.com/blog/2015/11/capturing-links-quickly-with-emacsclient-org-
            (file+olp "~/org/note.org" "Note")
            "%a\n %?\n %i")
 
+          ("c" "Collection" plain 
+           (file+olp "~/org/collection.org" "Collection")
+           "** %a\n %?\n %i")
 
           ("j" "Journal" entry 
            (file+olp+datetree "~/org/pidi.org" "Journal")
            "* %?\nEntered on %U\n  %i\n  %a")))
 #+END_SRC
-    
+
+**** Tips and Troubleshooting
+***** No server buffers remain to edit
+****** Problem
+#+begin_src text 
+  Greedy org-protocol handler.  Killing client.
+  No server buffers remain to edit
+#+end_src
+
+******* [[https://github.com/sprig/org-capture-extension/issues/1#issuecomment-1817773442][Solution]]
+The entry that is declared in the capture templates must exist in the file.  =Collection=, =Note=, =Web Links= must exist in the respective files.
+
 *** COMMENT html-capture 
 **** TODO Try [[https://github.com/alphapapa/org-web-tools][org-web-tools]]
 **** EWW and w3m org-web clipper from [[http://www.bobnewell.net/publish/35years/webclipper.html][Bob Newell]]
