@@ -1177,6 +1177,30 @@ Clone [[https://github.com/slime/slime.git][Slime repository]] into ~/code/clone
   (add-to-list 'auto-mode-alist '("\\.mmd\\'" . markdown-mode))
 #+end_src
 
+** COMMENT Shell mode
+#+begin_src emacs-lisp
+  (use-package bash-completion
+    :elpaca (:host github :repo "szermatt/emacs-bash-completion")
+    :config
+    (add-hook 'shell-dynamic-complete-functions 'bash-completion-dynamic-complete))
+#+end_src
+
+[[https://magnus.therning.org/2023-11-19-making-emacs-without-terminal-emulator-a-little-more-usable.html][Making Emacs without terminal emulator a little more usable]]
+#+begin_src emacs-lisp
+  (defun mep-projectile-async-shell-command ()
+    "Run `async-shell-command' in the current project's root directory."
+    (declare (interactive-only async-shell-command))
+    (interactive)
+    (let ((default-directory (projectile-project-root)))
+      (call-interactively #'async-shell-command)))
+#+end_src
+
+** Emacs Jupyter Notebook
+#+begin_src emacs-lisp
+  (use-package jupyter)
+  (setq ob-async-no-async-languages-alist '("jupyter-python" "jupyter-julia"))
+#+end_src
+
 * Reading and Writing
 ** Distraction Free Editing
 #+begin_src emacs-lisp
