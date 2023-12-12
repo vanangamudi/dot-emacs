@@ -2174,8 +2174,48 @@ Clone and map =elfeed-db= to  =~/.elfeed= directory
   (setq elfeed-tube-captions-languages
         '("en" "english (auto generated)"))
 #+END_SRC
-
+3
 * Emacs Everywhere
+** Daemon and Emacsclient
+#+begin_src sh :tangle ~/bin/EDITOR :tangle-mode (identity #o744)
+  #!/bin/sh
+  exec emacsclient -F "((left . 0) (top . 0))" -c -n "$@"
+#+end_src
+
+** COMMENT Edit with Emacs
+#+begin_src emacs-lisp
+  (use-package edit-server
+  :ensure t
+  :commands edit-server-start
+  :init (if after-init-time
+              (edit-server-start)
+            (add-hook 'after-init-hook
+                      #'(lambda() (edit-server-start))))
+  :config (setq edit-server-new-frame-alist
+                '((name . "Edit with Emacs FRAME")
+                  (top . 200)
+                  (left . 200)
+                  (width . 80)
+                  (height . 25)
+                  (minibuffer . t)
+                  (menu-bar-lines . t)
+                  (window-system . x))))
+#+end_src
+
+** GhostText
+Inspired by [[https://github.com/stsquad/emacs_chrome][GitHub - stsquad/emacs_chrome]]
+- browser side: [[https://github.com/fregante/GhostText][GitHub - fregante/GhostText: 👻 Use your text editor to write in your browser]]
+- emacs-side: 
+
+#+begin_src emacs-lisp
+  (use-package atomic-chrome
+    :config
+    (setq atomic-chrome-buffer-open-style 'full)
+    (setq atomic-chrome-default-major-mode 'python-mode)
+    :init (atomic-chrome-start-server))
+
+#+end_src
+
 ** Yequake
 The =yequake-org-capture= function is suitable for use in a Yequake frame used for Org Capture. It calls =org-capture= and sets =org-capture-after-finalize-hook= to close the Yequake frame after the capture is finalized or canceled. (Note that if another Yequake frame is toggled before the capture is finalized, when the capture is finalized, the wrong Yequake frame will be toggled.) For example, with this configuration:
 #+begin_src emacs-lisp
