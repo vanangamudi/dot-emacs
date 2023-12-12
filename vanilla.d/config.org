@@ -1373,7 +1373,7 @@ Clone [[https://github.com/slime/slime.git][Slime repository]] into ~/code/clone
 ** COMMENT Email with mu4e
 *** Install =mu4e= for =mu= and =mu4e= and install =isync= packages for =mbsync=
 #+begin_src bash :results output code
-  sudo apt-get install mu4e isync
+  sudo apt install mu4e isync
 #+end_src
   
 *** Configure =mbsync= using =.mbsyncrc=
@@ -1430,7 +1430,7 @@ Clone [[https://github.com/slime/slime.git][Slime repository]] into ~/code/clone
 #+begin_src emacs-lisp
   (use-package mu4e
     :ensure nil
-    ;;:load-path "/usr/share/emacs/site-lisp/mu4e/"
+    :load-path "/usr/share/emacs/site-lisp/mu4e/"
     ;; :defer 20 ; Wait until 20 seconds after startup
     :config
 
