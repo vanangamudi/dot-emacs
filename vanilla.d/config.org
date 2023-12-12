@@ -1220,6 +1220,18 @@ Clone [[https://github.com/slime/slime.git][Slime repository]] into ~/code/clone
   (setq ob-async-no-async-languages-alist '("jupyter-python" "jupyter-julia"))
 #+end_src
 
+** Code-cells and Jupytext
+#+begin_src sh
+  pip install jupyterlab jupytext
+#+end_src
+#+begin_src emacs-lisp
+  (use-package code-cells
+    :config
+    (setq code-cells-convert-ipynb-style '(("pandoc" "--to" "ipynb" "--from" "org")
+                                           ("pandoc" "--to" "org" "--from" "ipynb")
+                                           (lambda () #'org-mode))))
+#+end_src
+
 * Reading and Writing
 ** Distraction Free Editing
 #+begin_src emacs-lisp
