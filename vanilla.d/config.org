@@ -714,9 +714,27 @@ When you want to add multiple cursors not based on continuous lines, but based o
   (define-key input-decode-map "\e\eOA" [(meta up)])
   (define-key input-decode-map "\e\eOB" [(meta down)])
 #+end_src
+** Outli an Outshine alternative
+#+begin_src emacs-lisp
+  (use-package outli
+    :elpaca (:host github :repo "jdtsmith/outli")  
+    :bind (:map outli-mode-map ; convenience key to get back to containing heading
+                ("C-c C-p" . (lambda () (interactive) (outline-back-to-heading))))
+    :hook ((prog-mode) . outli-mode)
+    :config
+    (define-key outli-mode-map (kbd "<backtab>") #'outline-cycle-buffer))
+#+end_src
+** Vundo
+[[https://www.reddit.com/r/emacs/comments/18hxs9a/emacs_advent_calendar_14_indentbars_kindicon/?sort=new][Emacs Advent Calendar 14: indent-bars, kind-icon, org-modern-indent, and more]]
+#+begin_src emacs-lisp
+  (use-package vundo
+    :config
+    (setq vundo-glyph-alist vundo-unicode-symbols)
+    (setq diff-switches "-u --color=never")
+    (set-face-attribute 'vundo-default nil :family "Symbola"))
+#+end_src
 
 * Navigation
-
 ** COMMENT Ace window
 #+begin_src emacs-lisp
   (use-package ace-window
