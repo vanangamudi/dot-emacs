@@ -1193,6 +1193,24 @@ Clone [[https://github.com/slime/slime.git][Slime repository]] into ~/code/clone
                 ("C-<iso-lefttab>" . origami-show-only-node)))
 #+end_src
 
+** Comint Fold
+[[https://github.com/jdtsmith/comint-fold][GitHub - jdtsmith/comint-fold: Fold input + output blocks in Emacs comint shells]]
+#+begin_src emacs-lisp
+  (use-package comint-fold
+    :elpaca (:host github :repo "jdtsmith/comint-fold")
+    :bind (:map comint-mode-map ("C-<tab>" . #'comint-fold-do-fold))
+    :config
+    (comint-fold-mode 1)
+    (setq comint-fold-remap-tab nil)
+
+    ;; configure some modes specially; try first without this, many "just work"
+    (add-hook 'gdb-mode-hook
+              (comint-fold-configure-hook 0 (rx bol "(gdb)" (+ space))))
+    (add-hook 'ipy-mode-hook
+              (comint-fold-configure-hook 1 'ipy-prompt-regexp)))
+
+#+end_src
+
 ** Minibuffer completion
 #+begin_src emacs-lisp
   ;; Completions with counsel
