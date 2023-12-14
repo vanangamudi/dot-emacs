@@ -606,6 +606,21 @@ Brings up some help
     (which-key-idle-delay 1.2))
 #+END_SRC
    
+** Helpful
+#+begin_src emacs-lisp
+  (use-package helpful
+    :bind
+    ([remap describe-function] . helpful-callable)
+    ([remap describe-command] . helpful-command)
+    ([remap describe-variable] . helpful-variable)
+    ([remap describe-key] . helpful-key))
+#+end_src
+
+** Command log mode
+#+begin_src emacs-lisp
+  (use-package command-log-mode)
+#+end_src
+
 ** Very Large Files
 #+begin_src emacs-lisp
   (require 'vlf-setup)
