@@ -99,6 +99,12 @@ Custom set variables are moved here from =init.el= where they were placed automa
     (setq multi-term-program "/bin/bash"))
 #+end_src
 
+** Eterm Color
+#+begin_src emacs-lisp
+  (use-package eterm-256color
+    :hook (term-mode . eterm-256color-mode))
+#+end_src
+
 * Package Management
 ** Use Package
 #+begin_src emacs-lisp
