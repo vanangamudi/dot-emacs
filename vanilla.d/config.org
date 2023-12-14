@@ -2054,8 +2054,12 @@ Example:
   ;;	   (lambda (c) (eq c ?<)))
 
   (require 'org-tempo)
+
+  (add-to-list 'org-structure-template-alist '("sh" . "src shell"))
+  (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
+  (add-to-list 'org-structure-template-alist '("py" . "src python"))
 #+end_src
-   
+
 ** COMMENT Mathpix
 Capture latex equations from browser
 #+begin_src emacs-lisp
