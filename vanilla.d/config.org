@@ -35,7 +35,7 @@ The emacs config is written from scratch or should I say built ground up by copy
 - how to intergrate with org-ref
 
 * Open this =config.org= file
-Functions to open some list of standard files quickly, like =config.org=, =work.org=, =elfeed.org=
+Functions to open some list of standard files quickly, like =config.org=, =w.org=, =elfeed.org=
 Find this config file
 #+begin_src emacs-lisp
   (defun find-config-file ()
@@ -57,7 +57,7 @@ Hydra menu for opening the files. Add more files to the menu and you can open th
 #+begin_src emacs-lisp
   (defhydra hydra-open-stdfiles  (:color "pink")
     "Open File"
-    ("w" (find-file "~/org/work.org") "Work Tasks")
+    ("w" (find-file "~/org/w.org") "Work Tasks")
     ("f" (find-file "~/emacs/elfeed-db/elfeed.org") "RSS Feeds")
     ("e" (find-file "~/emacs/vanilla.d/config.org") "Emacs Config"))
 
