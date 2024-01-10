@@ -1902,6 +1902,11 @@ https://sachachua.com/blog/2015/11/capturing-links-quickly-with-emacsclient-org-
            (file+olp "~/org/pidi.org" "Web Links")
            "* %a\n %?\n %i")
 
+          ("r" "Resource" plain
+           (file "~/org/resources.org")
+           "%T -- %L"
+           :immediate-finish t)
+
           ("n" "Note" plain 
            (file+olp "~/org/note.org" "Note")
            "%a\n %?\n %i")
