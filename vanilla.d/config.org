@@ -690,7 +690,19 @@ Look into this for starting emacs extension development
     (define-key isearch-mode-map [remap isearch-query-replace]  #'anzu-isearch-query-replace)
     (define-key isearch-mode-map [remap isearch-query-replace-regexp] #'anzu-isearch-query-replace-regexp))
 #+end_src
-
+* Custom functions
+** Insert datetime at point
+#+begin_src emacs-lisp
+  (defun insert-datetime (arg) (interactive "P")
+     (let ((separator (pcase arg
+                        ('(4) "-")
+                        (0 "/")
+                        (_ ""))))
+       (insert
+        (format-time-string
+         (concat "%Y" separator "%m" separator "%d" "T" "%H" separator "%M")))))
+  (global-set-key (kbd "M-I t") 'insert-datetime)
+#+end_src
 * Text Editing
 ** Unfill Paragraph
 #+begin_src emacs-lisp
