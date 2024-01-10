@@ -2424,6 +2424,7 @@ needs to imported from nongnu elpa. add the following to init.el
 
 #+begin_src emacs-lisp
   (use-package subed
+    :elpaca (:host github :repo "sachac/subed")
     :config
     ;; Disable automatic movement of point by default
     (add-hook 'subed-mode-hook 'subed-disable-sync-point-to-player)
