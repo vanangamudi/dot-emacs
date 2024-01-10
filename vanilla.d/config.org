@@ -1005,6 +1005,17 @@ install w3m via apt/dnf
                                   ("webm" . "mpv")
                                   ("mp4" . "mpv")
                                   ("png" . "geeqie"))))
+
+
+  (use-package dired-preview
+    :config 
+    (setq dired-preview-delay 0.1)
+    (setq dired-preview-max-size (expt 2 20))
+    (setq dired-preview-ignored-extensions-regexp
+          (concat "\\."
+                  "\\(mkv\\|webm\\|mp4\\|mp3\\|ogg\\|m4a"
+                  "\\|gz\\|zst\\|tar\\|xz\\|rar\\|zip"
+                  "\\|iso\\|epub\\|pdf\\)")))
 #+END_SRC
 
 ** Dirvish
