@@ -91,6 +91,11 @@ Custom set variables are moved here from =init.el= where they were placed automa
     :init
     (org-alert-enable)) 
 #+end_src
+** Multishell
+#+begin_src emacs-lisp
+    (use-package multishell
+    :bind (("C-$" . #'multishell-pop-to-shell)))
+#+end_src
 
 ** Multi Term
 #+begin_src emacs-lisp
@@ -196,7 +201,13 @@ The code block below toggle off the welcome startup screen.
     (set (make-local-variable 'face-remapping-alist)
          '((default :height 1.25))))
 #+end_src
-   
+
+** Mini echo
+#+begin_src emacs-lisp
+  (use-package mini-echo
+    :config (mini-echo-mode 1))
+#+end_src
+
 ** Debugging
 #+BEGIN_SRC emacs-lisp
   ;; Profile emacs startup
