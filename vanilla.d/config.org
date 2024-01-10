@@ -706,7 +706,7 @@ When you want to add multiple cursors not based on continuous lines, but based o
            ("C-c q"  . 'vr/query-replace)
            ("C-c m`" . 'vr/mc-mark)))
 #+end_src
-** Outshine an Outline alternative
+** COMMENT Outshine an Outline alternative
 #+begin_src emacs-lisp
   (use-package outshine)
   (defvar outline-minor-mode-prefix "\M-#")
@@ -748,6 +748,8 @@ When you want to add multiple cursors not based on continuous lines, but based o
 #+end_src
 
 ** Display Buffer List
+
+*** COMMENT shell buffers
 #+begin_src emacs-lisp
   (add-to-list 'display-buffer-alist
                '("\\*e?shell\\*"
@@ -1063,7 +1065,7 @@ install w3m via apt/dnf
   (setq-default indent-tabs-mode nil)
 #+end_src
 
-**** Elpy
+**** COMMENT Elpy
 #+begin_src bash :dir /sudo::
   apt install python3-jedi black python3-autopep8 yapf3 python3-yapf
   pip install virtualenvwrapper
@@ -1421,7 +1423,7 @@ Clone [[https://github.com/slime/slime.git][Slime repository]] into ~/code/clone
         erc-auto-query 'window)
 #+end_src
 
-** Matrix client
+** COMMENT Matrix client
 #+begin_src emacs-lisp
   (use-package ement
     :elpaca (:host github :repo "alphapapa/ement.el"))
