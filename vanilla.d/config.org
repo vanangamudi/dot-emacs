@@ -1128,6 +1128,18 @@ Emacs side of things
      (message "python venv exec: %s" (executable-find elpy-rpc-python-command))))
 #+end_src
 
+*** Javascript
+#+begin_src emacs-lisp
+(setq js-indent-level 2)
+#+end_src
+
+*** CSV mode
+#+begin_src emacs-lisp
+  (use-package csv-mode
+   :config (add-hook 'csv-mode-hook 'csv-guess-set-separator))
+  (add-to-list 'auto-mode-alist '("\\.tsv\\'" . csv-mode))
+#+end_src
+
 ** COMMENT Slime for common-lisp
 Clone [[https://github.com/slime/slime.git][Slime repository]] into ~/code/cloned/slime and add to load path
 #+begin_src emacs-lisp
@@ -1167,6 +1179,10 @@ Clone [[https://github.com/slime/slime.git][Slime repository]] into ~/code/clone
   (use-package rainbow-blocks
     :config
     (add-hook 'prog-mode-hook #'rainbow-blocks-mode))
+
+  (use-package rainbow-identifiers
+    :config
+    (add-hook 'prog-mode-hook #'rainbow-identifiers-mode))
 #+end_src
 
 *** Rainbow blocks visual inspection
