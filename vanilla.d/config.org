@@ -2172,6 +2172,12 @@ org-ref enables us to insert citations, export them to latex and even non-latex 
 *** Ebib-biblio
 When fetching entries via Biblio, Ebib checks for duplicates based on the key of the new entry. This will only work reliably if both Ebib and Biblio are configured to automatically generate BibTeX keys. Ebib does this by default (see the option ebib-autogenerate-keys), Biblio can be configured to do so by setting the option biblio-bibtex-use-autokey.
 
+** Reading list - org-books
+#+begin_src emacs-lisp
+  (use-package org-books
+    :config
+    (setq org-books-file "~/my-list.org"))
+#+end_src
 * Elfeed-org
 ** Installation
 *** Download elfeed-org
