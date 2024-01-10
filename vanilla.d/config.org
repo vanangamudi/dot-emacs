@@ -345,6 +345,7 @@ There are several themes I have grown to like. Here is the some of them.
 ***** Notes
 - [[https://gist.github.com/equwal/89b1ef5ac8d4d737cfd37f66e9ba4895][Selecting and trying out different fonts in Emacs -- equwal/fonts.el]]
 - [[https://protesilaos.com/codelog/2022-05-14-re-emacs-font/][Protesilaos Stavrou]]
+- [[https://github.com/be5invis/Iosevka#manual-installation][GitHub - be5invis/Iosevka: Versatile typeface for code, from code.]]
 ***** Variable Pitch Mode
 #+begin_src emacs-lisp
   (dolist (hook '(erc-mode-hook
@@ -427,7 +428,7 @@ From https://community.jaspersoft.com/wiki/configuring-jasperreports-server-use-
 #+end_src
 
 #+begin_src emacs-lisp
-  (set-face-attribute 'default nil :font "Noto Sans Mono" :height 120)
+  (set-face-attribute 'default nil :font "Ubuntu Mono" :height 120)
 #+end_src
     
 For Iosevka fonts
@@ -733,8 +734,27 @@ When you want to add multiple cursors not based on continuous lines, but based o
                 ("C-c C-p" . (lambda () (interactive) (outline-back-to-heading))))
     :hook ((prog-mode) . outli-mode)
     :config
-    (define-key outli-mode-map (kbd "<backtab>") #'outline-cycle-buffer))
+    (define-key outli-mode-map (kbd "<backtab>") #'outline-cycle-buffer)
+    (setq outli-heading-config
+          '((emacs-lisp-mode ";;" 59 t t)
+            (tex-mode "%%" 37 t nil)
+            (org-mode)
+            (t
+             (let*
+                 ((c
+                 (or comment-start "#"))
+                  (space
+                   (unless
+                       (eq
+                        (aref c
+                              (1-
+                               (length c)))
+                        32)
+                     " ")))
+               (concat c space))
+             42 nil t))))
 #+end_src
+
 ** Vundo
 [[https://www.reddit.com/r/emacs/comments/18hxs9a/emacs_advent_calendar_14_indentbars_kindicon/?sort=new][Emacs Advent Calendar 14: indent-bars, kind-icon, org-modern-indent, and more]]
 #+begin_src emacs-lisp
@@ -770,7 +790,10 @@ When you want to add multiple cursors not based on continuous lines, but based o
                  (window-height . 0.4) ;; take 2/3 on bottom left
                  (window-parameters
                   (no-delete-other-windows . nil))))
+#+end_src
 
+*** Other pop buffers
+#+begin_src emacs-lisp
   (add-to-list 'display-buffer-alist
                '("\\*\\(Backtrace\\|Compile-log\\|Messages\\|Warnings\\)\\*"
                  (display-buffer-in-side-window)
@@ -879,6 +902,7 @@ install w3m via apt/dnf
 
 *** Prot extras for EWW
 #+begin_src bash
+  mkdir -p ~/emacs/vanilla.d/lisp
   wget https://gitlab.com/protesilaos/dotfiles/-/raw/master/emacs/.emacs.d/prot-lisp/prot-eww.el?ref_type=heads -O ~/emacs/vanilla.d/lisp/prot-eww.el
   wget https://gitlab.com/protesilaos/dotfiles/-/raw/master/emacs/.emacs.d/prot-lisp/prot-common.el?ref_type=heads -O ~/emacs/vanilla.d/lisp/prot-common.el
 #+end_src
