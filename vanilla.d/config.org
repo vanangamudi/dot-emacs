@@ -838,7 +838,7 @@ When you want to add multiple cursors not based on continuous lines, but based o
   (add-to-list 'display-buffer-alist
                '("\\*\\(Backtrace\\|Compile-log\\|Messages\\|Warnings\\)\\*"
                  (display-buffer-in-side-window)
-                 (side . bottom)
+                 (side . right)
                  (slot . 0)
                  (window-height . 0.33)
                  (window-parameters
@@ -856,7 +856,7 @@ When you want to add multiple cursors not based on continuous lines, but based o
   (add-to-list 'display-buffer-alist
                '("\\*TeX errors\\*"
                  (display-buffer-in-side-window)
-                 (side . bottom)
+                 (side . right)
                  (slot . 3)
                  (window-height . shrink-window-if-larger-than-buffer)
                  (dedicated . t)))
@@ -864,11 +864,10 @@ When you want to add multiple cursors not based on continuous lines, but based o
   (add-to-list 'display-buffer-alist
                '("\\*TeX Help\\*"
                  (display-buffer-in-side-window)
-                 (side . bottom)
+                 (side . right)
                  (slot . 4)
                  (window-height . shrink-window-if-larger-than-buffer)
                  (dedicated . t)))
-
 #+end_src
 
 ** Popper
