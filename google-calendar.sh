@@ -10,8 +10,8 @@ PRO_ICSFILE=~/org/gcal-profession.ics
 PRO_URL=https://calendar.google.com/calendar/ical/selva.on.profession%40gmail.com/private-f9bcae9409c369949ba78b81789919fd/basic.ics
 PRO_ORGFILE=~/org/gcal-profession.org
 
-$WGET -O $DEV_ICSFILE $DEV_URL
-$WGET -O $PRO_ICSFILE $PRO_URL
+#$WGET -O $DEV_ICSFILE $DEV_URL
+#$WGET -O $PRO_ICSFILE $PRO_URL
 
-$ICS2ORG $DEV_ICSFILE $DEV_ORGFILE
-$ICS2ORG $PRO_ICSFILE $PRO_ORGFILE
+lxc exec scratch -- sh -c "/home/ubuntu/go/bin/ical2org $DEV_URL" >$DEV_ORGFILE
+lxc exec scratch -- sh -c "/home/ubuntu/go/bin/ical2org $PRO_URL" >$PRO_ORGFILE
