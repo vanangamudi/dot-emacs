@@ -1205,6 +1205,18 @@ install w3m via apt/dnf
     :ensure nil
     :hook (after-save . executable-make-buffer-file-executable-if-script-p))
 #+end_src
+
+** Fill Function Arguments
+#+begin_src emacs-lisp
+  (use-package fill-function-arguments
+    :ensure t
+    :bind (:map prog-mode-map
+                ("C-c M-q" . fill-function-arguments-dwim)))
+#+end_src
+
+#+RESULTS:
+: fill-function-arguments-dwim
+
 ** Programming languages
 #+begin_src emacs-lisp
   (use-package typescript-mode)
