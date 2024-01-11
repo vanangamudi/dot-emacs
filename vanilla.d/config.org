@@ -327,16 +327,17 @@ The code block below toggle off the welcome startup screen.
 *** Keycast mode
 #+begin_src emacs-lisp
   (use-package keycast
-    :config
-    (define-minor-mode keycast-mode
-      "Show current command and its key binding in the mode line."
-      :global t
-      (require 'keycast)
-      (if keycast-mode
-          (add-hook 'pre-command-hook 'keycast-mode-line-update)
-        (remove-hook 'pre-command-hook 'keycast-mode-line-update)))
-
-    (add-to-list 'global-mode-string '("" mode-line-keycast " ")))
+    :defer
+    :custom
+    (keycast-mode-line-format "%k%c%R ")
+    (keycast-substitute-alist
+     '((keycast-log-erase-buffer nil nil)
+       (transient-update         nil nil)
+       (self-insert-command "." "Typing…")
+       (org-self-insert-command "." "Typing…")
+       (mwheel-scroll nil nil)
+       (mouse-movement-p nil nil)
+       (mouse-event-p nil nil))))
 #+end_src
 
 *** Dim Inactive Buffer
