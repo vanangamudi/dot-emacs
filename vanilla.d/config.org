@@ -937,6 +937,28 @@ install w3m via apt/dnf
 
 ** EWW
 #+begin_src emacs-lisp
+  (use-package shrface
+    :ensure t
+    :defer t
+    :config
+    (shrface-basic)
+    (shrface-trial)
+    (shrface-default-keybindings) ; setup default keybindings
+    (setq shrface-href-versatile t))
+
+  (use-package shr-tag-pre-highlight
+    :ensure t
+    :after shr
+    :config
+    (add-to-list 'shr-external-rendering-functions
+                 '(pre . shr-tag-pre-highlight)))
+  (use-package eww
+    :defer t
+    :init
+    (add-hook 'eww-after-render-hook #'shrface-mode)
+    ;; (add-hook 'eww-mode-hook 'ewnium-mode)
+    :config
+    (require 'shrface))
   (setq browse-url-browser-function 'eww-browse-url)
 #+end_src
 
