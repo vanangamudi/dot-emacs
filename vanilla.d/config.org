@@ -738,7 +738,12 @@ When you want to add multiple cursors not based on continuous lines, but based o
     ("C-<" . 'mc/mark-previous-like-this)
     ("C->" . 'mc/mark-next-like-this))
 #+end_src
-
+** Expand Region
+#+begin_src emacs-lisp
+  (use-package expand-region
+    :ensure t
+    :bind (("C-\\" . er/expand-region)))
+#+end_src
 ** Regex
 *** Visual Regex on Steroid
 #+begin_src emacs-lisp
