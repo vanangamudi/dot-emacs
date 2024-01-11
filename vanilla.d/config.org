@@ -2209,13 +2209,14 @@ Since =ob-ledger= package is not there by default, download it from a source
      (shell . t)
      (octave . t)
      (jupyter . t)
+     (ipython . t)
      (python . t)))
 #+end_src
 
 *** ob-async
 #+begin_src emacs-lisp
   (use-package ob-async
-    :custom
+    :config
     (setq ob-async-no-async-languages-alist '("ipython")))
 #+end_src
 
