@@ -1340,6 +1340,14 @@ Clone [[https://github.com/slime/slime.git][Slime repository]] into ~/code/clone
                       temp = dump
 #+end_src
 
+*** Highlight indentation
+#+begin_src emacs-lisp
+  (use-package highlight-indentation
+    :ensure t
+    :hook ((prog-mode . highlight-indentation-mode)
+           (prog-mode . highlight-indentation-current-column-mode)))
+#+end_src
+
 ** Code folding
 #+begin_src emacs-lisp
   (use-package origami
