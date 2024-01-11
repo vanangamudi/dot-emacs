@@ -1269,6 +1269,46 @@ Emacs side of things
      (message "python venv exec: %s" (executable-find elpy-rpc-python-command))))
 #+end_src
 
+**** importmagic
+#+begin_src emacs-lisp
+  (use-package importmagic
+    :ensure t
+    :custom
+    (importmagic-be-quiet t)
+    ;; :hook (python-mode . gopar/enable-importmagic-if-found)
+    :hook (python-mode . (lambda () (run-at-time "3 sec" nil 'gopar/enable-importmagic-if-found)))
+    :init
+    (defun gopar/enable-importmagic-if-found ()
+      "Format the current buffer using the 'importmagic` program, if available."
+      (interactive)
+      (if (zerop (shell-command "python -c 'import importmagic'"))
+          (importmagic-mode))))
+#+end_src
+
+**** Jedi
+#+begin_src emacs-lisp
+  (use-package jedi
+    :ensure t
+    :defer
+    ;; :hook (python-mode . gopar/enable-jedi-if-found)
+    :hook (python-mode . (lambda () (run-at-time "3 sec" nil 'gopar/enable-jedi-if-found)))
+    :custom
+    (jedi:tooltip-method nil)
+    :init
+    (defun gopar/enable-jedi-if-found ()
+      "Format the current buffer using the jedi program, if available."
+      (interactive)
+      (if (zerop (shell-command "python -c 'import jedi'"))
+          (jedi:setup))))
+#+end_src
+
+**** Debugger
+#+begin_src emacs-lisp
+  (use-package gud
+    :ensure nil
+    :custom
+    (gud-pdb-command-name "PYTHONBREAKPOINT=pdb.set_trace python -m pdb"))
+#+end_src
 *** Javascript
 #+begin_src emacs-lisp
 (setq js-indent-level 2)
