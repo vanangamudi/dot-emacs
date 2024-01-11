@@ -210,6 +210,16 @@ The code block below toggle off the welcome startup screen.
   (custom-set-variables
    '(inhibit-startup-screen t))
 #+END_SRC
+** Hide mode line
+#+begin_src emacs-lisp
+  (use-package hide-mode-line
+    :ensure t
+    :defer
+    :hook ((eshell-mode . hide-mode-line-mode)
+           (vterm-mode . hide-mode-line-mode)
+           (occur-mode . hide-mode-line-mode)
+           (treemacs-mode . hide-mode-line-mode)))
+#+end_src
 
 ** Minibuffer setup
 #+begin_src emacs-lisp
