@@ -1527,6 +1527,24 @@ Clone [[https://github.com/slime/slime.git][Slime repository]] into ~/code/clone
 
 #+end_src
 
+*** Dictionary
+#+begin_src emacs-lisp
+  (use-package dictionary
+    :defer
+    :ensure nil
+    :bind (:map text-mode-map
+                ("M-." . dictionary-lookup-definition)
+           :map org-mode-map
+                ("M-." . dictionary-lookup-definition))
+    :init
+    (add-to-list 'display-buffer-alist
+                 '("^\\*Dictionary\\*" display-buffer-in-side-window
+                   (side . left)
+                   (window-width . 50)))
+    :custom
+    (dictionary-server "dict.org"))
+#+end_src
+
 ** Writing
 *** Spellcheck
 #+begin_src emacs-lisp
