@@ -808,12 +808,19 @@ When you want to add multiple cursors not based on continuous lines, but based o
                 aw-ignore-current nil
                 aw-leading-char-style 'char
                 aw-scope 'frame)
-    :bind (("M-o" . ace-window)
-           ("M-O" . ace-swap-window)))
+    :bind (("M-O w" . ace-window)
+           ("M-O s" . ace-swap-window)))
+#+end_src
+
+** Winner mode
+#+begin_src emacs-lisp
+  (use-package winner
+    :ensure nil
+    :hook after-init
+    :commands (winner-undo winnner-redo))
 #+end_src
 
 ** Display Buffer List
-
 *** COMMENT shell buffers
 #+begin_src emacs-lisp
   (add-to-list 'display-buffer-alist
