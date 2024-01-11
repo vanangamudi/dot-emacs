@@ -96,8 +96,18 @@ Custom set variables are moved here from =init.el= where they were placed automa
       org-alert-notify-after-event-cutoff 10)
     (setq alert-default-style 'libnotify)
     :init
-    (org-alert-enable)) 
+    (org-alert-enable))
 #+end_src
+
+#+begin_src emacs-lisp
+  (use-package proced
+    :ensure nil
+    :defer t
+    :custom
+    (proced-enable-color-flag t)
+    (proced-tree-flag t))
+#+end_src
+
 ** Multishell
 #+begin_src emacs-lisp
     (use-package multishell
