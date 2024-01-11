@@ -1150,6 +1150,22 @@ install w3m via apt/dnf
     :ensure nil
     :hook (before-save . whitespace-cleanup))
 #+end_src
+** Documentation
+#+begin_src emacs-lisp
+  (use-package devdocs
+    :ensure t
+    :defer
+    :bind ("C-c M-d" . devdocs-lookup)
+    :init
+    (add-to-list 'display-buffer-alist
+                 '("\\*devdocs\\*"
+                   display-buffer-in-side-window
+                   (side . right)
+                   (slot . 3)
+                   (window-parameters . ((no-delete-other-windows . t)))
+                   (dedicated . t))))
+#+end_src
+
 ** Compilation
 #+begin_src emacs-lisp
   (use-package compile
