@@ -1253,6 +1253,7 @@ install w3m via apt/dnf
 
 Emacs side of things
 #+begin_src emacs-lisp
+  (setenv "WORKON_HOME" "~/.virtualenvs")
   (use-package elpy
     :ensure t
     :defer t
