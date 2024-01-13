@@ -487,12 +487,14 @@ Download theme
   (load-theme 'bespoke t)
 #+END_SRC
 
-****  COMMENT Solarized Theme
+****  Solarized Theme
 #+begin_src emacs-lisp
   (use-package solarized-theme
     :init
     (load-theme 'solarized-light t))
 #+end_src
+
+#+RESULTS:
 
 **** Frame and Window configuration
 Where did I steal this from?
@@ -503,7 +505,7 @@ Where did I steal this from?
     :config
     (setq-default default-frame-alist
                   (append (list
-                           '(font . "Noto Sans Mono:style=medium:size=16") ;; NOTE: substitute whatever font you prefer here
+                           '(font . "Noto Sans Mono:style=medium:size=20") ;; NOTE: substitute whatever font you prefer here
                            '(internal-border-width . 10)
                            '(left-fringe    . 0)
                            '(right-fringe   . 0)
@@ -849,7 +851,7 @@ When you want to add multiple cursors not based on continuous lines, but based o
   (add-to-list 'display-buffer-alist
                '("\\*\\(Backtrace\\|Compile-log\\|Messages\\|Warnings\\)\\*"
                  (display-buffer-in-side-window)
-                 (side . right)
+                 (side . bottom)
                  (slot . 0)
                  (window-height . 0.33)
                  (window-parameters
@@ -1245,7 +1247,7 @@ install w3m via apt/dnf
   (setq-default indent-tabs-mode nil)
 #+end_src
 
-**** Elpy
+**** COMMENT Elpy
 #+begin_src bash :dir /sudo::
   apt install python3-jedi black python3-autopep8 yapf3 python3-yapf
   pip install virtualenvwrapper
@@ -1309,7 +1311,7 @@ Emacs side of things
      (message "python venv exec: %s" (executable-find elpy-rpc-python-command))))
 #+end_src
 
-**** importmagic
+**** COMMENT importmagic
 #+begin_src emacs-lisp
   (use-package importmagic
     :ensure t
@@ -1440,11 +1442,11 @@ Clone [[https://github.com/slime/slime.git][Slime repository]] into ~/code/clone
                 ("C-<iso-lefttab>" . origami-show-only-node)))
 #+end_src
 
-** Comint Fold
+** COMMENT Comint Fold
 [[https://github.com/jdtsmith/comint-fold][GitHub - jdtsmith/comint-fold: Fold input + output blocks in Emacs comint shells]]
 #+begin_src emacs-lisp
   (use-package comint-fold
-    :elpaca (:host github :repo "jdtsmith/comint-fold")
+    :elpaca (:host github :repo "jdtsmith/comint-fold" :branch "main")
     :bind (:map comint-mode-map ("C-<tab>" . #'comint-fold-do-fold))
     :config
     (comint-fold-mode 1)
@@ -1865,9 +1867,9 @@ code-cells and Jupytext
 #+begin_src emacs-lisp
   (setq org-agenda-files
         '("~/org/personal.org"
-          "~/org/work.org"
-          "~/org/gcal-developer.org"
-          "~/org/gcal-profession.org"
+          "~/org/w.org"
+          ;;"~/org/gcal-developer.org"
+          ;;"~/org/gcal-profession.org"
           "~/org/kaappagam.org"
           "~/org/padi.org"
           "~/org/kadamai-thani.org"
@@ -1889,6 +1891,11 @@ code-cells and Jupytext
         org-agenda-start-day "-3d")
 
   (global-set-key (kbd "C-c a") 'org-agenda)
+#+end_src
+
+** Org-ql
+#+begin_src emacs-lisp
+  (use-package org-ql)
 #+end_src
 
 ** COMMENT Org-gcal
@@ -2516,7 +2523,7 @@ Clone and map =elfeed-db= to  =~/.elfeed= directory
 3
 * Emacs Everywhere
 ** Daemon and Emacsclient
-#+begin_src sh :tangle ~/bin/EDITOR :tangle-mode (identity #o744)
+#+begin_src sh :tangle ~/.local/bin/EDITOR :tangle-mode (identity #o744)
   #!/bin/sh
   exec emacsclient -F "((left . 0) (top . 0))" -c -n "$@"
 #+end_src
