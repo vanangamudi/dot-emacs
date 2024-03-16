@@ -344,9 +344,10 @@ The code block below toggle off the welcome startup screen.
 #+BEGIN_SRC emacs-lisp
   (use-package dimmer
     :ensure t
-    :custom (dimmer-fraction 0.2)
+    :custom (dimmer-fraction 0.3)
     :config (dimmer-mode))
 #+END_SRC
+
 
 *** Pulsar
 #+begin_src emacs-lisp
@@ -755,7 +756,7 @@ When you want to add multiple cursors not based on continuous lines, but based o
 #+begin_src emacs-lisp
   (use-package expand-region
     :ensure t
-    :bind (("C-\\" . er/expand-region)))
+    :bind (("C-]" . er/expand-region)))
 #+end_src
 ** Regex
 *** Visual Regex on Steroid
@@ -1353,7 +1354,9 @@ Emacs side of things
 #+end_src
 *** Javascript
 #+begin_src emacs-lisp
-(setq js-indent-level 2)
+  (use-package indium
+    :hook ((js2-mode . indium-interaction-mode)))
+  (setq js-indent-level 2)
 #+end_src
 
 *** CSV mode
@@ -1366,11 +1369,18 @@ Emacs side of things
 ** COMMENT Slime for common-lisp
 Clone [[https://github.com/slime/slime.git][Slime repository]] into ~/code/cloned/slime and add to load path
 #+begin_src emacs-lisp
-  (setq inferior-lisp-program "/usr/local/bin/sbcl")
-  (add-to-list 'load-path "~/code/cloned/slime/")
-  (require 'slime)
-  (slime-setup)
+  (setq inferior-lisp-program "sbcl")
+  (add-to-list 'load-path "~/code/commonlisp/slime/")
+  (use-package slime
+    :config (slime-setup))
+
+  (use-package paredit)
+  (defun override-slime-del-key ()
+    (define-key slime-repl-mode-map
+      (read-kbd-macro paredit-backward-delete-key) nil))
+  (add-hook 'slime-repl-mode-hook 'override-slime-del-key)
 #+end_src
+
 
 **  Magit
 #+BEGIN_SRC emacs-lisp
@@ -1520,13 +1530,13 @@ Clone [[https://github.com/slime/slime.git][Slime repository]] into ~/code/clone
       (call-interactively #'async-shell-command)))
 #+end_src
 
-** Emacs Jupyter Notebook
+** COMMENT Emacs Jupyter Notebook
 #+begin_src emacs-lisp
   (use-package jupyter)
   (setq ob-async-no-async-languages-alist '("jupyter-python" "jupyter-julia"))
 #+end_src
 
-** Code-cell
+** COMMENT Code-cell
 code-cells and Jupytext
 #+begin_src sh
   pip install jupyterlab jupytext
@@ -2296,8 +2306,8 @@ Since =ob-ledger= package is not there by default, download it from a source
      (ditaa . t)
      (shell . t)
      (octave . t)
-     (jupyter . t)
-     (ipython . t)
+     ;;(jupyter . t)
+     ;;(ipython . t)
      (python . t)))
 #+end_src
 
