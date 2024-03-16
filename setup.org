@@ -1,0 +1,25 @@
+* Repositories
+** [[https://github.com/vanangamudi/koppai][vanangamudi/koppai: Collection of tools to organize and manage download files]]
+  Collection of tools to organize and manage download files
+** Emacs
+Emacs dot files are now separated into different repos using git submodules mechanism.
+Three main repos are =dot-emacs=, =elfeed-db=, =dot-emacs-elpa=
+*** Repos
+**** [[https://github.com/rjhorniii/ical2org/tree/master][rjhorniii/ical2org]]                                              :github:
+Convert a calendar in ICal format (e.g., .ics) into org-mode structure
+**** [[https://gitlab.com/vanangamudi/dot-emacs-elpa][vanangamudi/dot-emacs-elpa]]                                      :gitlab:
+**** [[https://github.com/vanangamudi/dot-emacs-elpa][vanangamudi/dot-emacs-elpa]]                                      :github:
+**** [[https://github.com/vanangamudi/elfeed-db][vanangamudi/elfeed-db]]                                           :github:
+**** [[https://gitlab.com/vanangamudi/elfeed-db][vanangamudi/elfeed-db]]                                           :gitlab:
+**** [[https://github.com/vanangamudi/dot-emacs][vanangamudi/dot-emacs]]                                           :github:
+**** [[https://gitlab.com/vanangamudi/dot-emacs][vanangamudi/dot-emacs]]                                           :gitlab:
+**** [[https://github.com/vanangamudi/dotfiles][vanangamudi/dotfiles]]                                            :github:
+version control for the configurations
+** Aalar
+*** [[https://github.com/vanangamudi/aalar][vanangamudi/aalar]]                                                :github:
+scritps to manage my computers in a adhoc fashion
+*** [[https://gitlab.com/vanangamudi/aalar][vanangamudi/aalar]]                                                :gitlab:
+** Kuri
+*** [[https://github.com/vanangamudi/kurripu][vanangamudi/kurripu: notes]]
+*** [[https://gitlab.com/vanangamudi/kuri][vanangamudi/குறி · GitLab]]
+*** [[https://github.com/vanangamudi/kuri][vanangamudi/kuri: kurippugal]]
