@@ -2610,9 +2610,8 @@ Inspired by [[https://github.com/stsquad/emacs_chrome][GitHub - stsquad/emacs_ch
   (use-package atomic-chrome
     :config
     (setq atomic-chrome-buffer-open-style 'full)
-    (setq atomic-chrome-default-major-mode 'python-mode)
+    (setq atomic-chrome-default-major-mode 'org-mode)
     :init (atomic-chrome-start-server))
-
 #+end_src
 
 ** Yequake
