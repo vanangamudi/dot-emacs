@@ -457,13 +457,14 @@ From https://community.jaspersoft.com/wiki/configuring-jasperreports-server-use-
 #+end_src
 
 #+begin_src emacs-lisp
-  (set-face-attribute 'default nil :font "Ubuntu Mono" :height 120)
+  (set-face-attribute 'default nil :font "Iosevka Medium" :height 140)
 #+end_src
 
 For Iosevka fonts
 #+begin_src bash
-  curl -s 'https://api.github.com/repos/be5invis/Iosevka/releases/latest' | jq -r ".assets[] | .browser_download_url" | grep ttf-iosevka | xargs -n 1 curl -L -O --fail --silent --show-error
+  curl -s 'https://api.github.com/repos/be5invis/Iosevka/releases/latest' | jq -r ".assets[] | .browser_download_url" | grep PkgTTC-Iosevka | xargs -n 1 curl -L -O --fail --silent --show-error
 #+end_src
+
 
 **** COMMENT Bespoke Theme
 Download theme
