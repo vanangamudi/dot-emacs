@@ -127,6 +127,48 @@ Custom set variables are moved here from =init.el= where they were placed automa
     :hook (term-mode . eterm-256color-mode))
 #+end_src
 
+** SSH
+Taken from [[https://blog.lambda.cx/posts/org-ssh-export/][How I Keep Track of My Servers - lambda.cx blog]]
+#+begin_src emacs-lisp
+  (defun org-ssh-connect (&optional arg)
+    "Connect to the host at point and open `dired'.
+  If ARG is non-nil, open `eshell' instead of `dired'."
+    (interactive "P")
+    (let* ((properties (org-entry-properties))
+           (name (alist-get "ITEM" properties nil nil #'string=))
+           (user (alist-get "SSH_USER" properties nil nil #'string=))
+           (port (alist-get "SSH_PORT" properties nil nil #'string=))
+           (host (or (alist-get "IP" properties nil nil #'string=)
+                     (alist-get "HOSTNAME" properties nil nil #'string=))))
+      (if host
+          (let ((default-directory (format "/ssh:%s%s%s:"
+                                           (if user (format "%s@" user) "")
+                                           name
+                                           (if port (format "#%s" port) ""))))
+            (message "Connecting to %s..." name)
+            (if arg
+                (eshell t)
+              (dired ".")))
+        (user-error "Not an SSH host"))))
+#+end_src
+
+** Tramp
+#+begin_src emacs-lisp
+  (use-package tramp
+    :init
+    (setq tramp-inline-compress-start-size 1000)
+    (setq tramp-copy-size-limit 10000)
+    (setq vc-handled-backends '(Git))
+    (setq tramp-default-method "scp")
+    (setq tramp-use-ssh-controlmaster-options nil)
+    (setq tramp-verbose 1))
+#+end_src
+
+** Emacs Terminal Emulator Eat
+#+begin_src emacs-lisp
+  (use-package eat)
+#+end_src
+
 * Package Management
 ** Use Package
 #+begin_src emacs-lisp
@@ -1407,7 +1449,6 @@ Clone [[https://github.com/slime/slime.git][Slime repository]] into ~/code/clone
   (add-hook 'slime-repl-mode-hook 'override-slime-del-key)
 #+end_src
 
-
 **  Magit
 #+BEGIN_SRC emacs-lisp
   (use-package magit
@@ -2573,7 +2614,7 @@ Clone and map =elfeed-db= to  =~/.elfeed= directory
   (setq elfeed-tube-captions-languages
         '("en" "english (auto generated)"))
 #+END_SRC
-3
+
 * Emacs Everywhere
 ** Daemon and Emacsclient
 #+begin_src sh :tangle ~/.local/bin/EDITOR :tangle-mode (identity #o744)
