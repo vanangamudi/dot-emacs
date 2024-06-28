@@ -1354,7 +1354,7 @@ Emacs side of things
           (importmagic-mode))))
 #+end_src
 
-**** Jedi
+**** COMMENT Jedi
 #+begin_src emacs-lisp
   (use-package jedi
     :ensure t
