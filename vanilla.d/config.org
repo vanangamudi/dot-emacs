@@ -722,6 +722,14 @@ Look into this for starting emacs extension development
     (define-key isearch-mode-map [remap isearch-query-replace]  #'anzu-isearch-query-replace)
     (define-key isearch-mode-map [remap isearch-query-replace-regexp] #'anzu-isearch-query-replace-regexp))
 #+end_src
+
+** COMMENT Calc
+#+begin_src emacs-lisp
+  (use-package causal
+    :config
+    (define-key calc-mode-map (kbd "C-o") 'casual-main-menu))
+#+end_src
+
 * Custom functions
 ** Insert datetime at point
 #+begin_src emacs-lisp
