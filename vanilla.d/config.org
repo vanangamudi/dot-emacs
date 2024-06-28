@@ -1899,6 +1899,13 @@ code-cells and Jupytext
 
 #+end_src
 
+** Clocking
+#+begin_src emacs-lisp
+  (setq org-clock-persist 'history)
+  (setq org-clock-into-drawer "CLOCKING")
+  (org-clock-persistence-insinuate)
+#+end_src
+
 ** Org-agenda
 #+begin_src emacs-lisp
   (setq org-agenda-files
