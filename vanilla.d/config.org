@@ -92,8 +92,8 @@ Custom set variables are moved here from =init.el= where they were placed automa
   (use-package org-alert
     :custom
     (setq org-alert-interval 300
-      org-alert-notify-cutoff 10 ;;in minutes
-      org-alert-notify-after-event-cutoff 10)
+          org-alert-notify-cutoff 10 ;;in minutes
+          org-alert-notify-after-event-cutoff 10)
     (setq alert-default-style 'libnotify)
     :init
     (org-alert-enable))
@@ -110,7 +110,7 @@ Custom set variables are moved here from =init.el= where they were placed automa
 
 ** Multishell
 #+begin_src emacs-lisp
-    (use-package multishell
+  (use-package multishell
     :bind (("C-$" . #'multishell-pop-to-shell)))
 #+end_src
 
@@ -314,8 +314,11 @@ The code block below toggle off the welcome startup screen.
     (tooltip-mode -1)
     (set-fringe-mode 5))
 
-  (use-package all-the-icons)
+  (use-package all-the-icons
+    :if (display-graphic-p))
+
   (use-package all-the-icons-dired
+    :if (display-graphic-p)
     :after all-the-icons
     :hook (dired-mode . all-the-icons-dired-mode))
 
@@ -484,23 +487,18 @@ Also, if you are not using emacs 23, you probably should upgrade, because emacs 
 For Dejavu Fonts
 From https://community.jaspersoft.com/wiki/configuring-jasperreports-server-use-dejavu-fonts
 #+begin_src bash :dir /sudo::
-  #Get the Dejavu distribution
   cd /tmp/
   wget http://sourceforge.net/projects/dejavu/files/dejavu/2.37/dejavu-fonts-ttf-2.37.tar.bz2
-
-  #Unpack it
   tar -xf dejavu-fonts-ttf-2.37.tar.bz2
-
-  #Move to fonts folder
   mv dejavu-fonts-ttf-2.37/ttf/ /usr/share/fonts/dejavu
-
-  #Update fonts cache
   fc-cache /usr/share/fonts/dejavu
 #+end_src
 
 #+begin_src emacs-lisp
   (set-face-attribute 'default nil :font "Iosevka Medium" :height 140)
 #+end_src
+
+#+RESULTS:
 
 For Iosevka fonts
 #+begin_src bash
@@ -776,13 +774,13 @@ Look into this for starting emacs extension development
 ** Insert datetime at point
 #+begin_src emacs-lisp
   (defun insert-datetime (arg) (interactive "P")
-     (let ((separator (pcase arg
-                        ('(4) "-")
-                        (0 "/")
-                        (_ ""))))
-       (insert
-        (format-time-string
-         (concat "%Y" separator "%m" separator "%d" "T" "%H" separator "%M")))))
+         (let ((separator (pcase arg
+                            ('(4) "-")
+                            (0 "/")
+                            (_ ""))))
+           (insert
+            (format-time-string
+             (concat "%Y" separator "%m" separator "%d" "T" "%H" separator "%M")))))
   (global-set-key (kbd "M-I t") 'insert-datetime)
 #+end_src
 * Text Editing
@@ -841,7 +839,7 @@ When you want to add multiple cursors not based on continuous lines, but based o
             (t
              (let*
                  ((c
-                 (or comment-start "#"))
+                   (or comment-start "#"))
                   (space
                    (unless
                        (eq
@@ -1197,698 +1195,11 @@ install w3m via apt/dnf
                   "\\|iso\\|epub\\|pdf\\)")))
 #+END_SRC
 
-** Dirvish
+** COMMENT Dirvish
 #+begin_src emacs-lisp
   (use-package dirvish
     :init
     (dirvish-override-dired-mode))
-#+end_src
-
-* Search
-#+begin_src emacs-lisp
-  (use-package deadgrep)
-#+end_src
-
-* Accounting
-#+begin_src emacs-lisp
-  (use-package ledger-mode)
-#+end_src
-
-* Programming
-** Crontab editing
-#+begin_src emacs-lisp
-  (defun crontab-e ()
-    "Run `crontab -e' in a emacs buffer."
-    (interactive)
-    (with-editor-async-shell-command "crontab -e"))
-#+end_src
-** Sloccount
-#+begin_src emacs-lisp
-  (use-package cloc)
-#+end_src
-** Whitespace cleanup
-#+begin_src emacs-lisp
-  (use-package whitespace
-    :ensure nil
-    :hook (before-save . whitespace-cleanup))
-#+end_src
-** Documentation
-#+begin_src emacs-lisp
-  (use-package devdocs
-    :ensure t
-    :defer
-    :bind ("C-c M-d" . devdocs-lookup)
-    :init
-    (add-to-list 'display-buffer-alist
-                 '("\\*devdocs\\*"
-                   display-buffer-in-side-window
-                   (side . right)
-                   (slot . 3)
-                   (window-parameters . ((no-delete-other-windows . t)))
-                   (dedicated . t))))
-#+end_src
-
-** Compilation
-#+begin_src emacs-lisp
-  (use-package compile
-    :ensure nil
-    :custom
-    (compilation-scroll-output 'first-error)
-    (compilation-always-kill t)
-    (compilation-max-output-line-length nil)
-    :hook (compilation-mode . hl-line-mode)
-    :init
-    ; from enberg on #emacs
-    (add-hook 'compilation-finish-functions
-              (lambda (buf str)
-                (if (null (string-match ".*exited abnormally.*" str))
-                    ;;no errors, make the compilation window go away in a few seconds
-                    (progn
-                      (run-at-time
-                       "1 sec" nil 'delete-windows-on
-                       (get-buffer-create "*compilation*"))
-                      (message "No Compilation Errors!"))))))
-#+end_src
-
-** COMMENT Make executable
-#+begin_src emacs-lisp
-  (use-package executable
-    :ensure nil
-    :hook (after-save . executable-make-buffer-file-executable-if-script-p))
-#+end_src
-
-** Fill Function Arguments
-#+begin_src emacs-lisp
-  (use-package fill-function-arguments
-    :ensure t
-    :bind (:map prog-mode-map
-                ("C-c M-q" . fill-function-arguments-dwim)))
-#+end_src
-
-#+RESULTS:
-: fill-function-arguments-dwim
-
-** Programming languages
-#+begin_src emacs-lisp
-  (use-package typescript-mode)
-  (use-package csharp-mode)
-  (use-package yaml-mode)
-  (use-package dockerfile-mode)
-  (use-package toml-mode)
-#+end_src
-
-*** Python
-**** Inspirations
-- https://robbmann.io/posts/006_emacs_2_python/
-- https://medium.com/analytics-vidhya/managing-a-python-development-environment-in-emacs-43897fd48c6a
-**** MyPy
-#+begin_src sh :dir /sudo::
-  apt install mypy
-#+end_src
-
-**** Blacken
-#+begin_src emacs-lisp
-  (use-package blacken
-    :hook ((python-mode . blacken-mode)
-           (python-mode . outshine-mode)))
-  ;; (python-mode . (lambda ()(setq outline-heading-end-regexp ":[^\n]*\n")))))
-  (use-package pyvenv)
-  (setq-default indent-tabs-mode nil)
-#+end_src
-
-**** COMMENT Elpy
-#+begin_src bash :dir /sudo::
-  apt install python3-jedi black python3-autopep8 yapf3 python3-yapf
-  pip install virtualenvwrapper
-#+end_src
-
-Emacs side of things
-#+begin_src emacs-lisp
-  (setenv "WORKON_HOME" "~/.virtualenvs")
-  (use-package elpy
-    :ensure t
-    :defer t
-    :init
-    (advice-add 'python-mode :before 'elpy-enable)
-    :config
-    (setq elpy-rpc-virtualenv-path 'current))
-
-  ;; Enable Flycheck
-  (when (require 'flycheck nil t)
-    (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
-    (add-hook 'elpy-mode-hook 'flycheck-mode))
-
-  ;; Enable autopep8
-  ;; (require 'py-autopep8)
-  ;; (add-hook 'elpy-mode-hook 'py-autopep8-enable-on-save)
-
-  ;; https://elpy.readthedocs.io/en/latest/customization_tips.html#enable-full-font-locking-of-inputs-in-the-python-shell
-  (advice-add 'elpy-shell--insert-and-font-lock
-              :around (lambda (f string face &optional no-font-lock)
-                        (if (not (eq face 'comint-highlight-input))
-                            (funcall f string face no-font-lock)
-                          (funcall f string face t)
-                          (python-shell-font-lock-post-command-hook))))
-
-  (advice-add 'comint-send-input
-              :around (lambda (f &rest args)
-                        (if (eq major-mode 'inferior-python-mode)
-                            (cl-letf ((g (symbol-function 'add-text-properties))
-                                      ((symbol-function 'add-text-properties)
-                                       (lambda (start end properties &optional object)
-                                         (unless (eq (nth 3 properties) 'comint-highlight-input)
-                                           (funcall g start end properties object)))))
-                              (apply f args))
-                          (apply f args))))
-
-#+end_src
-
-***** COMMENT Debuging
-[[https://github.com/jorgenschaefer/elpy/issues/1727#issuecomment-564248584][jorgenschaefer/elpy#1727 Problems with elpy and virtual environment]]
-#+begin_src emacs-lisp
-  (progn
-    (message "python env: %s" pyvenv-virtual-env)
-    (message "python env (env var): %s" (getenv "VIRTUAL_ENV"))
-    (message "python exec: %s" python-shell-interpreter)
-    (message "python exec (full): %s" (executable-find python-shell-interpreter))
-    (message "python rpc exec: %s" elpy-rpc-python-command)
-    (message "python rpc exec (full): %s"
-             (executable-find elpy-rpc-python-command))
-    (message "rpc-virtualenv-path: %s" elpy-rpc-virtualenv-path)
-    (message "python rpc venv location : %s" (elpy-rpc-get-or-create-virtualenv))
-    (with-elpy-rpc-virtualenv-activated
-     (message "python venv exec: %s" (executable-find elpy-rpc-python-command))))
-#+end_src
-
-**** COMMENT importmagic
-#+begin_src emacs-lisp
-  (use-package importmagic
-    :ensure t
-    :custom
-    (importmagic-be-quiet t)
-    ;; :hook (python-mode . gopar/enable-importmagic-if-found)
-    :hook (python-mode . (lambda () (run-at-time "3 sec" nil 'gopar/enable-importmagic-if-found)))
-    :init
-    (defun gopar/enable-importmagic-if-found ()
-      "Format the current buffer using the 'importmagic` program, if available."
-      (interactive)
-      (if (zerop (shell-command "python -c 'import importmagic'"))
-          (importmagic-mode))))
-#+end_src
-
-**** COMMENT Jedi
-#+begin_src emacs-lisp
-  (use-package jedi
-    :ensure t
-    :defer
-    ;; :hook (python-mode . gopar/enable-jedi-if-found)
-    :hook (python-mode . (lambda () (run-at-time "3 sec" nil 'gopar/enable-jedi-if-found)))
-    :custom
-    (jedi:tooltip-method nil)
-    :init
-    (defun gopar/enable-jedi-if-found ()
-      "Format the current buffer using the jedi program, if available."
-      (interactive)
-      (if (zerop (shell-command "python -c 'import jedi'"))
-          (jedi:setup))))
-#+end_src
-
-**** Debugger
-#+begin_src emacs-lisp
-  (use-package gud
-    :ensure nil
-    :custom
-    (gud-pdb-command-name "PYTHONBREAKPOINT=pdb.set_trace python -m pdb"))
-#+end_src
-*** Javascript
-#+begin_src emacs-lisp
-  (use-package indium
-    :hook ((js2-mode . indium-interaction-mode)))
-  (setq js-indent-level 2)
-#+end_src
-
-*** CSV mode
-#+begin_src emacs-lisp
-  (use-package csv-mode
-   :config (add-hook 'csv-mode-hook 'csv-guess-set-separator))
-  (add-to-list 'auto-mode-alist '("\\.tsv\\'" . csv-mode))
-#+end_src
-
-** COMMENT Slime for common-lisp
-Clone [[https://github.com/slime/slime.git][Slime repository]] into ~/code/cloned/slime and add to load path
-#+begin_src emacs-lisp
-  (setq inferior-lisp-program "sbcl")
-  (add-to-list 'load-path "~/code/commonlisp/slime/")
-  (use-package slime
-    :config (slime-setup))
-
-  (use-package paredit)
-  (defun override-slime-del-key ()
-    (define-key slime-repl-mode-map
-      (read-kbd-macro paredit-backward-delete-key) nil))
-  (add-hook 'slime-repl-mode-hook 'override-slime-del-key)
-#+end_src
-
-**  Magit
-#+BEGIN_SRC emacs-lisp
-  (use-package magit
-    :bind (("C-c g" . #'magit-status)))
-
-  ;; (use-package libgit)
-
-  ;; (use-package magit-libgit
-  ;;  :after (magit libgit))
-#+END_SRC
-
-** Ediff - File comparison
-#+begin_src emacs-lisp
-  (setq ediff-keep-variants nil)
-  (setq ediff-make--buffers-readonly-at-startup nil)
-  (setq ediff-merge-revisions-with-ancestor t)
-  (setq ediff-show-clashes-only t)
-  (setq ediff-split-window-function 'split-window-horizontally)
-  (setq ediff-window-setup-function 'ediff-setup-windows-plain)
-#+end_src
-
-** Syntax Highlighting
-#+begin_src emacs-lisp
-  (use-package rainbow-delimiters
-    :config
-    (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
-
-  (use-package rainbow-blocks
-    :config
-    (add-hook 'prog-mode-hook #'rainbow-blocks-mode))
-
-  (use-package rainbow-identifiers
-    :config
-    (add-hook 'prog-mode-hook #'rainbow-identifiers-mode))
-#+end_src
-
-*** Rainbow blocks visual inspection
-#+begin_src python
-  if name == noname:
-      function_call(second_function(third_function(fourth_function(fifth_one(sixth_maybe(seventh_again(eighth_call(nineth_one()))))))))
-
-      if name == nonameagain:
-          with enter_one_more as f:
-              fine = by me
-              if var:
-                  var = True
-                  if makedirs:
-                      temp = dump
-#+end_src
-
-*** Highlight indentation
-#+begin_src emacs-lisp
-  (use-package highlight-indentation
-    :ensure t
-    :hook ((prog-mode . highlight-indentation-mode)
-           (prog-mode . highlight-indentation-current-column-mode)))
-#+end_src
-
-** Code folding
-#+begin_src emacs-lisp
-  (use-package origami
-    :config
-    (add-hook 'prog-mode-hook #'origami-mode)
-    :bind (:map origami-mode-map
-                ("C-<return>" . origami-toggle-node)
-                ("C-M-<return>" . origami-toggle-all-nodes)
-                ("C-<tab>" . origami-recursively-toggle-node)
-                ("C-<iso-lefttab>" . origami-show-only-node)))
-#+end_src
-
-** COMMENT Comint Fold
-[[https://github.com/jdtsmith/comint-fold][GitHub - jdtsmith/comint-fold: Fold input + output blocks in Emacs comint shells]]
-#+begin_src emacs-lisp
-  (use-package comint-fold
-    :elpaca (:host github :repo "jdtsmith/comint-fold" :branch "main")
-    :bind (:map comint-mode-map ("C-<tab>" . #'comint-fold-do-fold))
-    :config
-    (comint-fold-mode 1)
-    (setq comint-fold-remap-tab nil)
-
-    ;; configure some modes specially; try first without this, many "just work"
-    (add-hook 'gdb-mode-hook
-              (comint-fold-configure-hook 0 (rx bol "(gdb)" (+ space))))
-    (add-hook 'ipy-mode-hook
-              (comint-fold-configure-hook 1 'ipy-prompt-regexp)))
-
-#+end_src
-
-** Minibuffer completion
-#+begin_src emacs-lisp
-  ;; Completions with counsel
-  (use-package counsel
-    :config
-    (counsel-mode 1))
-
-  ;; Search better with swiper
-  (use-package swiper
-    :config
-    (counsel-mode 1))
-
-  ;; The interface for swiper/counsel
-  (use-package ivy
-    :requires (counsel swiper)
-    :config
-    (ivy-mode 1)
-    (setq ivy-use-virtual-buffers t)
-    (setq enable-recursive-minibuffers t)
-    ;; enable this if you want `swiper' to use it
-    ;; (setq search-default-mode #'char-fold-to-regexp)
-    (global-set-key "\C-s" 'swiper)
-    (global-set-key (kbd "C-c C-r") 'ivy-resume)
-    (global-set-key (kbd "<f6>") 'ivy-resume)
-    (global-set-key (kbd "M-x") 'counsel-M-x))
-#+end_src
-
-** Align Non Space
-[[https://blog.lambda.cx/posts/emacs-align-columns/][Aligning columns in Emacs]]
-#+begin_src emacs-lisp
-  (defun align-non-space (BEG END)
-    "Align non-space columns in region BEG END."
-    (interactive "r")
-    (align-regexp BEG END "\\(\\s-*\\)\\S-+" 1 1 t))
-#+end_src
-
-** Markdown mode
-#+begin_src emacs-lisp
-  (use-package markdown-mode)
-  (add-to-list 'auto-mode-alist '("\\.mmd\\'" . markdown-mode))
-#+end_src
-
-** COMMENT Shell mode
-#+begin_src emacs-lisp
-  (use-package bash-completion
-    :elpaca (:host github :repo "szermatt/emacs-bash-completion")
-    :config
-    (add-hook 'shell-dynamic-complete-functions 'bash-completion-dynamic-complete))
-#+end_src
-
-[[https://magnus.therning.org/2023-11-19-making-emacs-without-terminal-emulator-a-little-more-usable.html][Making Emacs without terminal emulator a little more usable]]
-#+begin_src emacs-lisp
-  (defun mep-projectile-async-shell-command ()
-    "Run `async-shell-command' in the current project's root directory."
-    (declare (interactive-only async-shell-command))
-    (interactive)
-    (let ((default-directory (projectile-project-root)))
-      (call-interactively #'async-shell-command)))
-#+end_src
-
-** COMMENT Emacs Jupyter Notebook
-#+begin_src emacs-lisp
-  (use-package jupyter)
-  (setq ob-async-no-async-languages-alist '("jupyter-python" "jupyter-julia"))
-#+end_src
-
-** COMMENT Code-cell
-code-cells and Jupytext
-#+begin_src sh
-  pip install jupyterlab jupytext
-#+end_src
-#+begin_src emacs-lisp
-  (use-package code-cells
-    :config
-    (setq code-cells-convert-ipynb-style '(("pandoc" "--to" "ipynb" "--from" "org")
-                                           ("pandoc" "--to" "org" "--from" "ipynb")
-                                           (lambda () #'org-mode))))
-#+end_src
-
-* Reading and Writing
-** Distraction Free Editing
-#+begin_src emacs-lisp
-  ;; Distraction-free screen
-  (use-package olivetti
-    :init
-    (setq olivetti-body-width .5)
-    :config
-    (defun distraction-free ()
-      "Distraction-free writing environment"
-      (interactive)
-      (if (equal olivetti-mode nil)
-          (progn
-            (window-configuration-to-register 1)
-            (delete-other-windows)
-            (text-scale-increase 2)
-            (olivetti-mode t))
-        (progn
-          (jump-to-register 1)
-          (olivetti-mode 0)
-          (text-scale-decrease 2))))
-    :bind
-    (("<f9>" . distraction-free)))
-#+end_src
-
-** Reading
-*** Nov.el
-#+begin_src emacs-lisp
-  (defun my-nov-font-setup ()
-    (face-remap-add-relative 'variable-pitch :family "ETBembo"
-                             :height 1.0))
-  (add-hook 'nov-mode-hook 'my-nov-font-setup)
-  (use-package nov
-    :config
-    (add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode))
-    (setq nov-text-width 80))
-#+end_src
-
-*** COMMENT more config
-#+begin_src emacs-lisp
-  (use-package justify-kp)
-
-  (setq nov-text-width t)
-
-  (defun my-nov-window-configuration-change-hook ()
-    (my-nov-post-html-render-hook)
-    (remove-hook 'window-configuration-change-hook
-                 'my-nov-window-configuration-change-hook
-                 t))
-
-  (defun my-nov-post-html-render-hook ()
-    (if (get-buffer-window)
-        (let ((max-width (pj-line-width))
-              buffer-read-only)
-          (save-excursion
-            (goto-char (point-min))
-            (while (not (eobp))
-              (when (not (looking-at "^[[:space:]]*$"))
-                (goto-char (line-end-position))
-                (when (> (shr-pixel-column) max-width)
-                  (goto-char (line-beginning-position))
-                  (pj-justify)))
-              (forward-line 1))))
-      (add-hook 'window-configuration-change-hook
-                'my-nov-window-configuration-change-hook
-                nil t)))
-
-  (add-hook 'nov-post-html-render-hook 'my-nov-post-html-render-hook)
-
-#+end_src
-
-*** Dictionary
-#+begin_src emacs-lisp
-  (use-package dictionary
-    :defer
-    :ensure nil
-    :bind (:map text-mode-map
-                ("M-." . dictionary-lookup-definition)
-           :map org-mode-map
-                ("M-." . dictionary-lookup-definition))
-    :init
-    (add-to-list 'display-buffer-alist
-                 '("^\\*Dictionary\\*" display-buffer-in-side-window
-                   (side . left)
-                   (window-width . 50)))
-    :custom
-    (dictionary-server "dict.org"))
-#+end_src
-
-** Writing
-*** Spellcheck
-#+begin_src emacs-lisp
-  (use-package flyspell
-    :config
-    (setenv  "DICTIONARY"  "en_US")
-    (setenv  "DICTPATH"  (concat (getenv "HOME") "/.dictionaries"))
-    (setq   ispell-program-name  "/usr/local/bin/hunspell")
-
-    (setq ispell-program-name "hunspell"
-          ispell-default-dictionary "en_US")
-    :hook (text-mode . flyspell-mode)
-    :bind (("M-<f7>" . flyspell-buffer)
-           ("<f7>" . flyspell-word)
-           ("C-;" . flyspell-auto-correct-previous-word)))
-#+end_src
-
-*** Latex Equation Previews
-#+begin_src emacs-lisp
-  (use-package org-fragtog
-    :config (add-hook 'org-mode-hook 'org-fragtog-mode))
-#+end_src
-
-** COMMENT Latex and pdf-tools
-#+begin_src emacs-lisp
-  (use-package tex
-    :ensure auctex)
-
-  (use-package pdf-tools
-    :pin manual
-    :config
-    (pdf-tools-install)
-    (setq-default pdf-view-display-size 'fit-width)
-    (define-key pdf-view-mode-map (kbd "C-s") 'isearch-forward)
-    :custom
-    (pdf-annot-activate-created-annotations t "automatically annotate highlights"))
-
-  (setq TeX-view-program-selection '((output-pdf "PDF Tools"))
-        TeX-view-program-list '(("PDF Tools" TeX-pdf-tools-sync-view))
-        TeX-source-correlate-start-server t)
-
-  (add-hook 'TeX-after-compilation-finished-functions
-            #'TeX-revert-document-buffer)
-
-  (add-hook 'pdf-view-mode-hook (lambda() (linum-mode -1)))
-#+end_src
-
-* Communication
-
-** IRC chat
-#+begin_src emacs-lisp
-  (setq erc-server "irc.libera.chat"
-        erc-nick "vanangamudi"
-        erc-user-full-name "vanangamudi"
-        erc-track-shorten-start 8
-        erc-autojoin-channels-alist '(("irc.libera.chat" "#emacs"))
-        erc-kill-buffer-on-part t
-        erc-join-buffer 'window
-        erc-auto-query 'window)
-#+end_src
-
-** COMMENT Matrix client
-#+begin_src emacs-lisp
-  (use-package ement
-    :elpaca (:host github :repo "alphapapa/ement.el"))
-#+end_src
-
-** COMMENT Email with mu4e
-*** Install =mu4e= for =mu= and =mu4e= and install =isync= packages for =mbsync=
-#+begin_src bash :results output code
-  sudo apt install mu4e isync
-#+end_src
-
-*** Configure =mbsync= using =.mbsyncrc=
-#+begin_src conf :tangle ~/aalar/.mbsyncrc
-  IMAPAccount personal-gmail
-  Host imap.gmail.com
-  User selva.personals@gmail.com
-  PassCmd "cat ~/ko-pa-ni/thani/kadavu/mbsync.karunthulai.selva.personals.txt"
-  SSLType IMAPS
-  CertificateFile /etc/ssl/certs/ca-certificates.crt
-  PipelineDepth 1
-
-  IMAPStore personal-gmail-remote
-  Account personal-gmail
-
-  MaildirStore personal-gmail-local
-  Subfolders Verbatim
-  Path ~/mail/personal-gmail/
-  Inbox ~/mail/personal-gmail/Inbox
-
-  Channel personal-gmail
-  Master :personal-gmail-remote:
-  Slave :personal-gmail-local:
-  Patterns * ![Gmail]* "[Gmail]/Sent Mail" "[Gmail]/Starred" "[Gmail]/All Mail" "[Gmail]/Trash"
-  Create Both
-  SyncState *
-
-
-  IMAPAccount developer-gmail
-  Host imap.gmail.com
-  User selva.developer@gmail.com
-  PassCmd "cat ~/ko-pa-ni/thani/kadavu/mbsync.karunthulai.selva.developer.txt"
-  SSLType IMAPS
-  CertificateFile /etc/ssl/certs/ca-certificates.crt
-  PipelineDepth 1
-
-  IMAPStore developer-gmail-remote
-  Account developer-gmail
-
-  MaildirStore developer-gmail-local
-  Subfolders Verbatim
-  Path ~/mail/developer-gmail/
-  Inbox ~/mail/developer-gmail/Inbox
-
-  Channel developer-gmail
-  Master :developer-gmail-remote:
-  Slave :developer-gmail-local:
-  Patterns * ![Gmail]* "[Gmail]/Sent Mail" "[Gmail]/Starred" "[Gmail]/All Mail" "[Gmail]/Trash"
-  Create Both
-  SyncState *
-#+end_src
-
-*** Configure mu4e
-#+begin_src emacs-lisp
-  (use-package mu4e
-    :ensure nil
-    :load-path "/usr/share/emacs/site-lisp/mu4e/"
-    ;; :defer 20 ; Wait until 20 seconds after startup
-    :config
-
-    ;; This is set to 't' to avoid mail syncing issues when using mbsync
-    (setq mu4e-change-filenames-when-moving t)
-
-    ;; Refresh mail using isync every 10 minutes
-    (setq mu4e-update-interval (* 10 60))
-    (setq mu4e-get-mail-command "mbsync -a")
-    (setq mu4e-maildir "~/mail/")
-
-    (setq mu4e-contexts
-          (list
-           ;; personals account
-           (make-mu4e-context
-            :name "personal"
-            :match-func
-            (lambda (msg)
-              (when msg
-                (string-prefix-p "/personal-gmail" (mu4e-message-field msg :maildir))))
-            :vars '((user-mail-address . "selva.personal@gmail.com")
-                    (user-full-name    . "Selvakumar Murugan")
-                    (smtpmail-smtp-server  . "smtp.gmail.com")
-                    (smtpmail-smtp-service . 465)
-                    (smtpmail-stream-type  . ssl)
-                    (mu4e-drafts-folder  . "/personal-gmail/[Gmail]/Drafts")
-                    (mu4e-sent-folder  . "/personal-gmail/[Gmail]/Sent Mail")
-                    (mu4e-refile-folder  . "/personal-gmail/[Gmail]/All Mail")
-                    (mu4e-trash-folder  . "/personal-gmail/[Gmail]/Trash")))
-
-           ;; developer account
-           (make-mu4e-context
-            :name "developer"
-            :match-func
-            (lambda (msg)
-              (when msg
-                (string-prefix-p "/developer-gmail" (mu4e-message-field msg :maildir))))
-            :vars '((user-mail-address . "selva.developer@gmail.com")
-                    (user-full-name    . "Selvakumar Murugan")
-                    (smtpmail-smtp-server  . "smtp.gmail.com")
-                    (smtpmail-smtp-service . 465)
-                    (smtpmail-stream-type  . ssl)
-                    (mu4e-drafts-folder  . "/developer-gmail/[Gmail]/Drafts")
-                    (mu4e-sent-folder  . "/developer-gmail/[Gmail]/Sent Mail")
-                    (mu4e-refile-folder  . "/developer-gmail/[Gmail]/All Mail")
-                    (mu4e-trash-folder  . "/developer-gmail/[Gmail]/Trash")))
-
-           ))
-
-    (setq mu4e-maildir-shortcuts
-          '(("/Inbox"             . ?i)
-            ("/[Gmail]/Sent Mail" . ?s)
-            ("/[Gmail]/Trash"     . ?t)
-            ("/[Gmail]/Drafts"    . ?d)
-            ("/[Gmail]/All Mail"  . ?a))))
-
 #+end_src
 
 * Org
@@ -2072,8 +1383,8 @@ org-refile by default only targets current file and heading unless =org-refile-t
           :unnarrowed t))
 
   (defun va/org-roam-node-has-tag (node tag)
-  "Filter function to check if the given NODE has the specified TAG."
-  (member tag (org-roam-node-tags node)))
+    "Filter function to check if the given NODE has the specified TAG."
+    (member tag (org-roam-node-tags node)))
 
   (defun va/org-roam-node-find-by-tag ()
     "Find and open an Org-roam node based on a specified tag."
@@ -2192,9 +1503,9 @@ Org-capture book-marklet for firefox, add this to bookmark toolbar on firefox
 #+BEGIN_SRC js
   //org-protocol.desktop the one that works now
   javascript:location.href = 'org-protocol://capture?template=l'\
-      + '&url='   + encodeURIComponent(location.href)\
-      + '&title=' + encodeURIComponent(document.title)\
-      + '&body='  + encodeURIComponent(window.getSelection())
+    + '&url='   + encodeURIComponent(location.href)\
+    + '&title=' + encodeURIComponent(document.title)\
+    + '&body='  + encodeURIComponent(window.getSelection())
 
 #+END_SRC
 
@@ -2286,6 +1597,9 @@ https://sachachua.com/blog/2015/11/capturing-links-quickly-with-emacsclient-org-
            (file+olp+datetree "~/org/pidi.org" "Journal")
            "* %?\nEntered on %U\n  %i\n  %a")))
 #+END_SRC
+
+#+RESULTS:
+| t | Todo | entry | (file+headline ~/org/pidi.org Tasks) | * TODO %? |
 
 **** Tips and Troubleshooting
 ***** No server buffers remain to edit
@@ -2551,6 +1865,731 @@ When fetching entries via Biblio, Ebib checks for duplicates based on the key of
     :config
     (setq org-books-file "~/my-list.org"))
 #+end_src
+* Search
+#+begin_src emacs-lisp
+  (use-package deadgrep)
+#+end_src
+
+* Financial
+** Accounting
+#+begin_src emacs-lisp
+  (use-package ledger-mode)
+#+end_src
+
+** COMMENT Ledger
+#+begin_src emacs-lisp
+  (setq org-capture-templates
+        (append '(("e" "Ledger entries")
+
+                  ("ecc" "Citi Credit Card" plain
+                   (file "~/ko-pa-ni/thani/expenses2024.ledger")
+                   "%(org-read-date) %^{Payee}
+    Liabilities:CC:Citi
+    Expenses:%^{Account}  %^{Amount}
+  ")
+                  ("ech" "HDFC credit card" plain
+                   (file "~/ko-pa-ni/thani/expenses2024.ledger")
+                   "%(org-read-date) * %^{Payee}
+    Liabilities:CC:HDFC
+    Expenses:%^{Account}  %^{Amount}
+  "))
+                org-capture-templates))
+#+end_src
+
+* Programming
+** Crontab editing
+#+begin_src emacs-lisp
+  (defun crontab-e ()
+    "Run `crontab -e' in a emacs buffer."
+    (interactive)
+    (with-editor-async-shell-command "crontab -e"))
+#+end_src
+** Sloccount
+#+begin_src emacs-lisp
+  (use-package cloc)
+#+end_src
+** Whitespace cleanup
+#+begin_src emacs-lisp
+  (use-package whitespace
+    :ensure nil
+    :hook (before-save . whitespace-cleanup))
+#+end_src
+** Documentation
+#+begin_src emacs-lisp
+  (use-package devdocs
+    :ensure t
+    :defer
+    :bind ("C-c M-d" . devdocs-lookup)
+    :init
+    (add-to-list 'display-buffer-alist
+                 '("\\*devdocs\\*"
+                   display-buffer-in-side-window
+                   (side . right)
+                   (slot . 3)
+                   (window-parameters . ((no-delete-other-windows . t)))
+                   (dedicated . t))))
+#+end_src
+
+** Compilation
+#+begin_src emacs-lisp
+  (use-package compile
+    :ensure nil
+    :custom
+    (compilation-scroll-output 'first-error)
+    (compilation-always-kill t)
+    (compilation-max-output-line-length nil)
+    :hook (compilation-mode . hl-line-mode)
+    :init
+                                          ; from enberg on #emacs
+    (add-hook 'compilation-finish-functions
+              (lambda (buf str)
+                (if (null (string-match ".*exited abnormally.*" str))
+                    ;;no errors, make the compilation window go away in a few seconds
+                    (progn
+                      (run-at-time
+                       "1 sec" nil 'delete-windows-on
+                       (get-buffer-create "*compilation*"))
+                      (message "No Compilation Errors!"))))))
+#+end_src
+
+** COMMENT Make executable
+#+begin_src emacs-lisp
+  (use-package executable
+    :ensure nil
+    :hook (after-save . executable-make-buffer-file-executable-if-script-p))
+#+end_src
+
+** Fill Function Arguments
+#+begin_src emacs-lisp
+  (use-package fill-function-arguments
+    :ensure t
+    :bind (:map prog-mode-map
+                ("C-c M-q" . fill-function-arguments-dwim)))
+#+end_src
+
+#+RESULTS:
+: fill-function-arguments-dwim
+
+** Programming languages
+#+begin_src emacs-lisp
+  (use-package typescript-mode)
+  (use-package csharp-mode)
+  (use-package yaml-mode)
+  (use-package dockerfile-mode)
+  (use-package toml-mode)
+#+end_src
+
+*** Python
+**** Inspirations
+- https://robbmann.io/posts/006_emacs_2_python/
+- https://medium.com/analytics-vidhya/managing-a-python-development-environment-in-emacs-43897fd48c6a
+**** MyPy
+#+begin_src sh :dir /sudo::
+  apt install mypy
+#+end_src
+
+**** Blacken
+#+begin_src emacs-lisp
+  (use-package blacken
+    :hook ((python-mode . blacken-mode)
+           (python-mode . outshine-mode)))
+  ;; (python-mode . (lambda ()(setq outline-heading-end-regexp ":[^\n]*\n")))))
+  (use-package pyvenv)
+  (setq-default indent-tabs-mode nil)
+#+end_src
+
+**** COMMENT Elpy
+#+begin_src bash :dir /sudo::
+  apt install python3-jedi black python3-autopep8 yapf3 python3-yapf
+  pip install virtualenvwrapper
+#+end_src
+
+Emacs side of things
+#+begin_src emacs-lisp
+  (setenv "WORKON_HOME" "~/.virtualenvs")
+  (use-package elpy
+    :ensure t
+    :defer t
+    :init
+    (advice-add 'python-mode :before 'elpy-enable)
+    :config
+    (setq elpy-rpc-virtualenv-path 'current))
+
+  ;; Enable Flycheck
+  (when (require 'flycheck nil t)
+    (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
+    (add-hook 'elpy-mode-hook 'flycheck-mode))
+
+  ;; Enable autopep8
+  ;; (require 'py-autopep8)
+  ;; (add-hook 'elpy-mode-hook 'py-autopep8-enable-on-save)
+
+  ;; https://elpy.readthedocs.io/en/latest/customization_tips.html#enable-full-font-locking-of-inputs-in-the-python-shell
+  (advice-add 'elpy-shell--insert-and-font-lock
+              :around (lambda (f string face &optional no-font-lock)
+                        (if (not (eq face 'comint-highlight-input))
+                            (funcall f string face no-font-lock)
+                          (funcall f string face t)
+                          (python-shell-font-lock-post-command-hook))))
+
+  (advice-add 'comint-send-input
+              :around (lambda (f &rest args)
+                        (if (eq major-mode 'inferior-python-mode)
+                            (cl-letf ((g (symbol-function 'add-text-properties))
+                                      ((symbol-function 'add-text-properties)
+                                       (lambda (start end properties &optional object)
+                                         (unless (eq (nth 3 properties) 'comint-highlight-input)
+                                           (funcall g start end properties object)))))
+                              (apply f args))
+                          (apply f args))))
+
+#+end_src
+
+***** COMMENT Debuging
+[[https://github.com/jorgenschaefer/elpy/issues/1727#issuecomment-564248584][jorgenschaefer/elpy#1727 Problems with elpy and virtual environment]]
+#+begin_src emacs-lisp
+  (progn
+    (message "python env: %s" pyvenv-virtual-env)
+    (message "python env (env var): %s" (getenv "VIRTUAL_ENV"))
+    (message "python exec: %s" python-shell-interpreter)
+    (message "python exec (full): %s" (executable-find python-shell-interpreter))
+    (message "python rpc exec: %s" elpy-rpc-python-command)
+    (message "python rpc exec (full): %s"
+             (executable-find elpy-rpc-python-command))
+    (message "rpc-virtualenv-path: %s" elpy-rpc-virtualenv-path)
+    (message "python rpc venv location : %s" (elpy-rpc-get-or-create-virtualenv))
+    (with-elpy-rpc-virtualenv-activated
+     (message "python venv exec: %s" (executable-find elpy-rpc-python-command))))
+#+end_src
+
+**** COMMENT importmagic
+#+begin_src emacs-lisp
+  (use-package importmagic
+    :ensure t
+    :custom
+    (importmagic-be-quiet t)
+    ;; :hook (python-mode . gopar/enable-importmagic-if-found)
+    :hook (python-mode . (lambda () (run-at-time "3 sec" nil 'gopar/enable-importmagic-if-found)))
+    :init
+    (defun gopar/enable-importmagic-if-found ()
+      "Format the current buffer using the 'importmagic` program, if available."
+      (interactive)
+      (if (zerop (shell-command "python -c 'import importmagic'"))
+          (importmagic-mode))))
+#+end_src
+
+**** COMMENT Jedi
+#+begin_src emacs-lisp
+  (use-package jedi
+    :ensure t
+    :defer
+    ;; :hook (python-mode . gopar/enable-jedi-if-found)
+    :hook (python-mode . (lambda () (run-at-time "3 sec" nil 'gopar/enable-jedi-if-found)))
+    :custom
+    (jedi:tooltip-method nil)
+    :init
+    (defun gopar/enable-jedi-if-found ()
+      "Format the current buffer using the jedi program, if available."
+      (interactive)
+      (if (zerop (shell-command "python -c 'import jedi'"))
+          (jedi:setup))))
+#+end_src
+
+**** Debugger
+#+begin_src emacs-lisp
+  (use-package gud
+    :ensure nil
+    :custom
+    (gud-pdb-command-name "PYTHONBREAKPOINT=pdb.set_trace python -m pdb"))
+#+end_src
+*** Javascript
+#+begin_src emacs-lisp
+  (use-package indium
+    :hook ((js2-mode . indium-interaction-mode)))
+  (setq js-indent-level 2)
+#+end_src
+
+*** CSV mode
+#+begin_src emacs-lisp
+  (use-package csv-mode
+    :config (add-hook 'csv-mode-hook 'csv-guess-set-separator))
+  (add-to-list 'auto-mode-alist '("\\.tsv\\'" . csv-mode))
+#+end_src
+
+** COMMENT Slime for common-lisp
+Clone [[https://github.com/slime/slime.git][Slime repository]] into ~/code/cloned/slime and add to load path
+#+begin_src emacs-lisp
+  (setq inferior-lisp-program "sbcl")
+  (add-to-list 'load-path "~/code/commonlisp/slime/")
+  (use-package slime
+    :config (slime-setup))
+
+  (use-package paredit)
+  (defun override-slime-del-key ()
+    (define-key slime-repl-mode-map
+                (read-kbd-macro paredit-backward-delete-key) nil))
+  (add-hook 'slime-repl-mode-hook 'override-slime-del-key)
+#+end_src
+
+**  Magit
+#+BEGIN_SRC emacs-lisp
+  (use-package magit
+    :bind (("C-c g" . #'magit-status)))
+
+  ;; (use-package libgit)
+
+  ;; (use-package magit-libgit
+  ;;  :after (magit libgit))
+#+END_SRC
+
+** Ediff - File comparison
+#+begin_src emacs-lisp
+  (setq ediff-keep-variants nil)
+  (setq ediff-make--buffers-readonly-at-startup nil)
+  (setq ediff-merge-revisions-with-ancestor t)
+  (setq ediff-show-clashes-only t)
+  (setq ediff-split-window-function 'split-window-horizontally)
+  (setq ediff-window-setup-function 'ediff-setup-windows-plain)
+#+end_src
+
+** Syntax Highlighting
+#+begin_src emacs-lisp
+  (use-package rainbow-delimiters
+    :config
+    (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
+
+  (use-package rainbow-blocks
+    :config
+    (add-hook 'prog-mode-hook #'rainbow-blocks-mode))
+
+  (use-package rainbow-identifiers
+    :config
+    (add-hook 'prog-mode-hook #'rainbow-identifiers-mode))
+#+end_src
+
+*** Rainbow blocks visual inspection
+#+begin_src python
+  if name == noname:
+      function_call(second_function(third_function(fourth_function(fifth_one(sixth_maybe(seventh_again(eighth_call(nineth_one()))))))))
+
+      if name == nonameagain:
+          with enter_one_more as f:
+              fine = by me
+              if var:
+                  var = True
+                  if makedirs:
+                      temp = dump
+#+end_src
+
+*** Highlight indentation
+#+begin_src emacs-lisp
+  (use-package highlight-indentation
+    :ensure t
+    :hook ((prog-mode . highlight-indentation-mode)
+           (prog-mode . highlight-indentation-current-column-mode)))
+#+end_src
+
+** Code folding
+#+begin_src emacs-lisp
+  (use-package origami
+    :config
+    (add-hook 'prog-mode-hook #'origami-mode)
+    :bind (:map origami-mode-map
+                ("C-<return>" . origami-toggle-node)
+                ("C-M-<return>" . origami-toggle-all-nodes)
+                ("C-<tab>" . origami-recursively-toggle-node)
+                ("C-<iso-lefttab>" . origami-show-only-node)))
+#+end_src
+
+** COMMENT Comint Fold
+[[https://github.com/jdtsmith/comint-fold][GitHub - jdtsmith/comint-fold: Fold input + output blocks in Emacs comint shells]]
+#+begin_src emacs-lisp
+  (use-package comint-fold
+    :elpaca (:host github :repo "jdtsmith/comint-fold" :branch "main")
+    :bind (:map comint-mode-map ("C-<tab>" . #'comint-fold-do-fold))
+    :config
+    (comint-fold-mode 1)
+    (setq comint-fold-remap-tab nil)
+
+    ;; configure some modes specially; try first without this, many "just work"
+    (add-hook 'gdb-mode-hook
+              (comint-fold-configure-hook 0 (rx bol "(gdb)" (+ space))))
+    (add-hook 'ipy-mode-hook
+              (comint-fold-configure-hook 1 'ipy-prompt-regexp)))
+
+#+end_src
+
+** Minibuffer completion
+#+begin_src emacs-lisp
+  ;; Completions with counsel
+  (use-package counsel
+    :config
+    (counsel-mode 1))
+
+  ;; Search better with swiper
+  (use-package swiper
+    :config
+    (counsel-mode 1))
+
+  ;; The interface for swiper/counsel
+  (use-package ivy
+    :requires (counsel swiper)
+    :config
+    (ivy-mode 1)
+    (setq ivy-use-virtual-buffers t)
+    (setq enable-recursive-minibuffers t)
+    ;; enable this if you want `swiper' to use it
+    ;; (setq search-default-mode #'char-fold-to-regexp)
+    (global-set-key "\C-s" 'swiper)
+    (global-set-key (kbd "C-c C-r") 'ivy-resume)
+    (global-set-key (kbd "<f6>") 'ivy-resume)
+    (global-set-key (kbd "M-x") 'counsel-M-x))
+#+end_src
+
+** Align Non Space
+[[https://blog.lambda.cx/posts/emacs-align-columns/][Aligning columns in Emacs]]
+#+begin_src emacs-lisp
+  (defun align-non-space (BEG END)
+    "Align non-space columns in region BEG END."
+    (interactive "r")
+    (align-regexp BEG END "\\(\\s-*\\)\\S-+" 1 1 t))
+#+end_src
+
+** Markdown mode
+#+begin_src emacs-lisp
+  (use-package markdown-mode)
+  (add-to-list 'auto-mode-alist '("\\.mmd\\'" . markdown-mode))
+#+end_src
+
+** COMMENT Shell mode
+#+begin_src emacs-lisp
+  (use-package bash-completion
+    :elpaca (:host github :repo "szermatt/emacs-bash-completion")
+    :config
+    (add-hook 'shell-dynamic-complete-functions 'bash-completion-dynamic-complete))
+#+end_src
+
+[[https://magnus.therning.org/2023-11-19-making-emacs-without-terminal-emulator-a-little-more-usable.html][Making Emacs without terminal emulator a little more usable]]
+#+begin_src emacs-lisp
+  (defun mep-projectile-async-shell-command ()
+    "Run `async-shell-command' in the current project's root directory."
+    (declare (interactive-only async-shell-command))
+    (interactive)
+    (let ((default-directory (projectile-project-root)))
+      (call-interactively #'async-shell-command)))
+#+end_src
+
+** COMMENT Emacs Jupyter Notebook
+#+begin_src emacs-lisp
+  (use-package jupyter)
+  (setq ob-async-no-async-languages-alist '("jupyter-python" "jupyter-julia"))
+#+end_src
+
+** COMMENT Code-cell
+code-cells and Jupytext
+#+begin_src sh
+  pip install jupyterlab jupytext
+#+end_src
+#+begin_src emacs-lisp
+  (use-package code-cells
+    :config
+    (setq code-cells-convert-ipynb-style '(("pandoc" "--to" "ipynb" "--from" "org")
+                                           ("pandoc" "--to" "org" "--from" "ipynb")
+                                           (lambda () #'org-mode))))
+#+end_src
+
+* Reading and Writing
+** Distraction Free Editing
+#+begin_src emacs-lisp
+  ;; Distraction-free screen
+  (use-package olivetti
+    :init
+    (setq olivetti-body-width .5)
+    :config
+    (defun distraction-free ()
+      "Distraction-free writing environment"
+      (interactive)
+      (if (equal olivetti-mode nil)
+          (progn
+            (window-configuration-to-register 1)
+            (delete-other-windows)
+            (text-scale-increase 2)
+            (olivetti-mode t))
+        (progn
+          (jump-to-register 1)
+          (olivetti-mode 0)
+          (text-scale-decrease 2))))
+    :bind
+    (("<f9>" . distraction-free)))
+#+end_src
+
+** Reading
+*** Nov.el
+#+begin_src emacs-lisp
+  (defun my-nov-font-setup ()
+    (face-remap-add-relative 'variable-pitch :family "ETBembo"
+                             :height 1.0))
+  (add-hook 'nov-mode-hook 'my-nov-font-setup)
+  (use-package nov
+    :config
+    (add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode))
+    (setq nov-text-width 80))
+#+end_src
+
+*** COMMENT more config
+#+begin_src emacs-lisp
+  (use-package justify-kp)
+
+  (setq nov-text-width t)
+
+  (defun my-nov-window-configuration-change-hook ()
+    (my-nov-post-html-render-hook)
+    (remove-hook 'window-configuration-change-hook
+                 'my-nov-window-configuration-change-hook
+                 t))
+
+  (defun my-nov-post-html-render-hook ()
+    (if (get-buffer-window)
+        (let ((max-width (pj-line-width))
+              buffer-read-only)
+          (save-excursion
+            (goto-char (point-min))
+            (while (not (eobp))
+              (when (not (looking-at "^[[:space:]]*$"))
+                (goto-char (line-end-position))
+                (when (> (shr-pixel-column) max-width)
+                  (goto-char (line-beginning-position))
+                  (pj-justify)))
+              (forward-line 1))))
+      (add-hook 'window-configuration-change-hook
+                'my-nov-window-configuration-change-hook
+                nil t)))
+
+  (add-hook 'nov-post-html-render-hook 'my-nov-post-html-render-hook)
+
+#+end_src
+
+*** Dictionary
+#+begin_src emacs-lisp
+  (use-package dictionary
+    :defer
+    :ensure nil
+    :bind (:map text-mode-map
+                ("M-." . dictionary-lookup-definition)
+                :map org-mode-map
+                ("M-." . dictionary-lookup-definition))
+    :init
+    (add-to-list 'display-buffer-alist
+                 '("^\\*Dictionary\\*" display-buffer-in-side-window
+                   (side . left)
+                   (window-width . 50)))
+    :custom
+    (dictionary-server "dict.org"))
+#+end_src
+
+** Writing
+*** Spellcheck
+#+begin_src emacs-lisp
+  (use-package flyspell
+    :config
+    (setenv  "DICTIONARY"  "en_US")
+    (setenv  "DICTPATH"  (concat (getenv "HOME") "/.dictionaries"))
+    (setq   ispell-program-name  "/usr/local/bin/hunspell")
+
+    (setq ispell-program-name "hunspell"
+          ispell-default-dictionary "en_US")
+    :hook (text-mode . flyspell-mode)
+    :bind (("M-<f7>" . flyspell-buffer)
+           ("<f7>" . flyspell-word)
+           ("C-;" . flyspell-auto-correct-previous-word)))
+#+end_src
+
+*** Latex Equation Previews
+#+begin_src emacs-lisp
+  (use-package org-fragtog
+    :config (add-hook 'org-mode-hook 'org-fragtog-mode))
+#+end_src
+
+** COMMENT Latex and pdf-tools
+#+begin_src emacs-lisp
+  (use-package tex
+    :ensure auctex)
+
+  (use-package pdf-tools
+    :pin manual
+    :config
+    (pdf-tools-install)
+    (setq-default pdf-view-display-size 'fit-width)
+    (define-key pdf-view-mode-map (kbd "C-s") 'isearch-forward)
+    :custom
+    (pdf-annot-activate-created-annotations t "automatically annotate highlights"))
+
+  (setq TeX-view-program-selection '((output-pdf "PDF Tools"))
+        TeX-view-program-list '(("PDF Tools" TeX-pdf-tools-sync-view))
+        TeX-source-correlate-start-server t)
+
+  (add-hook 'TeX-after-compilation-finished-functions
+            #'TeX-revert-document-buffer)
+
+  (add-hook 'pdf-view-mode-hook (lambda() (linum-mode -1)))
+#+end_src
+
+* Communication
+
+** IRC chat
+#+begin_src emacs-lisp
+  (setq erc-server "irc.libera.chat"
+        erc-nick "vanangamudi"
+        erc-user-full-name "vanangamudi"
+        erc-track-shorten-start 8
+        erc-autojoin-channels-alist '(("irc.libera.chat" "#emacs"))
+        erc-kill-buffer-on-part t
+        erc-join-buffer 'window
+        erc-auto-query 'window)
+#+end_src
+
+** COMMENT Matrix client
+#+begin_src emacs-lisp
+  (use-package ement
+    :elpaca (:host github :repo "alphapapa/ement.el"))
+#+end_src
+
+** COMMENT Email with mu4e
+*** Install =mu4e= for =mu= and =mu4e= and install =isync= packages for =mbsync=
+#+begin_src bash :results output code
+  sudo apt install mu4e isync
+#+end_src
+
+*** Configure =mbsync= using =.mbsyncrc=
+#+begin_src conf :tangle ~/aalar/.mbsyncrc
+  IMAPAccount personal-gmail
+  Host imap.gmail.com
+  User selva.personals@gmail.com
+  PassCmd "cat ~/ko-pa-ni/thani/kadavu/mbsync.karunthulai.selva.personals.txt"
+  SSLType IMAPS
+  CertificateFile /etc/ssl/certs/ca-certificates.crt
+  PipelineDepth 1
+
+  IMAPStore personal-gmail-remote
+  Account personal-gmail
+
+  MaildirStore personal-gmail-local
+  Subfolders Verbatim
+  Path ~/mail/personal-gmail/
+  Inbox ~/mail/personal-gmail/Inbox
+
+  Channel personal-gmail
+  Master :personal-gmail-remote:
+  Slave :personal-gmail-local:
+  Patterns * ![Gmail]* "[Gmail]/Sent Mail" "[Gmail]/Starred" "[Gmail]/All Mail" "[Gmail]/Trash"
+  Create Both
+  SyncState *
+
+
+  IMAPAccount developer-gmail
+  Host imap.gmail.com
+  User selva.developer@gmail.com
+  PassCmd "cat ~/ko-pa-ni/thani/kadavu/mbsync.karunthulai.selva.developer.txt"
+  SSLType IMAPS
+  CertificateFile /etc/ssl/certs/ca-certificates.crt
+  PipelineDepth 1
+
+  IMAPStore developer-gmail-remote
+  Account developer-gmail
+
+  MaildirStore developer-gmail-local
+  Subfolders Verbatim
+  Path ~/mail/developer-gmail/
+  Inbox ~/mail/developer-gmail/Inbox
+
+  Channel developer-gmail
+  Master :developer-gmail-remote:
+  Slave :developer-gmail-local:
+  Patterns * ![Gmail]* "[Gmail]/Sent Mail" "[Gmail]/Starred" "[Gmail]/All Mail" "[Gmail]/Trash"
+  Create Both
+  SyncState *
+#+end_src
+
+*** Configure mu4e
+#+begin_src emacs-lisp
+  (use-package mu4e
+    :ensure nil
+    :load-path "/usr/share/emacs/site-lisp/mu4e/"
+    ;; :defer 20 ; Wait until 20 seconds after startup
+    :config
+
+    ;; This is set to 't' to avoid mail syncing issues when using mbsync
+    (setq mu4e-change-filenames-when-moving t)
+
+    ;; Refresh mail using isync every 10 minutes
+    (setq mu4e-update-interval (* 10 60))
+    (setq mu4e-get-mail-command "mbsync -a")
+    (setq mu4e-maildir "~/mail/")
+
+    (setq mu4e-contexts
+          (list
+           ;; gmail-profession
+           (make-mu4e-context
+            :name "profession"
+            :match-func
+            (lambda (msg)
+              (when msg
+                (string-prefix-p "/gmail-profession" (mu4e-message-field msg :maildir))))
+            :vars '((user-mail-address . "selva.on.profession@gmail.com")
+                    (user-full-name    . "Selvakumar Murugan")
+                    (smtpmail-smtp-server  . "smtp.gmail.com")
+                    (smtpmail-smtp-service . 465)
+                    (smtpmail-stream-type  . ssl)
+                    (mu4e-drafts-folder  . "/gmail-profession/[Gmail]/Drafts")
+                    (mu4e-sent-folder  . "/gmail-profession/[Gmail]/Sent Mail")
+                    (mu4e-refile-folder  . "/gmail-profession/[Gmail]/All Mail")
+                    (mu4e-trash-folder  . "/gmail-profession/[Gmail]/Trash")))
+
+           ;; personals account
+           (make-mu4e-context
+            :name "personal"
+            :match-func
+            (lambda (msg)
+              (when msg
+                (string-prefix-p "/personal-gmail" (mu4e-message-field msg :maildir))))
+            :vars '((user-mail-address . "selva.personal@gmail.com")
+                    (user-full-name    . "Selvakumar Murugan")
+                    (smtpmail-smtp-server  . "smtp.gmail.com")
+                    (smtpmail-smtp-service . 465)
+                    (smtpmail-stream-type  . ssl)
+                    (mu4e-drafts-folder  . "/personal-gmail/[Gmail]/Drafts")
+                    (mu4e-sent-folder  . "/personal-gmail/[Gmail]/Sent Mail")
+                    (mu4e-refile-folder  . "/personal-gmail/[Gmail]/All Mail")
+                    (mu4e-trash-folder  . "/personal-gmail/[Gmail]/Trash")))
+
+           ;; developer account
+           (make-mu4e-context
+            :name "developer"
+            :match-func
+            (lambda (msg)
+              (when msg
+                (string-prefix-p "/developer-gmail" (mu4e-message-field msg :maildir))))
+            :vars '((user-mail-address . "selva.developer@gmail.com")
+                    (user-full-name    . "Selvakumar Murugan")
+                    (smtpmail-smtp-server  . "smtp.gmail.com")
+                    (smtpmail-smtp-service . 465)
+                    (smtpmail-stream-type  . ssl)
+                    (mu4e-drafts-folder  . "/developer-gmail/[Gmail]/Drafts")
+                    (mu4e-sent-folder  . "/developer-gmail/[Gmail]/Sent Mail")
+                    (mu4e-refile-folder  . "/developer-gmail/[Gmail]/All Mail")
+                    (mu4e-trash-folder  . "/developer-gmail/[Gmail]/Trash")))
+
+           ))
+
+    (setq mu4e-maildir-shortcuts
+          '(("/Inbox"             . ?i)
+            ("/[Gmail]/Sent Mail" . ?s)
+            ("/[Gmail]/Trash"     . ?t)
+            ("/[Gmail]/Drafts"    . ?d)
+            ("/[Gmail]/All Mail"  . ?a))))
+
+#+end_src
+
 * Elfeed-org
 ** Installation
 *** Download elfeed-org
@@ -2625,21 +2664,21 @@ Clone and map =elfeed-db= to  =~/.elfeed= directory
 ** COMMENT Edit with Emacs
 #+begin_src emacs-lisp
   (use-package edit-server
-  :ensure t
-  :commands edit-server-start
-  :init (if after-init-time
+    :ensure t
+    :commands edit-server-start
+    :init (if after-init-time
               (edit-server-start)
             (add-hook 'after-init-hook
                       #'(lambda() (edit-server-start))))
-  :config (setq edit-server-new-frame-alist
-                '((name . "Edit with Emacs FRAME")
-                  (top . 200)
-                  (left . 200)
-                  (width . 80)
-                  (height . 25)
-                  (minibuffer . t)
-                  (menu-bar-lines . t)
-                  (window-system . x))))
+    :config (setq edit-server-new-frame-alist
+                  '((name . "Edit with Emacs FRAME")
+                    (top . 200)
+                    (left . 200)
+                    (width . 80)
+                    (height . 25)
+                    (minibuffer . t)
+                    (menu-bar-lines . t)
+                    (window-system . x))))
 #+end_src
 
 ** GhostText
@@ -2745,7 +2784,7 @@ And after the capture is finalized or canceled, the frame will be closed.
       (mpv--enqueue '("set_property" "osd-level" "3") #'ignore)))
 
 
-  (defhydra hydra-mpv (global-map "<M-S-f2>")
+  (defhydra hydra-mpv (global-map "<M-S-f5 >")
     "
     ^Seek^                    ^Actions^                ^General^
     ^^^^^^^^---------------------------------------------------------------------------
@@ -2832,7 +2871,7 @@ needs to imported from nongnu elpa. add the following to init.el
     ;;   :group "Custom"
     ;;   :description "Tiles based on aerial images"
     ;;   :url "https://myserver/tiles/%z/%x/%y.png?apikey=%k")
-  )
+    )
 #+end_src
 
 * Torrent Client - Transmission
