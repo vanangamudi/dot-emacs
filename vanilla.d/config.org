@@ -987,7 +987,6 @@ When you want to add multiple cursors not based on continuous lines, but based o
 #+end_src
 
 * Browsing
-
 ** Emacs-w3m
 install w3m via apt/dnf
 #+begin_src sh :dir /sudo::
@@ -1204,11 +1203,13 @@ install w3m via apt/dnf
 
 * Org
 ** Basic
-- org-cycle-separator-line https://stackoverflow.com/questions/40332479/org-mode-folding-considers-whitespace-as-content
+- org-cycle-separator-line [[https://stackoverflow.com/questions/40332479/org-mode-folding-considers-whitespace-as-content][emacs - org-mode folding considers whitespace as content - Stack Overflow]]
+- [[https://emacs.stackexchange.com/questions/51117/org-mode-control-whether-m-ret-inserts-a-newline-or-not-for-plain-lists][Org mode: control whether `M-<RET>` inserts a newline or not for plain lists?]]
+
   #+begin_src emacs-lisp
     (setq org-cycle-separator-lines 2)
     (setq org-blank-before-new-entry
-          '((heading . auto)
+          '((heading . nil)
             (plain-list-item . nil)))
 
     (setq org-startup-indented t
@@ -1222,6 +1223,14 @@ install w3m via apt/dnf
     (global-set-key (kbd "C-c l s") 'org-store-link)
   #+end_src
 
+** Org file apps
+#+begin_src emacs-lisp
+  ((auto-mode . emacs)
+   (directory . emacs)
+   ("\\.mm\\'" . default)
+   ("\\.x?html?\\'" . default)
+   ("\\.pdf\\'" . default))
+#+end_src
 ** Org Superstar
 #+begin_src emacs-lisp
   (use-package org-modern
@@ -1702,12 +1711,17 @@ Since =ob-ledger= package is not there by default, download it from a source
    '((shell . t)
      ;;(ledger . t)
      (ditaa . t)
+     (latex . t)
+     (plantuml . t)
      (shell . t)
      (octave . t)
      ;;(jupyter . t)
      ;;(ipython . t)
      (python . t)))
+
+  (setq org-plantuml-jar-path "~/.softwares/plantuml.jar")
 #+end_src
+
 
 *** ob-async
 #+begin_src emacs-lisp
@@ -2285,7 +2299,7 @@ Clone [[https://github.com/slime/slime.git][Slime repository]] into ~/code/clone
   (setq ob-async-no-async-languages-alist '("jupyter-python" "jupyter-julia"))
 #+end_src
 
-** COMMENT Code-cell
+** Code-cell
 code-cells and Jupytext
 #+begin_src sh
   pip install jupyterlab jupytext
@@ -2297,6 +2311,7 @@ code-cells and Jupytext
                                            ("pandoc" "--to" "org" "--from" "ipynb")
                                            (lambda () #'org-mode))))
 #+end_src
+
 
 * Reading and Writing
 ** Distraction Free Editing
@@ -2455,6 +2470,12 @@ code-cells and Jupytext
 #+end_src
 
 ** COMMENT Email with mu4e
+
+***  Load mu4e
+#+begin_src emacs-lisp
+  (add-to-list 'load-path "/usr/share/emacs/site-lisp/mu4e")
+#+end_src
+
 *** Install =mu4e= for =mu= and =mu4e= and install =isync= packages for =mbsync=
 #+begin_src bash :results output code
   sudo apt install mu4e isync
@@ -2511,6 +2532,12 @@ code-cells and Jupytext
 #+end_src
 
 *** Configure mu4e
+#+begin_src emacs-lisp
+  (setq message-send-mail-function 'smtpmail-send-it)
+  (setq mu4e-compose-context-policy 'ask-if-none)
+  (setq mu4e-compose-format-flowed t)
+#+end_src
+
 #+begin_src emacs-lisp
   (use-package mu4e
     :ensure nil
