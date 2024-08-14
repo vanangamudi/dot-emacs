@@ -1,5 +1,6 @@
 #+TITLE: Config
 #+OPTIONS: tex:t
+#+export_file_name: /tmp/output.html
 
 * Summary
 The emacs config is written from scratch or should I say built ground up by copying from several sources listed under [[*Inspirations][Inspirations]] section.
@@ -27,12 +28,95 @@ The emacs config is written from scratch or should I say built ground up by copy
 
 * Emacs
 #+begin_src emacs-lisp
-  ;; -*- mode: Lisp; coding: utf-8; -*-
+  ;; -*- coding: utf-8; -*-
 #+end_src
 
 * TODO List
 ** TODO use vertico, consult, embark combo
 - how to intergrate with org-ref
+* Absolutely firsts
+#+begin_src emacs-lisp
+  (use-package hydra
+    :ensure t)
+  (add-to-list 'load-path "~/emacs/vanilla.d/lisp")
+#+end_src
+
+* Package Management
+** Use Package
+#+begin_src emacs-lisp
+  (setq use-package-always-ensure t)
+#+end_src
+** Elpaca
+#+begin_src emacs-lisp
+  (defvar elpaca-installer-version 0.5)
+  (defvar elpaca-directory (expand-file-name "elpaca/" user-emacs-directory))
+  (defvar elpaca-builds-directory (expand-file-name "builds/" elpaca-directory))
+  (defvar elpaca-repos-directory (expand-file-name "repos/" elpaca-directory))
+  (defvar elpaca-order '(elpaca :repo "https://github.com/progfolio/elpaca.git"
+                                :ref nil
+                                :files (:defaults (:exclude "extensions"))
+                                :build (:not elpaca--activate-package)))
+  (let* ((repo  (expand-file-name "elpaca/" elpaca-repos-directory))
+         (build (expand-file-name "elpaca/" elpaca-builds-directory))
+         (order (cdr elpaca-order))
+         (default-directory repo))
+    (add-to-list 'load-path (if (file-exists-p build) build repo))
+    (unless (file-exists-p repo)
+      (make-directory repo t)
+      (when (< emacs-major-version 28) (require 'subr-x))
+      (condition-case-unless-debug err
+          (if-let ((buffer (pop-to-buffer-same-window "*elpaca-bootstrap*"))
+                   ((zerop (call-process "git" nil buffer t "clone"
+                                         (plist-get order :repo) repo)))
+                   ((zerop (call-process "git" nil buffer t "checkout"
+                                         (or (plist-get order :ref) "--"))))
+                   (emacs (concat invocation-directory invocation-name))
+                   ((zerop (call-process emacs nil buffer nil "-Q" "-L" "." "--batch"
+                                         "--eval" "(byte-recompile-directory \".\" 0 'force)")))
+                   ((require 'elpaca))
+                   ((elpaca-generate-autoloads "elpaca" repo)))
+              (progn (message "%s" (buffer-string)) (kill-buffer buffer))
+            (error "%s" (with-current-buffer buffer (buffer-string))))
+        ((error) (warn "%s" err) (delete-directory repo 'recursive))))
+    (unless (require 'elpaca-autoloads nil t)
+      (require 'elpaca)
+      (elpaca-generate-autoloads "elpaca" repo)
+      (load "./elpaca-autoloads")))
+  (add-hook 'after-init-hook #'elpaca-process-queues)
+  (elpaca `(,@elpaca-order))
+#+end_src
+
+
+Enable =use-package= integration
+#+begin_src emacs-lisp
+  ;;(elpaca use-package :elpaca t)
+  ;; Install use-package support
+  (elpaca elpaca-use-package
+    ;; Enable :elpaca use-package keyword.
+    (elpaca-use-package-mode))
+  ;; Assume :elpaca t unless otherwise specified.
+  ;;(setq elpaca-use-package-by-default t))
+  (elpaca-wait)
+#+end_src
+
+** COMMENT straight.el
+[[https://github.com/radian-software/straight.el#getting-started][Getting started with straight.el]], there are variables that can be set to customize straight.el but must be set before the following.
+
+*** Bootstrapping code
+#+begin_src emacs-lisp
+  (defvar bootstrap-version)
+  (let ((bootstrap-file
+         (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+        (bootstrap-version 6))
+    (unless (file-exists-p bootstrap-file)
+      (with-current-buffer
+          (url-retrieve-synchronously
+           emacs	      "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
+           'silent 'inhibit-cookies)
+        (goto-char (point-max))
+        (eval-print-last-sexp)))
+    (load bootstrap-file nil 'nomessage))
+#+end_src
 
 * Open this =config.org= file
 Functions to open some list of standard files quickly, like =config.org=, =w.org=, =elfeed.org=
@@ -64,22 +148,6 @@ Hydra menu for opening the files. Add more files to the menu and you can open th
   (global-set-key (kbd "M-o") 'hydra-open-stdfiles/body)
 #+end_src
 
-* Custom Variables
-Custom set variables are moved here from =init.el= where they were placed automatically by certain packages like =vlf-setup=
-#+begin_src emacs-lisp
-  (custom-set-variables
-   ;; custom-set-variables was added by Custom.
-   ;; If you edit it by hand, you could mess it up, so be careful.
-   ;; Your init file should contain only one such instance.
-   ;; If there is more than one, they won't work right.
-   '(fci-rule-color "#14151E")
-   '(inhibit-startup-screen t)
-   '(vc-annotate-very-old-color nil)
-   '(warning-suppress-log-types '((comp))))
-
-  (add-to-list 'load-path "~/emacs/vanilla.d/lisp")
-#+end_src
-
 * System Integration
 #+begin_src emacs-lisp
   (use-package exec-path-from-shell
@@ -90,6 +158,7 @@ Custom set variables are moved here from =init.el= where they were placed automa
 
 #+begin_src emacs-lisp
   (use-package org-alert
+    :ensure nil
     :custom
     (setq org-alert-interval 300
           org-alert-notify-cutoff 10 ;;in minutes
@@ -167,82 +236,6 @@ Taken from [[https://blog.lambda.cx/posts/org-ssh-export/][How I Keep Track of M
 ** Emacs Terminal Emulator Eat
 #+begin_src emacs-lisp
   (use-package eat)
-#+end_src
-
-* Package Management
-** Use Package
-#+begin_src emacs-lisp
-  (setq use-package-always-ensure t)
-#+end_src
-** Elpaca
-#+begin_src emacs-lisp
-  (defvar elpaca-installer-version 0.5)
-  (defvar elpaca-directory (expand-file-name "elpaca/" user-emacs-directory))
-  (defvar elpaca-builds-directory (expand-file-name "builds/" elpaca-directory))
-  (defvar elpaca-repos-directory (expand-file-name "repos/" elpaca-directory))
-  (defvar elpaca-order '(elpaca :repo "https://github.com/progfolio/elpaca.git"
-                                :ref nil
-                                :files (:defaults (:exclude "extensions"))
-                                :build (:not elpaca--activate-package)))
-  (let* ((repo  (expand-file-name "elpaca/" elpaca-repos-directory))
-         (build (expand-file-name "elpaca/" elpaca-builds-directory))
-         (order (cdr elpaca-order))
-         (default-directory repo))
-    (add-to-list 'load-path (if (file-exists-p build) build repo))
-    (unless (file-exists-p repo)
-      (make-directory repo t)
-      (when (< emacs-major-version 28) (require 'subr-x))
-      (condition-case-unless-debug err
-          (if-let ((buffer (pop-to-buffer-same-window "*elpaca-bootstrap*"))
-                   ((zerop (call-process "git" nil buffer t "clone"
-                                         (plist-get order :repo) repo)))
-                   ((zerop (call-process "git" nil buffer t "checkout"
-                                         (or (plist-get order :ref) "--"))))
-                   (emacs (concat invocation-directory invocation-name))
-                   ((zerop (call-process emacs nil buffer nil "-Q" "-L" "." "--batch"
-                                         "--eval" "(byte-recompile-directory \".\" 0 'force)")))
-                   ((require 'elpaca))
-                   ((elpaca-generate-autoloads "elpaca" repo)))
-              (progn (message "%s" (buffer-string)) (kill-buffer buffer))
-            (error "%s" (with-current-buffer buffer (buffer-string))))
-        ((error) (warn "%s" err) (delete-directory repo 'recursive))))
-    (unless (require 'elpaca-autoloads nil t)
-      (require 'elpaca)
-      (elpaca-generate-autoloads "elpaca" repo)
-      (load "./elpaca-autoloads")))
-  (add-hook 'after-init-hook #'elpaca-process-queues)
-  (elpaca `(,@elpaca-order))
-#+end_src
-
-Enable =use-package= integration
-#+begin_src emacs-lisp
-  ;;(elpaca use-package :elpaca t)
-  ;; Install use-package support
-  (elpaca elpaca-use-package
-    ;; Enable :elpaca use-package keyword.
-    (elpaca-use-package-mode))
-  ;; Assume :elpaca t unless otherwise specified.
-  ;;(setq elpaca-use-package-by-default t))
-  (elpaca-wait)
-#+end_src
-
-** COMMENT straight.el
-[[https://github.com/radian-software/straight.el#getting-started][Getting started with straight.el]], there are variables that can be set to customize straight.el but must be set before the following.
-
-*** Bootstrapping code
-#+begin_src emacs-lisp
-  (defvar bootstrap-version)
-  (let ((bootstrap-file
-         (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
-        (bootstrap-version 6))
-    (unless (file-exists-p bootstrap-file)
-      (with-current-buffer
-          (url-retrieve-synchronously
-           emacs	      "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
-           'silent 'inhibit-cookies)
-        (goto-char (point-max))
-        (eval-print-last-sexp)))
-    (load bootstrap-file nil 'nomessage))
 #+end_src
 
 * Basic settings
@@ -547,7 +540,7 @@ Where did I steal this from?
     :config
     (setq-default default-frame-alist
                   (append (list
-                           '(font . "Noto Sans Mono:style=medium:size=20") ;; NOTE: substitute whatever font you prefer here
+                           '(font . "Iosevka Fixed:style=medium:size=20") ;; NOTE: substitute whatever font you prefer here
                            '(internal-border-width . 10)
                            '(left-fringe    . 0)
                            '(right-fringe   . 0)
@@ -636,7 +629,7 @@ Where did I steal this from?
 #+begin_src emacs-lisp
   (use-package perspective
     :bind
-    ("C-x C-b" . persp-list-buffers)  ; or use a nicer switcher, see below
+    ("C-x C-b" . persp-ibuffer)  ; or use a nicer switcher, see below
     :custom
     (persp-mode-prefix-key (kbd "M-P"))  ; pick your own prefix key here
     :init
@@ -705,12 +698,6 @@ Brings up some help
   (use-package command-log-mode)
 #+end_src
 
-** Very Large Files
-#+begin_src emacs-lisp
-  (require 'vlf-setup)
-  ;;(custom-set-variables
-  ;; '(vlf-application 'dont-ask))
-#+end_src
 
 ** Clipetty
 Clipetty is a minor mode for terminal (TTY) users that sends text that you kill in Emacs to your Operating System's clipboard. If you predominately use Emacs in GUI (X-Windows, macOS, Windows) frames you don't need Clipetty.
@@ -815,7 +802,7 @@ When you want to add multiple cursors not based on continuous lines, but based o
            ("C-c q"  . 'vr/query-replace)
            ("C-c m`" . 'vr/mc-mark)))
 #+end_src
-** COMMENT Outshine an Outline alternative
+** COMMENT Outshine an Outline alternative - replaced by =outli=
 #+begin_src emacs-lisp
   (use-package outshine)
   (defvar outline-minor-mode-prefix "\M-#")
@@ -1015,6 +1002,7 @@ install w3m via apt/dnf
     (add-to-list 'shr-external-rendering-functions
                  '(pre . shr-tag-pre-highlight)))
   (use-package eww
+    :ensure nil
     :defer t
     :init
     (add-hook 'eww-after-render-hook #'shrface-mode)
@@ -1107,6 +1095,7 @@ install w3m via apt/dnf
 * Cryptography
 #+begin_src emacs-lisp
   (use-package epa
+    :ensure nil
     :config
     (setq epa-gpg-program "gpg2")
     (setq epa-pinentry-mode 'loopback)
@@ -1221,9 +1210,13 @@ install w3m via apt/dnf
 
     (set-face-attribute 'org-table nil :inherit 'fixed-pitch)
     (global-set-key (kbd "C-c l s") 'org-store-link)
+
+    (defun my/org-font ()
+      (face-remap-add-relative 'default :family "Iosevka"))
+    (add-hook 'org-mode-hook 'my/org-font)
   #+end_src
 
-** Org file apps
+** COMMENT Org file apps
 #+begin_src emacs-lisp
   ((auto-mode . emacs)
    (directory . emacs)
@@ -1254,10 +1247,13 @@ install w3m via apt/dnf
 ** Org-download
 #+begin_src emacs-lisp
   (use-package org-download
-    :config (add-hook 'dired-mode-hook 'org-download-enable)
+    :config
+    (add-hook 'dired-mode-hook 'org-download-enable)
+    (setq-default org-download-heading-lvl nil)
+    (setq-default org-download-image-dir "~/ko-pa-ni/images")
+    (setq org-download-screenshot-method "~/.scripts/sway-contrib/grimshot savecopy area")
     :bind (("C-c d s" . org-download-screenshot)
            ("C-c d y" . org-download-yank)))
-
 #+end_src
 
 ** Clocking
@@ -1383,7 +1379,8 @@ org-refile by default only targets current file and heading unless =org-refile-t
 
   (setq org-roam-v2-ack t)
 
-  (require 'org-roam-protocol)
+  (with-eval-after-load 'org-roam
+    (require 'org-roam-protocol))
 
   (setq org-roam-capture-ref-templates
         '("i" "internet" plain #'org-roam-capture--get-point "%?"
@@ -1402,7 +1399,7 @@ org-refile by default only targets current file and heading unless =org-refile-t
       (org-roam-node-find nil nil (lambda (node) (va/org-roam-node-has-tag node tag)))))
 #+end_src
 
-** COMMENT Org Roam UI
+** Org Roam UI
 #+begin_src emacs-lisp
   (use-package org-roam-ui
     :elpaca
@@ -1711,6 +1708,7 @@ Since =ob-ledger= package is not there by default, download it from a source
    '((shell . t)
      ;;(ledger . t)
      (ditaa . t)
+     (dot . t)
      (latex . t)
      (plantuml . t)
      (shell . t)
@@ -1761,16 +1759,18 @@ Example:
   (add-to-list 'org-structure-template-alist '("py" . "src python"))
 #+end_src
 
-** COMMENT Mathpix
+**  Mathpix
 Capture latex equations from browser
 #+begin_src emacs-lisp
   (use-package mathpix.el
-    :straight (:host github :repo "jethrokuan/mathpix.el")
+    :elpaca (:host github :repo "jethrokuan/mathpix.el")
     :custom ((mathpix-app-id "app-id")
              (mathpix-app-key "app-key"))
     :bind
     ("C-x m" . mathpix-screenshot))
 #+end_src
+
+#+RESULTS:
 
 ** COMMENT Org-media-note
 #+begin_src emacs-lisp
@@ -1987,7 +1987,7 @@ When fetching entries via Biblio, Ebib checks for duplicates based on the key of
 ** Programming languages
 #+begin_src emacs-lisp
   (use-package typescript-mode)
-  (use-package csharp-mode)
+  ;; (use-package csharp-mode)
   (use-package yaml-mode)
   (use-package dockerfile-mode)
   (use-package toml-mode)
@@ -2116,7 +2116,7 @@ Emacs side of things
     :custom
     (gud-pdb-command-name "PYTHONBREAKPOINT=pdb.set_trace python -m pdb"))
 #+end_src
-*** Javascript
+*** COMMENT Javascript
 #+begin_src emacs-lisp
   (use-package indium
     :hook ((js2-mode . indium-interaction-mode)))
@@ -2215,11 +2215,11 @@ Clone [[https://github.com/slime/slime.git][Slime repository]] into ~/code/clone
                 ("C-<iso-lefttab>" . origami-show-only-node)))
 #+end_src
 
-** COMMENT Comint Fold
+** Comint Fold
 [[https://github.com/jdtsmith/comint-fold][GitHub - jdtsmith/comint-fold: Fold input + output blocks in Emacs comint shells]]
 #+begin_src emacs-lisp
   (use-package comint-fold
-    :elpaca (:host github :repo "jdtsmith/comint-fold" :branch "main")
+    :elpaca (:host github :repo "jdtsmith/comint-fold" :branch "main" :main "comint-fold.el")
     :bind (:map comint-mode-map ("C-<tab>" . #'comint-fold-do-fold))
     :config
     (comint-fold-mode 1)
@@ -2275,7 +2275,7 @@ Clone [[https://github.com/slime/slime.git][Slime repository]] into ~/code/clone
   (add-to-list 'auto-mode-alist '("\\.mmd\\'" . markdown-mode))
 #+end_src
 
-** COMMENT Shell mode
+**  Shell mode
 #+begin_src emacs-lisp
   (use-package bash-completion
     :elpaca (:host github :repo "szermatt/emacs-bash-completion")
@@ -2406,6 +2406,7 @@ code-cells and Jupytext
 *** Spellcheck
 #+begin_src emacs-lisp
   (use-package flyspell
+    :ensure nil
     :config
     (setenv  "DICTIONARY"  "en_US")
     (setenv  "DICTPATH"  (concat (getenv "HOME") "/.dictionaries"))
@@ -2425,10 +2426,10 @@ code-cells and Jupytext
     :config (add-hook 'org-mode-hook 'org-fragtog-mode))
 #+end_src
 
-** COMMENT Latex and pdf-tools
+** Latex and pdf-tools
 #+begin_src emacs-lisp
-  (use-package tex
-    :ensure auctex)
+  (use-package auctex
+    :elpaca nil)
 
   (use-package pdf-tools
     :pin manual
@@ -2470,16 +2471,6 @@ code-cells and Jupytext
 #+end_src
 
 ** COMMENT Email with mu4e
-
-***  Load mu4e
-#+begin_src emacs-lisp
-  (add-to-list 'load-path "/usr/share/emacs/site-lisp/mu4e")
-#+end_src
-
-*** Install =mu4e= for =mu= and =mu4e= and install =isync= packages for =mbsync=
-#+begin_src bash :results output code
-  sudo apt install mu4e isync
-#+end_src
 
 *** Configure =mbsync= using =.mbsyncrc=
 #+begin_src conf :tangle ~/aalar/.mbsyncrc
@@ -2530,8 +2521,26 @@ code-cells and Jupytext
   Create Both
   SyncState *
 #+end_src
+*** notmuch
+#+begin_src emacs-lisp
+  (use-package notmuch
+    :defer t
+    :config
+    (setq notmuch-search-oldest-first nil))
+#+end_src
 
-*** Configure mu4e
+*** mu4e
+****  Load mu4e
+#+begin_src emacs-lisp
+  (add-to-list 'load-path "/usr/share/emacs/site-lisp/mu4e")
+#+end_src
+
+**** Install =mu4e= for =mu= and =mu4e= and install =isync= packages for =mbsync=
+#+begin_src bash :results output code
+  sudo apt install mu4e isync
+#+end_src
+
+**** Configure mu4e
 #+begin_src emacs-lisp
   (setq message-send-mail-function 'smtpmail-send-it)
   (setq mu4e-compose-context-policy 'ask-if-none)
@@ -2644,12 +2653,13 @@ Clone and map =elfeed-db= to  =~/.elfeed= directory
 *** Elfeed config
 #+BEGIN_SRC emacs-lisp
   ;; Load elfeed-org
-  (use-package elfeed-org)
+  (use-package elfeed-org
+    :ensure t)
 
   ;; Initialize elfeed-org
   ;; This hooks up elfeed-org to read the configuration when elfeed
   ;; is started with =M-x elfeed=
-  (elfeed-org)
+  ;; (elfeed-org)
   ;; Optionally specify a number of files containing elfeed
   ;; configuration. If not set then the location below is used.
   ;; Note: The customize interface is also supported.
@@ -2716,8 +2726,8 @@ Inspired by [[https://github.com/stsquad/emacs_chrome][GitHub - stsquad/emacs_ch
 #+begin_src emacs-lisp
   (use-package atomic-chrome
     :config
-    (setq atomic-chrome-buffer-open-style 'full)
-    (setq atomic-chrome-default-major-mode 'org-mode)
+    (setq atomic-chrome-buffer-open-style 'frame)
+    (setq atomic-chrome-default-major-mode 'python-mode)
     :init (atomic-chrome-start-server))
 #+end_src
 
@@ -2757,6 +2767,23 @@ And after the capture is finalized or canceled, the frame will be closed.
 #+end_src
 
 * Media
+** Org Music
+#+begin_src emacs-lisp
+(use-package org-music
+  :elpaca (:host github :repo "debanjum/org-music")
+  :after (org emms)
+  :init (progn
+          (setq
+           org-music-file "~/org/isai.org"
+           org-music-media-directory "~/ko-pa-ni/isai/"
+           org-music-operating-system "linux")
+          (add-hook
+           'org-mode-hook
+           (lambda()
+             (if (equal buffer-file-name (expand-file-name org-music-file))
+                 (org-music-mode))))))
+#+end_src
+
 ** mpv
 #+begin_src bash :tangle ~/.config/mpv/mpv.conf
   # Guide:
@@ -2868,7 +2895,7 @@ needs to imported from nongnu elpa. add the following to init.el
 
 #+begin_src emacs-lisp
   (use-package subed
-    :elpaca (:host github :repo "sachac/subed")
+    :elpaca (:host github :repo "sachac/subed" :branch "main")
     :config
     ;; Disable automatic movement of point by default
     (add-hook 'subed-mode-hook 'subed-disable-sync-point-to-player)
@@ -2879,6 +2906,8 @@ needs to imported from nongnu elpa. add the following to init.el
     ;; Break lines at 40 characters
     (add-hook 'subed-mode-hook (lambda () (setq-local fill-column 40))))
 #+end_src
+
+#+RESULTS:
 
 * Maps
 #+begin_src emacs-lisp
@@ -2904,6 +2933,35 @@ needs to imported from nongnu elpa. add the following to init.el
 * Torrent Client - Transmission
 #+begin_src emacs-lisp
   (use-package transmission)
+#+end_src
+* Absolute lasts
+** Very Large Files
+#+begin_src emacs-lisp
+  (require 'vlf-setup)
+  ;;(custom-set-variables
+  ;; '(vlf-application 'dont-ask))
+#+end_src
+
+* Custom Variables
+Custom set variables are moved here from =init.el= where they were placed automatically by certain packages like =vlf-setup=
+#+begin_src emacs-lisp
+  (custom-set-variables
+   ;; custom-set-variables was added by Custom.
+   ;; If you edit it by hand, you could mess it up, so be careful.
+   ;; Your init file should contain only one such instance.
+   ;; If there is more than one, they won't work right.
+   '(fci-rule-color "#14151E")
+   '(inhibit-startup-screen t)
+   '(vc-annotate-very-old-color nil)
+   '(warning-suppress-log-types '((comp))))
+
+  (custom-set-faces
+   ;; custom-set-faces was added by Custom.
+   ;; If you edit it by hand, you could mess it up, so be careful.
+   ;; Your init file should contain only one such instance.
+   ;; If there is more than one, they won't work right.
+    '(org-link ((t (:inherit link :family "Noto Sans CJK KR"))))
+   '(variable-pitch ((t (:family "Noto Serif CJK KR")))))
 #+end_src
 
 * Notes
