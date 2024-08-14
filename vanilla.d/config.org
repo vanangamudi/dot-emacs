@@ -2006,7 +2006,7 @@ When fetching entries via Biblio, Ebib checks for duplicates based on the key of
 #+begin_src emacs-lisp
   (use-package blacken
     :hook ((python-mode . blacken-mode)
-           (python-mode . outshine-mode)))
+           (python-mode . outli-mode)))
   ;; (python-mode . (lambda ()(setq outline-heading-end-regexp ":[^\n]*\n")))))
   (use-package pyvenv)
   (setq-default indent-tabs-mode nil)
@@ -2195,7 +2195,7 @@ Clone [[https://github.com/slime/slime.git][Slime repository]] into ~/code/clone
                       temp = dump
 #+end_src
 
-*** Highlight indentation
+*** COMMENT Highlight indentation
 #+begin_src emacs-lisp
   (use-package highlight-indentation
     :ensure t
