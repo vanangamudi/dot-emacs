@@ -86,7 +86,6 @@ The emacs config is written from scratch or should I say built ground up by copy
   (elpaca `(,@elpaca-order))
 #+end_src
 
-
 Enable =use-package= integration
 #+begin_src emacs-lisp
   ;;(elpaca use-package :elpaca t)
@@ -95,7 +94,7 @@ Enable =use-package= integration
     ;; Enable :elpaca use-package keyword.
     (elpaca-use-package-mode))
   ;; Assume :elpaca t unless otherwise specified.
-  ;;(setq elpaca-use-package-by-default t))
+  ;; (setq elpaca-use-package-by-default nil))
   (elpaca-wait)
 #+end_src
 
@@ -125,7 +124,7 @@ Find this config file
   (defun find-config-file ()
     (interactive)
     (find-file "~/emacs/vanilla.d/config.org"))
-  (global-set-key (kbd "C-c e") 'find-config-file)
+  (global-set-key (kbd "C-c e e") 'find-config-file)
 #+end_src
 
 Reload the config.org
@@ -134,7 +133,7 @@ Reload the config.org
     "Reloads this config.org at runtime"
     (interactive)
     (org-babel-load-file (expand-file-name "~/emacs/vanilla.d/config.org")))
-  (global-set-key (kbd "C-c r") 'reload-config)
+  (global-set-key (kbd "C-c e r") 'reload-config)
 #+end_src
 
 Hydra menu for opening the files. Add more files to the menu and you can open them quickly using the keybinding below, =M-o=
@@ -382,10 +381,9 @@ The code block below toggle off the welcome startup screen.
 #+BEGIN_SRC emacs-lisp
   (use-package dimmer
     :ensure t
-    :custom (dimmer-fraction 0.3)
+    :custom (dimmer-fraction 0.2)
     :config (dimmer-mode))
 #+END_SRC
-
 
 *** Pulsar
 #+begin_src emacs-lisp
@@ -522,14 +520,20 @@ Download theme
   (load-theme 'bespoke t)
 #+END_SRC
 
-****  Solarized Theme
+****  COMMENT Solarized Theme
 #+begin_src emacs-lisp
   (use-package solarized-theme
     :init
     (load-theme 'solarized-light t))
 #+end_src
 
-#+RESULTS:
+**** ef-themes
+#+begin_src emacs-lisp
+  (use-package ef-themes
+    :ensure nil
+    :init
+    (load-theme 'ef-cyprus t))
+#+end_src
 
 **** Frame and Window configuration
 Where did I steal this from?
@@ -1368,7 +1372,7 @@ org-refile by default only targets current file and heading unless =org-refile-t
     :custom
     (org-roam-directory "~/org/roam")
     (org-roam-completion-everywhere t)
-    :bind (("C-c n l" . org-roam-buffer-toggle)
+    :bind (("C-c n b" . org-roam-buffer-toggle)
            ("C-c n f" . org-roam-node-find)
            ("C-c n t" . va/org-roam-node-find-by-tag)
            ("C-c n i" . org-roam-node-insert)
@@ -1415,6 +1419,33 @@ org-refile by default only targets current file and heading unless =org-refile-t
           org-roam-ui-update-on-save t
           org-roam-ui-open-on-start t))
 
+#+end_src
+** Org-remark
+#+begin_src emacs-lisp
+  (use-package org-remark
+    :elpaca (:host github :repo "nobiot/org-remark")
+    :bind (;; :bind keyword also implicitly defers org-remark itself.
+           ;; Keybindings before :map is set for global-map.
+           ("C-c n m" . org-remark-mark)
+           ("C-c n l" . org-remark-mark-line)
+           :map org-remark-mode-map
+           ("C-c n o" . org-remark-open)
+           ("C-c n ]" . org-remark-view-next)
+           ("C-c n [" . org-remark-view-prev)
+           ("C-c n r" . org-remark-remove)
+           ("C-c n d" . org-remark-delete))
+    ;; Alternative way to enable `org-remark-global-tracking-mode' in
+    ;; `after-init-hook'.
+    ;; :hook (after-init . org-remark-global-tracking-mode)
+    :init
+    ;; It is recommended that `org-remark-global-tracking-mode' be
+    ;; enabled when Emacs initializes. Alternatively, you can put it to
+    ;; `after-init-hook' as in the comment above
+    (org-remark-global-tracking-mode +1)
+    :config
+    (use-package org-remark-info :ensure nil :after info :config (org-remark-info-mode +1))
+    (use-package org-remark-eww  :ensure nil :after eww  :config (org-remark-eww-mode +1))
+    (use-package org-remark-nov  :ensure nil :after nov  :config (org-remark-nov-mode +1)))
 #+end_src
 
 ** Org Cliplink
@@ -1879,6 +1910,24 @@ When fetching entries via Biblio, Ebib checks for duplicates based on the key of
     :config
     (setq org-books-file "~/my-list.org"))
 #+end_src
+** Org Present
+#+begin_src emacs-lisp
+  (eval-after-load "org-present"
+  '(progn
+     (add-hook 'org-present-mode-hook
+               (lambda ()
+                 (org-present-big)
+                 (org-display-inline-images)
+                 (org-present-hide-cursor)
+                 (org-present-read-only)))
+     (add-hook 'org-present-mode-quit-hook
+               (lambda ()
+                 (org-present-small)
+                 (org-remove-inline-images)
+                 (org-present-show-cursor)
+                 (org-present-read-write)))))
+#+end_src
+
 * Search
 #+begin_src emacs-lisp
   (use-package deadgrep)
@@ -1980,9 +2029,6 @@ When fetching entries via Biblio, Ebib checks for duplicates based on the key of
     :bind (:map prog-mode-map
                 ("C-c M-q" . fill-function-arguments-dwim)))
 #+end_src
-
-#+RESULTS:
-: fill-function-arguments-dwim
 
 ** Programming languages
 #+begin_src emacs-lisp
@@ -2116,6 +2162,7 @@ Emacs side of things
     :custom
     (gud-pdb-command-name "PYTHONBREAKPOINT=pdb.set_trace python -m pdb"))
 #+end_src
+
 *** COMMENT Javascript
 #+begin_src emacs-lisp
   (use-package indium
@@ -2232,8 +2279,116 @@ Clone [[https://github.com/slime/slime.git][Slime repository]] into ~/code/clone
               (comint-fold-configure-hook 1 'ipy-prompt-regexp)))
 
 #+end_src
+** COMMENT Minibuffer completion - vertico
+#+begin_src emacs-lisp
+  ;; Example configuration for Consult
+  (use-package consult
+    ;; Replace bindings. Lazily loaded by `use-package'.
+    :bind (;; C-c bindings in `mode-specific-map'
+           ("C-c M-x" . consult-mode-command)
+           ("C-c h" . consult-history)
+           ("C-c k" . consult-kmacro)
+           ("C-c m" . consult-man)
+           ("C-c i" . consult-info)
+           ([remap Info-search] . consult-info)
+           ;; C-x bindings in `ctl-x-map'
+           ("C-x M-:" . consult-complex-command)     ;; orig. repeat-complex-command
+           ("C-x b" . consult-buffer)                ;; orig. switch-to-buffer
+           ("C-x 4 b" . consult-buffer-other-window) ;; orig. switch-to-buffer-other-window
+           ("C-x 5 b" . consult-buffer-other-frame)  ;; orig. switch-to-buffer-other-frame
+           ("C-x t b" . consult-buffer-other-tab)    ;; orig. switch-to-buffer-other-tab
+           ("C-x r b" . consult-bookmark)            ;; orig. bookmark-jump
+           ("C-x p b" . consult-project-buffer)      ;; orig. project-switch-to-buffer
+           ;; Custom M-# bindings for fast register access
+           ("M-#" . consult-register-load)
+           ("M-'" . consult-register-store)          ;; orig. abbrev-prefix-mark (unrelated)
+           ("C-M-#" . consult-register)
+           ;; Other custom bindings
+           ("M-y" . consult-yank-pop)                ;; orig. yank-pop
+           ;; M-g bindings in `goto-map'
+           ("M-g e" . consult-compile-error)
+           ("M-g f" . consult-flymake)               ;; Alternative: consult-flycheck
+           ("M-g g" . consult-goto-line)             ;; orig. goto-line
+           ("M-g M-g" . consult-goto-line)           ;; orig. goto-line
+           ("M-g o" . consult-outline)               ;; Alternative: consult-org-heading
+           ("M-g m" . consult-mark)
+           ("M-g k" . consult-global-mark)
+           ("M-g i" . consult-imenu)
+           ("M-g I" . consult-imenu-multi)
+           ;; M-s bindings in `search-map'
+           ("M-s d" . consult-find)                  ;; Alternative: consult-fd
+           ("M-s c" . consult-locate)
+           ("M-s g" . consult-grep)
+           ("M-s G" . consult-git-grep)
+           ("M-s r" . consult-ripgrep)
+           ("M-s l" . consult-line)
+           ("M-s L" . consult-line-multi)
+           ("M-s k" . consult-keep-lines)
+           ("M-s u" . consult-focus-lines)
+           ;; Isearch integration
+           ("M-s e" . consult-isearch-history)
+           :map isearch-mode-map
+           ("M-e" . consult-isearch-history)         ;; orig. isearch-edit-string
+           ("M-s e" . consult-isearch-history)       ;; orig. isearch-edit-string
+           ("M-s l" . consult-line)                  ;; needed by consult-line to detect isearch
+           ("M-s L" . consult-line-multi)            ;; needed by consult-line to detect isearch
+           ;; Minibuffer history
+           :map minibuffer-local-map
+           ("M-s" . consult-history)                 ;; orig. next-matching-history-element
+           ("M-r" . consult-history))                ;; orig. previous-matching-history-element
 
-** Minibuffer completion
+    ;; Enable automatic preview at point in the *Completions* buffer. This is
+    ;; relevant when you use the default completion UI.
+    :hook (completion-list-mode . consult-preview-at-point-mode)
+
+    ;; The :init configuration is always executed (Not lazy)
+    :init
+
+    ;; Optionally configure the register formatting. This improves the register
+    ;; preview for `consult-register', `consult-register-load',
+    ;; `consult-register-store' and the Emacs built-ins.
+    (setq register-preview-delay 0.5
+          register-preview-function #'consult-register-format)
+
+    ;; Optionally tweak the register preview window.
+    ;; This adds thin lines, sorting and hides the mode line of the window.
+    (advice-add #'register-preview :override #'consult-register-window)
+
+    ;; Use Consult to select xref locations with preview
+    (setq xref-show-xrefs-function #'consult-xref
+          xref-show-definitions-function #'consult-xref)
+
+    ;; Configure other variables and modes in the :config section,
+    ;; after lazily loading the package.
+    :config
+
+    ;; Optionally configure preview. The default value
+    ;; is 'any, such that any key triggers the preview.
+    ;; (setq consult-preview-key 'any)
+    ;; (setq consult-preview-key "M-.")
+    ;; (setq consult-preview-key '("S-<down>" "S-<up>"))
+    ;; For some commands and buffer sources it is useful to configure the
+    ;; :preview-key on a per-command basis using the `consult-customize' macro.
+    (consult-customize
+     consult-theme :preview-key '(:debounce 0.2 any)
+     consult-ripgrep consult-git-grep consult-grep
+     consult-bookmark consult-recent-file consult-xref
+     consult--source-bookmark consult--source-file-register
+     consult--source-recent-file consult--source-project-recent-file
+     ;; :preview-key "M-."
+     :preview-key '(:debounce 0.4 any))
+
+    ;; Optionally configure the narrowing key.
+    ;; Both < and C-+ work reasonably well.
+    (setq consult-narrow-key "<") ;; "C-+"
+
+    ;; Optionally make narrowing help available in the minibuffer.
+    ;; You may want to use `embark-prefix-help-command' or which-key instead.
+    ;; (keymap-set consult-narrow-map (concat consult-narrow-key " ?") #'consult-narrow-help)
+    )
+#+end_src
+
+** Minibuffer completion - Ivy
 #+begin_src emacs-lisp
   ;; Completions with counsel
   (use-package counsel
@@ -2276,7 +2431,7 @@ Clone [[https://github.com/slime/slime.git][Slime repository]] into ~/code/clone
 #+end_src
 
 **  Shell mode
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
   (use-package bash-completion
     :elpaca (:host github :repo "szermatt/emacs-bash-completion")
     :config
@@ -2459,7 +2614,7 @@ code-cells and Jupytext
   (set-default 'preview-scale-function 1.2)
 
   ;; from https://karthinks.com/software/scaling-latex-previews-in-emacs/
-  (setq org-preview-latex-default-process 'dvisvgm)
+  ;; (setq org-preview-latex-default-process 'dvisvgm)
   (defun my/text-scale-adjust-latex-previews ()
     "Adjust the size of latex preview fragments when changing the
   buffer's text scale."
@@ -2688,6 +2843,7 @@ Clone and map =elfeed-db= to  =~/.elfeed= directory
 
 *** Elfeed config
 #+BEGIN_SRC emacs-lisp
+  (use-package elfeed)
   ;; Load elfeed-org
   (use-package elfeed-org
     :ensure t)
@@ -3003,7 +3159,7 @@ Custom set variables are moved here from =init.el= where they were placed automa
 * Notes
 ** Difference between visual-line-mode and auto-fill-mode
 auto-fill-mode breaks sentence introducing line-breaks, or newline after a certain number of characters. Visual line mode does not alter the number of lines but only visually wraps text so that it is easier to look at
-**  [[https://www.masteringemacs.org/article/speed-up-emacs-libjansson-native-elisp-compilation][Speed up Emacs with libjansson and native elisp compilation - Mastering Emacs]]
+** [[https://www.masteringemacs.org/article/speed-up-emacs-libjansson-native-elisp-compilation][Speed up Emacs with libjansson and native elisp compilation - Mastering Emacs]]
 
 The whole process may take a while. Native compilation is, as of Emacs 28.1, automatic, and runs in the background. There is nothing for you to do to make it work as it will compile stuff in the background while you’re using Emacs.
 
