@@ -1650,6 +1650,26 @@ https://sachachua.com/blog/2015/11/capturing-links-quickly-with-emacsclient-org-
 The entry that is declared in the capture templates must exist in the file.  =Collection=, =Note=, =Web Links= must exist in the respective files.
 
 *** COMMENT html-capture
+**** [[https://torres.epv.uniovi.es/centon/eww-html-to-org.html][Emacs. Transform a html page to an Org file]]
+- Notes ::
+  - Converts all necessary text, but internal links are broken.
+#+begin_src emacs-lisp
+   (defun etm-eww-html-to-org (&optional url)
+           "Convert a URL or a web page (eww) to org text.
+
+  It includes images, that are stored in the directory
+  images."
+           (interactive nil eww-mode)
+           (let ((url (or url (plist-get eww-data :url)))
+                     (dirimages "images"))
+             (switch-to-buffer (generate-new-buffer "*eww2org*"))
+             (unless (executable-find "pandoc")
+                   (error "The program pandoc does not exist."))
+             (message "Transforming %s" url)
+             (shell-command (concat "pandoc -f html -t org  --extract-media=" dirimages " "  url) (current-buffer))
+             (org-mode)))
+#+end_src
+
 **** TODO Try [[https://github.com/alphapapa/org-web-tools][org-web-tools]]
 **** EWW and w3m org-web clipper from [[http://www.bobnewell.net/publish/35years/webclipper.html][Bob Newell]]
 #+begin_src emacs-lisp
