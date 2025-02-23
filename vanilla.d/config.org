@@ -1375,7 +1375,7 @@ org-refile by default only targets current file and heading unless =org-refile-t
     :defer
     (setq org-roam-v2-ack t)
     :custom
-    (org-roam-directory "~/org/roam")
+    (org-roam-directory "~/org/roam/")
     (org-roam-completion-everywhere t)
     :bind (("C-c n b" . org-roam-buffer-toggle)
            ("C-c n f" . org-roam-node-find)
@@ -2494,7 +2494,6 @@ code-cells and Jupytext
                                            (lambda () #'org-mode))))
 #+end_src
 
-
 * Reading and Writing
 ** Distraction Free Editing
 #+begin_src emacs-lisp
@@ -2531,6 +2530,14 @@ code-cells and Jupytext
     :config
     (add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode))
     (setq nov-text-width 80))
+
+  (use-package nov-xwidget
+    :demand t
+    :elpaca (:host github :repo "chenyanming/nov-xwidget")
+    :after nov
+    :config
+    (define-key nov-mode-map (kbd "o") 'nov-xwidget-view)
+  (add-hook 'nov-mode-hook 'nov-xwidget-inject-all-files))
 #+end_src
 
 *** COMMENT more config
@@ -2603,9 +2610,11 @@ code-cells and Jupytext
 #+end_src
 
 *** Latex Equation Previews
+- org-format-latex-options - [[https://emacs.stackexchange.com/questions/19880/font-size-control-of-latex-previews-in-org-files][org mode - Font size control of LateX previews in Org files]]
 #+begin_src emacs-lisp
   (use-package org-fragtog
     :config (add-hook 'org-mode-hook 'org-fragtog-mode))
+  (setq org-format-latex-options (plist-put org-format-latex-options :scale 2.0))
 #+end_src
 
 ** Latex and pdf-tools
