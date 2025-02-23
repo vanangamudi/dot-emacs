@@ -2072,6 +2072,20 @@ When fetching entries via Biblio, Ebib checks for duplicates based on the key of
 #+begin_src sh :dir /sudo::
   apt install mypy
 #+end_src
+**** Shell
+#+begin_src emacs-lisp
+  (defun setup-python-shell ()
+    "Python shell."
+    (setq python-shell-interpreter "ipython"
+            python-shell-interpreter-args "-i --simple-prompt")
+    (setq python-shell-completion-native-enable nil))
+
+  (use-package python
+    :hook ((python-mode . setup-python-shell)
+           (python-mode . hs-minor-mode))
+    :bind (:map python-mode-map
+                ("<f5>" . format-buffer)))
+#+end_src
 
 **** Blacken
 #+begin_src emacs-lisp
