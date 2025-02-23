@@ -1762,6 +1762,7 @@ Since =ob-ledger= package is not there by default, download it from a source
   (org-babel-do-load-languages
    'org-babel-load-languages
    '((shell . t)
+     (lisp . t)
      ;;(ledger . t)
      (ditaa . t)
      (dot . t)
@@ -1773,9 +1774,9 @@ Since =ob-ledger= package is not there by default, download it from a source
      ;;(ipython . t)
      (python . t)))
 
+  (setq org-babel-lisp-eval-fn #'sly-eval)
   (setq org-plantuml-jar-path "~/.softwares/plantuml.jar")
 #+end_src
-
 
 *** ob-async
 #+begin_src emacs-lisp
@@ -1813,9 +1814,10 @@ Example:
   (add-to-list 'org-structure-template-alist '("sh" . "src shell"))
   (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
   (add-to-list 'org-structure-template-alist '("py" . "src python"))
+  (add-to-list 'org-structure-template-alist '("cl" . "src lisp"))
 #+end_src
 
-**  Mathpix
+** Mathpix
 Capture latex equations from browser
 #+begin_src emacs-lisp
   (use-package mathpix.el
@@ -2216,20 +2218,6 @@ Emacs side of things
   (add-to-list 'auto-mode-alist '("\\.tsv\\'" . csv-mode))
 #+end_src
 
-** COMMENT Slime for common-lisp
-Clone [[https://github.com/slime/slime.git][Slime repository]] into ~/code/cloned/slime and add to load path
-#+begin_src emacs-lisp
-  (setq inferior-lisp-program "sbcl")
-  (add-to-list 'load-path "~/code/commonlisp/slime/")
-  (use-package slime
-    :config (slime-setup))
-
-  (use-package paredit)
-  (defun override-slime-del-key ()
-    (define-key slime-repl-mode-map
-                (read-kbd-macro paredit-backward-delete-key) nil))
-  (add-hook 'slime-repl-mode-hook 'override-slime-del-key)
-#+end_src
 
 **  Magit
 #+BEGIN_SRC emacs-lisp
@@ -3208,6 +3196,30 @@ Custom set variables are moved here from =init.el= where they were placed automa
    ;; If there is more than one, they won't work right.
     '(org-link ((t (:inherit link :family "Noto Sans CJK KR"))))
    '(variable-pitch ((t (:family "Noto Serif CJK KR")))))
+#+end_src
+* COMMENT Deprecated
+** Slime for common-lisp
+Clone [[https://github.com/slime/slime.git][Slime repository]] into ~/code/cloned/slime and add to load path
+#+begin_src emacs-lisp
+  (add-to-list 'load-path "~/code/commonlisp/slime/")
+  (use-package slime
+    :init
+    (setq inferior-lisp-program "sbcl")
+    :config
+    (slime-setup)
+    ;;(slime-setup '(slime-fancy slime-company))
+    :hook
+    ;;(slime-mode . slime-company)
+    (slime-mode . (lambda ()
+                    (load (expand-file-name "/home/vanangamudi/quicklisp/slime-helper.el"))
+                    (add-to-list 'slime-contribs 'slime-fancy)
+                    (add-to-list 'slime-contribs 'inferior-slime))))
+
+  (use-package paredit)
+  (defun override-slime-del-key ()
+    (define-key slime-repl-mode-map
+                (read-kbd-macro paredit-backward-delete-key) nil))
+  (add-hook 'slime-repl-mode-hook 'override-slime-del-key)
 #+end_src
 
 * Notes
