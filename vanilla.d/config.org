@@ -236,6 +236,11 @@ Taken from [[https://blog.lambda.cx/posts/org-ssh-export/][How I Keep Track of M
 #+begin_src emacs-lisp
   (use-package eat)
 #+end_src
+** Porcelain
+*** Pandoc
+#+begin_src emacs-lisp
+(use-package pandoc)
+#+end_src
 
 * Basic settings
 ** Remove startup welcome screen
