@@ -176,6 +176,22 @@ Hydra menu for opening the files. Add more files to the menu and you can open th
     (proced-tree-flag t))
 #+end_src
 
+** Sudo edit
+- [[https://stackoverflow.com/a/79137600/1685729][Open a file with su/sudo inside Emacs - Stack Overflow]]
+#+begin_src emacs-lisp
+  (defun er-sudo-edit (&optional arg)
+    "Edit currently visited file as root.
+
+     With a prefix ARG prompt for a file to visit.
+     Will also prompt for a file to visit if current
+     buffer is not visiting a file."
+    (interactive "P")
+    (if (or arg (not buffer-file-name))
+        (find-file (concat "/sudo:root@localhost:"
+                           (read-file-name "Find file(as root): ")))
+      (find-alternate-file (concat "/sudo:root@localhost:" buffer-file-name))))
+#+end_src
+
 ** Multishell
 #+begin_src emacs-lisp
   (use-package multishell
@@ -1028,7 +1044,6 @@ install w3m via apt/dnf
   wget https://gitlab.com/protesilaos/dotfiles/-/raw/master/emacs/.emacs.d/prot-lisp/prot-common.el?ref_type=heads -O ~/emacs/vanilla.d/lisp/prot-common.el
 #+end_src
 
-#+RESULTS:
 
 #+begin_src emacs-lisp
   (require 'prot-common)
@@ -2697,7 +2712,7 @@ code-cells and Jupytext
     :elpaca (:host github :repo "alphapapa/ement.el"))
 #+end_src
 
-** COMMENT Email with mu4e
+** Email with mu4e
 
 *** Configure =mbsync= using =.mbsyncrc=
 #+begin_src conf :tangle ~/aalar/.mbsyncrc
@@ -2756,7 +2771,7 @@ code-cells and Jupytext
     (setq notmuch-search-oldest-first nil))
 #+end_src
 
-*** mu4e
+*** COMMENT mu4e
 ****  Load mu4e
 #+begin_src emacs-lisp
   (add-to-list 'load-path "/usr/share/emacs/site-lisp/mu4e")
