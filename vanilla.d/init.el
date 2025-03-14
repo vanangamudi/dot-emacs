@@ -17,7 +17,7 @@
 
 ;; load org package and our emacs-config.org file
 (require 'org)
-(org-babel-load-file "~/emacs/vanilla.d/config.org")
+(org-babel-load-file (expand-file-name "config.org" user-emacs-directory))
 
 (run-with-idle-timer
      3 nil
