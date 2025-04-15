@@ -2175,6 +2175,20 @@ When fetching entries via Biblio, Ebib checks for duplicates based on the key of
 **** Inspirations
 - https://robbmann.io/posts/006_emacs_2_python/
 - https://medium.com/analytics-vidhya/managing-a-python-development-environment-in-emacs-43897fd48c6a
+**** Treesitter mode
+#+begin_src emacs-lisp
+  (setq major-mode-remap-alist
+        '((python-mode . python-ts-mode)))
+
+  (with-eval-after-load "eglot"
+    (setq eglot-report-progress nil)
+    (add-to-list 'eglot-stay-out-of 'eldoc))
+#+end_src
+
+#+begin_src shell
+  sudo apt install python3-pylsp
+#+end_src
+
 **** MyPy
 #+begin_src sh :dir /sudo::
   apt install mypy
@@ -2183,8 +2197,8 @@ When fetching entries via Biblio, Ebib checks for duplicates based on the key of
 #+begin_src emacs-lisp
   (defun setup-python-shell ()
     "Python shell."
-    (setq python-shell-interpreter "ipython"
-            python-shell-interpreter-args "-i --simple-prompt")
+    (setq python-shell-interpreter "python"
+            python-shell-interpreter-args "-i")
     (setq python-shell-completion-native-enable nil))
 
   (use-package python
