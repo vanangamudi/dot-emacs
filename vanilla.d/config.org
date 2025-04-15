@@ -2775,6 +2775,18 @@ code-cells and Jupytext
   (add-hook 'text-scale-mode-hook #'my/text-scale-adjust-latex-previews)
 #+end_src
 
+** Screencast
+#+begin_src emacs-lisp
+  (use-package gif-screencast
+    :config
+    (setq gif-screencast-program "/home/vanangamudi/.scripts/sway-contrib/grimshot")
+          gif-screencast-args '("savecopy area"))
+  (global-set-key (kbd "<f8>") 'gif-screencast-start-or-stop)
+#+end_src
+
+#+RESULTS:
+: gif-screencast-start-or-stop
+
 * Communication
 
 ** IRC chat
