@@ -148,6 +148,12 @@ Hydra menu for opening the files. Add more files to the menu and you can open th
 #+end_src
 
 * System Integration
+
+Do not use system open file dialog boxes, use minibuffer instead
+#+begin_src emacs-lisp
+  (setq use-dialog-box nil)
+#+end_src
+
 #+begin_src emacs-lisp
   (use-package exec-path-from-shell
     :config
@@ -175,6 +181,69 @@ Hydra menu for opening the files. Add more files to the menu and you can open th
     (proced-enable-color-flag t)
     (proced-tree-flag t))
 #+end_src
+** Save shell buffers to =~/logs=
+
+#+begin_src emacs-lisp
+  (unless (file-directory-p "~/logs")
+    (make-directory "~/logs" t))
+
+  (defvar-local va/shell-buffer-save-path nil
+    "File path to save this shell buffer's content.")
+
+  (defvar-local va/shell-buffer-auto-save-timer nil
+    "Timer used to periodically auto-save this shell buffer.")
+
+  (defun va/prompt-for-shell-buffer-save-path ()
+    "Prompt the user to select a file path for saving this shell buffer."
+    (let* ((default-name (format "~/logs/%s.log"
+                                 (replace-regexp-in-string "[^a-zA-Z0-9]+" "-"
+                                                           (buffer-name))))
+           (chosen-file (read-file-name "Save shell buffer to file: " nil nil nil default-name)))
+      (setq va/shell-buffer-save-path chosen-file)))
+
+  (defun va/save-current-shell-buffer ()
+    "Save the current shell buffer to its designated file. Ask path if needed."
+    (interactive)
+    (when (and (eq major-mode 'shell-mode)
+               (not va/shell-buffer-save-path))
+      (va/prompt-for-shell-buffer-save-path))
+    (if (and (eq major-mode 'shell-mode)
+             va/shell-buffer-save-path)
+        (let ((contents (buffer-substring-no-properties (point-min) (point-max))))
+          (with-temp-file va/shell-buffer-save-path
+            (insert contents))
+          (message "Shell buffer saved to %s" va/shell-buffer-save-path))
+      (call-interactively #'save-buffer)))
+
+  (defun va/start-shell-buffer-auto-save (interval)
+    "Start auto-saving this shell buffer every INTERVAL seconds."
+    (when va/shell-buffer-auto-save-timer
+      (cancel-timer va/shell-buffer-auto-save-timer))
+    (setq va/shell-buffer-auto-save-timer
+          (run-with-timer interval interval
+                          (lambda ()
+                            (when (eq major-mode 'shell-mode)
+                              (unless va/shell-buffer-save-path
+                                (va/prompt-for-shell-buffer-save-path))
+                              (when va/shell-buffer-save-path
+                                (let ((contents (buffer-substring-no-properties (point-min) (point-max))))
+                                  (with-temp-file va/shell-buffer-save-path
+                                    (insert contents)))))))))
+
+  (defun va/setup-shell-buffer-saving ()
+    "Configure buffer-local save behavior in shell buffers."
+    (local-set-key (kbd "C-x C-s") #'va/save-current-shell-buffer))
+
+  (defun va/shell-auto-save-setup ()
+    "Enable saving for shell buffer without prompting on launch."
+    (when (eq major-mode 'shell-mode)
+      (va/setup-shell-buffer-saving)
+      (va/start-shell-buffer-auto-save 300))) ; Auto-save every 5 minutes
+
+  (add-hook 'shell-mode-hook #'va/shell-auto-save-setup)
+
+#+end_src
+
 
 ** Sudo edit
 - [[https://stackoverflow.com/a/79137600/1685729][Open a file with su/sudo inside Emacs - Stack Overflow]]
