@@ -866,6 +866,11 @@ Look into this for starting emacs extension development
     :config
     (define-key calc-mode-map (kbd "C-o") 'casual-main-menu))
 #+end_src
+** Syncthing
+#+begin_src emacs-lisp
+  (use-package emacs-conflict
+    :elpaca (:host github :repo "ibizaman/emacs-conflict" :files ("emacs-conflict.el*")))
+#+end_src
 
 * Custom functions
 ** Insert datetime at point
