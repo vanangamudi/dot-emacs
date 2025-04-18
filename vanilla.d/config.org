@@ -35,6 +35,22 @@ The emacs config is written from scratch or should I say built ground up by copy
 ** TODO use vertico, consult, embark combo
 - how to intergrate with org-ref
 * Absolutely firsts
+** Use package
+From [[https://batsov.com/articles/2025/04/17/using-use-package-the-right-way/#fnref:3][Using use-package the right way - (think)]]
+- =use-package= also comes with profiler, you can set =use-package-compute-statistics= to t, restart Emacs and call =use-package-report=  to see which packages are taking too much time to set up and what stage they’re at.
+#+begin_src emacs-lisp
+  (setq use-package-compute-statistics t)
+#+end_src
+
+Use =macroexpand-1= like this inspect what is going on. There is also this [[macrostep]]
+#+begin_src emacs-lisp :results  code
+  (macroexpand-1
+   '(use-package projectile))
+#+end_src
+
+<<macrostep>> [[https://github.com/emacsorphanage/macrostep][GitHub - emacsorphanage/macrostep: interactive macro-expander for Emacs]]
+
+** Hydra
 #+begin_src emacs-lisp
   (use-package hydra
     :ensure t)
@@ -270,8 +286,8 @@ Do not use system open file dialog boxes, use minibuffer instead
 ** Multi Term
 #+begin_src emacs-lisp
   (use-package multi-term
-    :config
-    (setq multi-term-program "/bin/bash"))
+    :custom
+    (multi-term-program "/bin/bash"))
 #+end_src
 
 ** Eterm Color
@@ -308,13 +324,13 @@ Taken from [[https://blog.lambda.cx/posts/org-ssh-export/][How I Keep Track of M
 ** Tramp
 #+begin_src emacs-lisp
   (use-package tramp
-    :init
-    (setq tramp-inline-compress-start-size 1000)
-    (setq tramp-copy-size-limit 10000)
-    (setq vc-handled-backends '(Git))
-    (setq tramp-default-method "scp")
-    (setq tramp-use-ssh-controlmaster-options nil)
-    (setq tramp-verbose 1))
+    :custom
+    (tramp-inline-compress-start-size 1000)
+    (tramp-copy-size-limit 10000)
+    (vc-handled-backends '(Git))
+    (tramp-default-method "scp")
+    (tramp-use-ssh-controlmaster-options nil)
+    (tramp-verbose 1))
 #+end_src
 
 ** Emacs Terminal Emulator Eat
@@ -370,7 +386,7 @@ The code block below toggle off the welcome startup screen.
 ** Mini echo
 #+begin_src emacs-lisp
   (use-package mini-echo
-    :config (mini-echo-mode 1))
+    :hook (after-init . mini-echo-mode))
 #+end_src
 
 ** Debugging
@@ -399,6 +415,7 @@ The code block below toggle off the welcome startup screen.
   (global-set-key [C-mouse-5] 'text-scale-decrease)
 #+END_SRC
 
+
 *** Window Decorations
 #+BEGIN_SRC emacs-lisp
   (menu-bar-mode -1)
@@ -419,7 +436,7 @@ The code block below toggle off the welcome startup screen.
     :hook (dired-mode . all-the-icons-dired-mode))
 
   (use-package doom-modeline
-    :config (doom-modeline-mode))
+    :hook (after-init . doom-modeline-mode))
 
   (use-package diminish
     :config (diminish 'eldoc-mode))
@@ -488,7 +505,7 @@ The code block below toggle off the welcome startup screen.
   (use-package dimmer
     :ensure t
     :custom (dimmer-fraction 0.2)
-    :config (dimmer-mode))
+    :hook (after-init . dimmer-mode))
 #+END_SRC
 
 *** Pulsar
@@ -496,13 +513,12 @@ The code block below toggle off the welcome startup screen.
   (use-package pulsar
     :ensure t
     :custom
-    (setq pulsar-pulse t)
-    (setq pulsar-delay 0.055)
-    (setq pulsar-iterations 10)
-    (setq pulsar-face 'pulsar-magenta)
-    (setq pulsar-highlight-face 'pulsar-yellow)
-    :config
-    (pulsar-global-mode 1))
+    (pulsar-pulse t)
+    (pulsar-delay 0.055)
+    (pulsar-iterations 10)
+    (pulsar-face 'pulsar-magenta)
+    (pulsar-highlight-face 'pulsar-yellow)
+    :hook (after-init . pulsar-global-mode))
 #+end_src
 
 *** Themes
@@ -531,8 +547,8 @@ There are several themes I have grown to like. Here is the some of them.
 #+begin_src emacs-lisp
   (use-package mixed-pitch
     :defer
-    :config
-    (setq mixed-pitch-variable-pitch-cursor nil)
+    :custom
+    (mixed-pitch-variable-pitch-cursor nil)
     :hook
     (org-mode . mixed-pitch-mode)
     (text-mode . mixed-pitch-mode))
@@ -714,7 +730,7 @@ Where did I steal this from?
 *** Marginalia
 #+begin_src emacs-lisp
   (use-package marginalia
-    :config (marginalia-mode))
+    :hook (after-init . marginalia-mode))
 #+end_src
 
 ** Text Encoding
@@ -786,11 +802,9 @@ Where did I steal this from?
 Brings up some help
 #+BEGIN_SRC emacs-lisp
   (use-package which-key
-    :config
-    (which-key-mode)
-    (which-key-setup-side-window-bottom)
-    :custom
-    (which-key-idle-delay 1.2))
+    :hook (after-init . which-key-mode)
+    :config (which-key-setup-side-window-bottom)
+    :custom (which-key-idle-delay 1.2))
 #+END_SRC
 
 ** Helpful
@@ -824,13 +838,12 @@ Highlight TODO and similar keywords in comments and strings.
 Look into this for starting emacs extension development
 #+begin_src emacs-lisp
   (use-package hl-todo
-    :config
-    (setq hl-todo-keyword-faces
-          '(("TODO"   . "#FF0000")
-            ("FIXME"  . "#FF0000")
-            ("DEBUG"  . "#A020F0")
-            ("GOTCHA" . "#FF4500")
-            ("STUB"   . "#1E90FF")))
+    :custom  (hl-todo-keyword-faces
+              '(("TODO"   . "#FF0000")
+                ("FIXME"  . "#FF0000")
+                ("DEBUG"  . "#A020F0")
+                ("GOTCHA" . "#FF4500")
+                ("STUB"   . "#1E90FF")))
     :hook (prog-mode . hl-todo-mode))
 
   (define-globalized-minor-mode va-global-hl-line-mode hl-line-mode
@@ -958,9 +971,10 @@ When you want to add multiple cursors not based on continuous lines, but based o
 [[https://www.reddit.com/r/emacs/comments/18hxs9a/emacs_advent_calendar_14_indentbars_kindicon/?sort=new][Emacs Advent Calendar 14: indent-bars, kind-icon, org-modern-indent, and more]]
 #+begin_src emacs-lisp
   (use-package vundo
+    :custom
+    (vundo-glyph-alist vundo-unicode-symbols)
+    (diff-switches "-u --color=never")
     :config
-    (setq vundo-glyph-alist vundo-unicode-symbols)
-    (setq diff-switches "-u --color=never")
     (set-face-attribute 'vundo-default nil :family "Symbola"))
 #+end_src
 
@@ -1081,8 +1095,8 @@ When you want to add multiple cursors not based on continuous lines, but based o
 ** Projectile
 #+begin_src emacs-lisp
   (use-package projectile
-    :init
-    (projectile-mode +1)
+    :hook
+    (after-init . projectile-mode)
     :bind
     (:map projectile-mode-map
           ("C-c p" . projectile-command-map)))
@@ -1252,9 +1266,6 @@ install w3m via apt/dnf
   (global-set-key (kbd "C-x D") 'va/open-current-buffer-directory-externally)
 #+end_src
 
-#+RESULTS:
-: va/open-current-buffer-directory-externally
-
 
 ** Dired
 #+BEGIN_SRC emacs-lisp
@@ -1344,18 +1355,18 @@ install w3m via apt/dnf
     :hook (org-mode . org-modern-mode))
 
   (use-package org-superstar
-    :init
-    (setq org-superstar-special-todo-items t)
-    (setq org-superstar-lightweight-lists t)
+    :custom
+    (org-superstar-special-todo-items t)
+    (org-superstar-lightweight-lists t)
     :hook (org-mode . org-superstar-mode))
 #+end_src
 
 ** Org Sticky Headers
 #+begin_src emacs-lisp
   (use-package org-sticky-header
-    :init (setq org-sticky-header-mode t))
+    :custom (org-sticky-header-mode t))
   (use-package org-table-sticky-header
-    :init (setq org-table-sticky-header-mode t))
+    :custom (org-table-sticky-header-mode t))
 #+end_src
 
 ** Org-download
@@ -1488,8 +1499,7 @@ org-refile by default only targets current file and heading unless =org-refile-t
            ("C-c n i" . org-roam-node-insert)
            :map org-mode-map
            ("C-M-i"    . completion-at-point))
-    :config
-    (org-roam-setup))
+    :hook (after-init. org-roam-setup))
 
   (setq org-roam-v2-ack t)
 
@@ -1553,9 +1563,19 @@ org-refile by default only targets current file and heading unless =org-refile-t
     ;; `after-init-hook' as in the comment above
     (org-remark-global-tracking-mode +1)
     :config
-    (use-package org-remark-info :ensure nil :after info :config (org-remark-info-mode +1))
-    (use-package org-remark-eww  :ensure nil :after eww  :config (org-remark-eww-mode +1))
-    (use-package org-remark-nov  :ensure nil :after nov  :config (org-remark-nov-mode +1)))
+    (use-package org-remark-info
+      :ensure nil
+      :after info
+      :config (org-remark-info-mode +1))
+
+    (use-package org-remark-eww
+      :ensure nil
+      :after eww
+      :config (org-remark-eww-mode +1))
+    (use-package org-remark-nov
+      :ensure nil
+      :after nov
+      :config (org-remark-nov-mode +1)))
 #+end_src
 
 ** Org Cliplink
@@ -1745,9 +1765,6 @@ https://sachachua.com/blog/2015/11/capturing-links-quickly-with-emacsclient-org-
            "* %?\nEntered on %U\n  %i\n  %a")))
 #+END_SRC
 
-#+RESULTS:
-| t | Todo | entry | (file+headline ~/org/pidi.org Tasks) | * TODO %? |
-
 **** Tips and Troubleshooting
 ***** No server buffers remain to edit
 ****** Problem
@@ -1886,8 +1903,8 @@ Since =ob-ledger= package is not there by default, download it from a source
 *** ob-async
 #+begin_src emacs-lisp
   (use-package ob-async
-    :config
-    (setq ob-async-no-async-languages-alist '("ipython")))
+    :custom
+    (ob-async-no-async-languages-alist '("ipython")))
 #+end_src
 
 **** COMMENT ob-async-pre-execute-src-block-hook
@@ -1933,19 +1950,17 @@ Capture latex equations from browser
     ("C-x m" . mathpix-screenshot))
 #+end_src
 
-#+RESULTS:
-
-** COMMENT Org-media-note
+** Org-media-note
 #+begin_src emacs-lisp
-  (use-package quelpa-use-package)  ;; to allow installation of github packages
   (use-package pretty-hydra)
   (use-package org-media-note
-    :quelpa (org-media-note :fetcher github :repo "yuchen-lea/org-media-note")
+    :elpaca (:host github :repo "yuchen-lea/org-media-note")
     :hook (org-mode .  org-media-note-mode)
-    :bind (("C-f2" . org-media-note-hydra/body))  ;; Main entrance
-    :config
-    (setq org-media-note-screenshot-image-dir "~/kuri/images/"))
+    :bind (("C-<f2>" . org-media-note-hydra/body))  ;; Main entrance
+    :custom
+    (org-media-note-screenshot-image-dir "~/kuri/images/"))
 #+end_src
+
 
 ** Treating webp as image
 #+begin_src emacs-lisp
@@ -2576,7 +2591,7 @@ Emacs side of things
   (add-to-list 'auto-mode-alist '("\\.mmd\\'" . markdown-mode))
 #+end_src
 
-**  Shell mode
+** Shell mode
 #+begin_src emacs-lisp :tangle no
   (use-package bash-completion
     :elpaca (:host github :repo "szermatt/emacs-bash-completion")
@@ -2612,6 +2627,20 @@ code-cells and Jupytext
                                            ("pandoc" "--to" "org" "--from" "ipynb")
                                            (lambda () #'org-mode))))
 #+end_src
+** COMMENT LLM and AI coding
+#+begin_src emacs-lisp
+  (use-package aidermacs
+    :bind (("C-c M-a" . aidermacs-transient-menu))
+    :config
+    ; Set API_KEY in .bashrc, that will automatically picked up by aider or in elisp
+    ;;(setenv "ANTHROPIC_API_KEY" "sk-...")
+    ; defun my-get-openrouter-api-key yourself elsewhere for security reasons
+    ;;(setenv "OPENROUTER_API_KEY" (my-get-openrouter-api-key))
+    :custom
+    ; See the Configuration section below
+    (aidermacs-use-architect-mode t)
+    (aidermacs-default-model "o1-mini"))
+#+end_src
 
 * Reading and Writing
 ** Distraction Free Editing
@@ -2639,6 +2668,11 @@ code-cells and Jupytext
 #+end_src
 
 ** Reading
+*** Org-noter
+#+begin_src emacs-lisp
+  (use-package org-noter)
+#+end_src
+
 *** Nov.el
 #+begin_src emacs-lisp
   (defun my-nov-font-setup ()
