@@ -39,7 +39,7 @@ The emacs config is written from scratch or should I say built ground up by copy
 From [[https://batsov.com/articles/2025/04/17/using-use-package-the-right-way/#fnref:3][Using use-package the right way - (think)]]
 - =use-package= also comes with profiler, you can set =use-package-compute-statistics= to t, restart Emacs and call =use-package-report=  to see which packages are taking too much time to set up and what stage they’re at.
 #+begin_src emacs-lisp
-  (setq use-package-compute-statistics t)
+  ;;(setq use-package-compute-statistics t)
 #+end_src
 
 Use =macroexpand-1= like this inspect what is going on. There is also this [[macrostep]]
@@ -49,6 +49,17 @@ Use =macroexpand-1= like this inspect what is going on. There is also this [[mac
 #+end_src
 
 <<macrostep>> [[https://github.com/emacsorphanage/macrostep][GitHub - emacsorphanage/macrostep: interactive macro-expander for Emacs]]
+** Garbage Collection
+[[https://qua.name/mrb/an-org-babel-based-emacs-configuration#org0f69a00][My org-babel based emacs configuration — MrBlog....]]
+#+begin_src emacs-lisp
+  (use-package gcmh
+    :config
+    (setq gcmh-verbose 1)
+    (setq gcmh-high-cons-threshold (* 16 1024 1024 1024))
+    (gcmh-mode 1))
+#+end_src
+
+
 
 ** Hydra
 #+begin_src emacs-lisp
@@ -60,10 +71,10 @@ Use =macroexpand-1= like this inspect what is going on. There is also this [[mac
 * Package Management
 ** Use Package
 #+begin_src emacs-lisp
-  (setq use-package-always-ensure t)
+  (setq use-package-always-ensure nil)
 #+end_src
 ** Elpaca
-#+begin_src emacs-lisp
+#+begin_src emacs-lispfserfg
   (defvar elpaca-installer-version 0.5)
   (defvar elpaca-directory (expand-file-name "elpaca/" user-emacs-directory))
   (defvar elpaca-builds-directory (expand-file-name "builds/" elpaca-directory))
@@ -102,6 +113,47 @@ Use =macroexpand-1= like this inspect what is going on. There is also this [[mac
   (elpaca `(,@elpaca-order))
 #+end_src
 
+#+begin_src emacs-lisp
+(defvar elpaca-installer-version 0.11)
+(defvar elpaca-directory (expand-file-name "elpaca/" user-emacs-directory))
+(defvar elpaca-builds-directory (expand-file-name "builds/" elpaca-directory))
+(defvar elpaca-repos-directory (expand-file-name "repos/" elpaca-directory))
+(defvar elpaca-order '(elpaca :repo "https://github.com/progfolio/elpaca.git"
+                              :ref nil :depth 1 :inherit ignore
+                              :files (:defaults "elpaca-test.el" (:exclude "extensions"))
+                              :build (:not elpaca--activate-package)))
+(let* ((repo  (expand-file-name "elpaca/" elpaca-repos-directory))
+       (build (expand-file-name "elpaca/" elpaca-builds-directory))
+       (order (cdr elpaca-order))
+       (default-directory repo))
+  (add-to-list 'load-path (if (file-exists-p build) build repo))
+  (unless (file-exists-p repo)
+    (make-directory repo t)
+    (when (<= emacs-major-version 28) (require 'subr-x))
+    (condition-case-unless-debug err
+        (if-let* ((buffer (pop-to-buffer-same-window "*elpaca-bootstrap*"))
+                  ((zerop (apply #'call-process `("git" nil ,buffer t "clone"
+                                                  ,@(when-let* ((depth (plist-get order :depth)))
+                                                      (list (format "--depth=%d" depth) "--no-single-branch"))
+                                                  ,(plist-get order :repo) ,repo))))
+                  ((zerop (call-process "git" nil buffer t "checkout"
+                                        (or (plist-get order :ref) "--"))))
+                  (emacs (concat invocation-directory invocation-name))
+                  ((zerop (call-process emacs nil buffer nil "-Q" "-L" "." "--batch"
+                                        "--eval" "(byte-recompile-directory \".\" 0 'force)")))
+                  ((require 'elpaca))
+                  ((elpaca-generate-autoloads "elpaca" repo)))
+            (progn (message "%s" (buffer-string)) (kill-buffer buffer))
+          (error "%s" (with-current-buffer buffer (buffer-string))))
+      ((error) (warn "%s" err) (delete-directory repo 'recursive))))
+  (unless (require 'elpaca-autoloads nil t)
+    (require 'elpaca)
+    (elpaca-generate-autoloads "elpaca" repo)
+    (let ((load-source-file-function nil)) (load "./elpaca-autoloads"))))
+(add-hook 'after-init-hook #'elpaca-process-queues)
+(elpaca `(,@elpaca-order))
+#+end_src
+
 Enable =use-package= integration
 #+begin_src emacs-lisp
   ;;(elpaca use-package :elpaca t)
@@ -110,7 +162,7 @@ Enable =use-package= integration
     ;; Enable :elpaca use-package keyword.
     (elpaca-use-package-mode))
   ;; Assume :elpaca t unless otherwise specified.
-  ;; (setq elpaca-use-package-by-default nil))
+  (setq elpaca-use-package-by-default t)
   (elpaca-wait)
 #+end_src
 
@@ -177,7 +229,7 @@ Do not use system open file dialog boxes, use minibuffer instead
       (exec-path-from-shell-initialize)))
 #+end_src
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lispsef
   (use-package org-alert
     :ensure nil
     :custom
@@ -358,6 +410,7 @@ Taken from [[https://blog.lambda.cx/posts/org-ssh-export/][How I Keep Track of M
 #+end_src
 
 * Basic settings
+
 ** Remove startup welcome screen
 The code block below toggle off the welcome startup screen.
 #+BEGIN_SRC emacs-lisp
@@ -367,7 +420,6 @@ The code block below toggle off the welcome startup screen.
 ** Hide mode line
 #+begin_src emacs-lisp
   (use-package hide-mode-line
-    :ensure t
     :defer
     :hook ((eshell-mode . hide-mode-line-mode)
            (vterm-mode . hide-mode-line-mode)
@@ -397,11 +449,9 @@ The code block below toggle off the welcome startup screen.
               (message "Emacs loaded in %s."
                        (emacs-init-time))))
 
-  (setq debug-on-error t)
-  (setq gc-cons-threshold (* 2 1000 1000))
+  (setq debug-on-error nil)
   (setq find-file-visit-truename nil)
 #+END_SRC
-
 ** Interface tweaks
 *** Inhibit Startup Message
 #+BEGIN_SRC emacs-lisp
@@ -503,7 +553,6 @@ The code block below toggle off the welcome startup screen.
 *** Dim Inactive Buffer
 #+BEGIN_SRC emacs-lisp
   (use-package dimmer
-    :ensure t
     :custom (dimmer-fraction 0.2)
     :hook (after-init . dimmer-mode))
 #+END_SRC
@@ -511,7 +560,6 @@ The code block below toggle off the welcome startup screen.
 *** Pulsar
 #+begin_src emacs-lisp
   (use-package pulsar
-    :ensure t
     :custom
     (pulsar-pulse t)
     (pulsar-delay 0.055)
@@ -652,7 +700,6 @@ Download theme
 **** ef-themes
 #+begin_src emacs-lisp
   (use-package ef-themes
-    :ensure nil
     :init
     (load-theme 'ef-cyprus t))
 #+end_src
@@ -919,7 +966,6 @@ When you want to add multiple cursors not based on continuous lines, but based o
 ** Expand Region
 #+begin_src emacs-lisp
   (use-package expand-region
-    :ensure t
     :bind (("C-]" . er/expand-region)))
 #+end_src
 ** Regex
@@ -1052,7 +1098,6 @@ When you want to add multiple cursors not based on continuous lines, but based o
 ** Popper
 #+begin_src emacs-lisp
   (use-package popper
-    :ensure t ; or :straight t
     :bind (("C-`"   . popper-toggle)
            ("M-`"   . popper-cycle)
            ("C-M-`" . popper-toggle-type))
@@ -1116,8 +1161,6 @@ install w3m via apt/dnf
 ** EWW
 #+begin_src emacs-lisp
   (use-package shrface
-    :ensure t
-    :defer t
     :config
     (shrface-basic)
     (shrface-trial)
@@ -1125,7 +1168,6 @@ install w3m via apt/dnf
     (setq shrface-href-versatile t))
 
   (use-package shr-tag-pre-highlight
-    :ensure t
     :after shr
     :config
     (add-to-list 'shr-external-rendering-functions
@@ -1154,10 +1196,9 @@ install w3m via apt/dnf
   (require 'prot-eww)
 #+end_src
 
-** Search Engines
+** COMMENT Search Engines
 #+begin_src emacs-lisp
   (use-package engine-mode
-    :ensure t
     :bind-keymap ("C-c s" . engine-mode-prefixed-map)
     :config
     (engine-mode t)
@@ -1526,8 +1567,7 @@ org-refile by default only targets current file and heading unless =org-refile-t
 ** Org Roam UI
 #+begin_src emacs-lisp
   (use-package org-roam-ui
-    :elpaca
-    (:host github :repo "org-roam/org-roam-ui" :branch "main" :files ("*.el" "out"))
+    :elpaca (:host github :repo "org-roam/org-roam-ui" :branch "main" :files ("*.el" "out"))
     :after org-roam
     ;;         normally we'd recommend hooking orui after org-roam, but since org-roam does not have
     ;;         a hookable mode anymore, you're advised to pick something yourself
@@ -2009,11 +2049,11 @@ Capture latex equations from browser
           bibtex-autokey-year-title-separator "-"
           bibtex-autokey-titleword-separator "-"
           bibtex-autokey-titlewords 2
-          bibtex-autokey-titlewords-stretch 1
+          bibtex-autokey-titlewords-stretch 2
           bibtex-autokey-titleword-length 5)
     ;;; path to the bibliography(.bib) files
     (setq bibtex-completion-bibliography '("~/kuri/bibliography/references.bib")
-          bibtex-completion-library-path '("~/kuri/bibliography/bibtex-pdfs/")
+          bibtex-completion-library-path '("~/ko-pa-ni/mattravai/papers/")
           bibtex-completion-notes-path   "~/kuri/bibliography/notes/"
           bibtex-completion-notes-template-multiple-files
           "* ${author-or-editor}, ${title}, ${journal}, (${year}) :${=type=}: \n\nSee [[cite:&${=key=}]]\n"
@@ -2127,7 +2167,6 @@ When fetching entries via Biblio, Ebib checks for duplicates based on the key of
 ** Documentation
 #+begin_src emacs-lisp
   (use-package devdocs
-    :ensure t
     :defer
     :bind ("C-c M-d" . devdocs-lookup)
     :init
@@ -2172,7 +2211,6 @@ When fetching entries via Biblio, Ebib checks for duplicates based on the key of
 ** Fill Function Arguments
 #+begin_src emacs-lisp
   (use-package fill-function-arguments
-    :ensure t
     :bind (:map prog-mode-map
                 ("C-c M-q" . fill-function-arguments-dwim)))
 #+end_src
@@ -2243,7 +2281,6 @@ Emacs side of things
 #+begin_src emacs-lisp
   (setenv "WORKON_HOME" "~/.virtualenvs")
   (use-package elpy
-    :ensure t
     :defer t
     :init
     (advice-add 'python-mode :before 'elpy-enable)
@@ -2300,7 +2337,6 @@ Emacs side of things
 **** COMMENT importmagic
 #+begin_src emacs-lisp
   (use-package importmagic
-    :ensure t
     :custom
     (importmagic-be-quiet t)
     ;; :hook (python-mode . gopar/enable-importmagic-if-found)
@@ -2316,7 +2352,6 @@ Emacs side of things
 **** COMMENT Jedi
 #+begin_src emacs-lisp
   (use-package jedi
-    :ensure t
     :defer
     ;; :hook (python-mode . gopar/enable-jedi-if-found)
     :hook (python-mode . (lambda () (run-at-time "3 sec" nil 'gopar/enable-jedi-if-found)))
@@ -2338,12 +2373,15 @@ Emacs side of things
     (gud-pdb-command-name "PYTHONBREAKPOINT=pdb.set_trace python -m pdb"))
 #+end_src
 
-*** COMMENT Javascript
+*** Javascript
 #+begin_src emacs-lisp
   (use-package indium
+    :elpaca (:host github :repo "NicolasPetton/Indium")
     :hook ((js2-mode . indium-interaction-mode)))
   (setq js-indent-level 2)
 #+end_src
+
+
 
 *** CSV mode
 #+begin_src emacs-lisp
@@ -2373,16 +2411,86 @@ Emacs side of things
   (setq ediff-split-window-function 'split-window-horizontally)
   (setq ediff-window-setup-function 'ediff-setup-windows-plain)
 #+end_src
+*** COMMENT 3 way merge setup
+From [[https://news.ycombinator.com/item?id=34560604][I basically just slightly modified the code in *ediff-setup-windows-plain-mer...]]
+#+begin_src emacs-lisp
+  (defun ediff-setup-windows-plain-merge (buf-A buf-B buf-C control-buffer)
+    ;; skip dedicated and unsplittable frames
+    (ediff-destroy-control-frame control-buffer)
+    (let ((window-min-height 1)
+          (with-Ancestor-p (with-current-buffer control-buffer
+                             ediff-merge-with-ancestor-job))
+          split-window-function
+          merge-window-share merge-window-lines
+          (buf-Ancestor (with-current-buffer control-buffer
+                          ediff-ancestor-buffer))
+          wind-A wind-B wind-C wind-Ancestor)
+      (with-current-buffer control-buffer
+        (setq merge-window-share ediff-merge-window-share
+              ;; this lets us have local versions of ediff-split-window-function
+              split-window-function ediff-split-window-function))
+      (delete-other-windows)
+      (set-window-dedicated-p (selected-window) nil)
+      (split-window-vertically)
+      (ediff-select-lowest-window)
+      (ediff-setup-control-buffer control-buffer)
 
+      ;; go to the upper window and split it betw A, B, and possibly C
+      (other-window 1)
+      (setq merge-window-lines
+            (max 2 (round (* (window-height) merge-window-share))))
+      (switch-to-buffer buf-A)
+      (setq wind-A (selected-window))
+
+      (split-window-vertically (max 2 (- (window-height) merge-window-lines)))
+      (if (eq (selected-window) wind-A)
+          (other-window 1))
+
+      (setq wind-C (selected-window))
+      (switch-to-buffer buf-C)
+
+      (select-window wind-A)
+      (funcall split-window-function)
+
+      (if (eq (selected-window) wind-A)
+          (other-window 1))
+      (switch-to-buffer buf-B)
+      (setq wind-B (selected-window))
+
+      (when (and ediff-show-ancestor with-Ancestor-p)
+        (select-window wind-B)
+        (split-window-horizontally)
+        (when (eq (selected-window) wind-B)
+          (other-window 1))
+        (switch-to-buffer buf-Ancestor)
+        (setq wind-Ancestor (selected-window)))
+
+      (balance-windows-area)
+
+      (with-current-buffer control-buffer
+        (setq ediff-window-A wind-A
+              ediff-window-B wind-B
+              ediff-window-C wind-C
+              ediff-window-Ancestor wind-Ancestor))
+
+      (ediff-select-lowest-window)
+      (minimize-window)
+      (ediff-setup-control-buffer control-buffer)
+      ))
+#+end_src
 ** Syntax Highlighting
 #+begin_src emacs-lisp
   (use-package rainbow-delimiters
     :config
     (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
 
-  (use-package rainbow-blocks
+  (use-package prism
     :config
-    (add-hook 'prog-mode-hook #'rainbow-blocks-mode))
+    (add-hook 'prog-mode-hook #'prism-mode))
+
+  ;; (use-package rainbow-blocks
+  ;;   :config
+  ;;   (add-hook 'prog-mode-hook #'rainbow-blocks-mode))
 
   (use-package rainbow-identifiers
     :config
@@ -2406,7 +2514,6 @@ Emacs side of things
 *** COMMENT Highlight indentation
 #+begin_src emacs-lisp
   (use-package highlight-indentation
-    :ensure t
     :hook ((prog-mode . highlight-indentation-mode)
            (prog-mode . highlight-indentation-current-column-mode)))
 #+end_src
@@ -2627,20 +2734,30 @@ code-cells and Jupytext
                                            ("pandoc" "--to" "org" "--from" "ipynb")
                                            (lambda () #'org-mode))))
 #+end_src
-** COMMENT LLM and AI coding
+** LLM and AI coding
 #+begin_src emacs-lisp
+  (defun read-api-key (file-path)
+    "Read the first line of FILE-PATH and return it as a string with no trailing newline."
+    (with-temp-buffer
+      (insert-file-contents file-path)
+      (string-trim (buffer-substring-no-properties (point-min) (line-end-position)))))
+
+  (defun va/get-openrouter-api-key ()
+    (read-api-key "~/keys/openrouter/aideremacs.txt"))
+
   (use-package aidermacs
     :bind (("C-c M-a" . aidermacs-transient-menu))
     :config
     ; Set API_KEY in .bashrc, that will automatically picked up by aider or in elisp
     ;;(setenv "ANTHROPIC_API_KEY" "sk-...")
     ; defun my-get-openrouter-api-key yourself elsewhere for security reasons
-    ;;(setenv "OPENROUTER_API_KEY" (my-get-openrouter-api-key))
+    (setenv "OPENROUTER_API_KEY" (va/get-openrouter-api-key))
     :custom
     ; See the Configuration section below
     (aidermacs-use-architect-mode t)
-    (aidermacs-default-model "o1-mini"))
+    (aidermacs-default-model "openrouter/openai/o3-mini"))
 #+end_src
+
 
 * Reading and Writing
 ** Distraction Free Editing
@@ -3047,7 +3164,7 @@ Clone and map =elfeed-db= to  =~/.elfeed= directory
   (use-package elfeed)
   ;; Load elfeed-org
   (use-package elfeed-org
-    :ensure t)
+    :init (elfeed-org))
 
   ;; Initialize elfeed-org
   ;; This hooks up elfeed-org to read the configuration when elfeed
@@ -3094,7 +3211,6 @@ Clone and map =elfeed-db= to  =~/.elfeed= directory
 ** COMMENT Edit with Emacs
 #+begin_src emacs-lisp
   (use-package edit-server
-    :ensure t
     :commands edit-server-start
     :init (if after-init-time
               (edit-server-start)
