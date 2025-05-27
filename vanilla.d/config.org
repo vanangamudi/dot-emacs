@@ -210,6 +210,7 @@ Hydra menu for opening the files. Add more files to the menu and you can open th
     "Open File"
     ("w" (find-file "~/org/w.org") "Work Tasks")
     ("f" (find-file "~/emacs/elfeed-db/elfeed.org") "RSS Feeds")
+    ("d" (find-file "~/org/downloads.org") "To Download")
     ("e" (find-file "~/emacs/vanilla.d/config.org") "Emacs Config"))
 
   (global-set-key (kbd "M-o") 'hydra-open-stdfiles/body)
@@ -1732,9 +1733,9 @@ Org-capture book-marklet for firefox, add this to bookmark toolbar on firefox
     set -euo pipefail
 
     emacsclient --create-frame \
-                --socket-name 'capture' \
-                --alternate-editor='' \
-                --frame-parameters='(quote (name . "capture"))' \
+                #--socket-name "capture" \
+                --alternate-editor="" \
+                --frame-parameters="(quote (name . \"capture\"))" \
                 --no-wait \
                 --eval "(my/org-capture-frame)"
 
@@ -2232,7 +2233,9 @@ When fetching entries via Biblio, Ebib checks for duplicates based on the key of
 #+begin_src emacs-lisp
   (setq major-mode-remap-alist
         '((python-mode . python-ts-mode)))
+#+end_src
 
+#+begin_src emacs-lisp123
   (with-eval-after-load "eglot"
     (setq eglot-report-progress nil)
     (add-to-list 'eglot-stay-out-of 'eldoc))
@@ -2251,7 +2254,7 @@ When fetching entries via Biblio, Ebib checks for duplicates based on the key of
   (defun setup-python-shell ()
     "Python shell."
     (setq python-shell-interpreter "python"
-            python-shell-interpreter-args "-i")
+          python-shell-interpreter-args "-i")
     (setq python-shell-completion-native-enable nil))
 
   (use-package python
@@ -2381,8 +2384,6 @@ Emacs side of things
   (setq js-indent-level 2)
 #+end_src
 
-
-
 *** CSV mode
 #+begin_src emacs-lisp
   (use-package csv-mode
@@ -2390,8 +2391,177 @@ Emacs side of things
   (add-to-list 'auto-mode-alist '("\\.tsv\\'" . csv-mode))
 #+end_src
 
+*** COMMENT Java
+#+begin_src emacs-lisp
+  (use-package lsp-ui)
+  (use-package lsp-java :config (add-hook 'java-mode-hook 'lsp))
+  (use-package dap-mode :after lsp-mode :config (dap-auto-configure-mode))
+  (use-package dap-java :ensure nil)
 
-**  Magit
+  (use-package dap-mode
+    :ensure t
+    :config
+    (dap-auto-configure-mode)
+    (require 'dap-java)
+    (dap-register-debug-providers '("java" . dap-java-debug-provider))
+    (dap-register-debug-templates
+     (list (list :type "java" :name "Java Attach"
+                 :request "attach"
+                 :host-name "localhost"
+                 :port 5005))))
+#+end_src
+** Language Servers
+#+begin_src emacs-lisp
+  (use-package lsp-mode
+    :hook ((c-mode          ; clangd
+            c++-mode        ; clangd
+            c-or-c++-mode   ; clangd
+            java-mode       ; eclipse-jdtls
+            js-mode         ; ts-ls (tsserver wrapper)
+            js-jsx-mode     ; ts-ls (tsserver wrapper)
+            typescript-mode ; ts-ls (tsserver wrapper)
+            python-mode     ; pyright
+            web-mode        ; ts-ls/HTML/CSS
+            haskell-mode    ; haskell-language-server
+            ) . lsp-deferred)
+    ;; :hook ((lsp-mode . lsp-diagnostics-mode)
+    ;;        (lsp-mode . lsp-completion-mode-maybe))
+    :commands lsp
+    :preface
+    (defun lsp-completion-mode-maybe ()
+      (unless (bound-and-true-p cider-mode)
+        (lsp-completion-mode 1)))
+    :custom
+    (setq lsp-auto-guess-root t)
+    (setq lsp-log-io nil)
+    (setq lsp-restart 'auto-restart)
+    (setq lsp-signature-auto-activate nil)
+    (setq lsp-signature-render-documentation nil)
+    (setq lsp-eldoc-hook nil)
+    (setq lsp-modeline-code-actions-enable nil)
+    (setq lsp-modeline-diagnostics-enable nil)
+    (setq lsp-enable-snippet nil)
+    (setq read-process-output-max (* 1024 1024)) ;; 1MB
+    (setq lsp-idle-delay 0.5)
+
+    (lsp-keymap-prefix "C-c l")
+    (lsp-diagnostics-provider :flymake)
+    (lsp-completion-provider :none)
+    (lsp-session-file (expand-file-name ".lsp-session" user-emacs-directory))
+    (lsp-log-io nil)
+    (lsp-keep-workspace-alive nil)
+    ;; core
+    (lsp-enable-xref t)
+    (lsp-auto-configure nil)
+    (lsp-eldoc-enable-hover nil)
+    (lsp-enable-dap-auto-configure nil)
+    (lsp-enable-file-watchers nil)
+    (lsp-enable-folding nil)
+    (lsp-enable-imenu nil)
+    (lsp-enable-indentation nil)
+    (lsp-enable-links nil)
+    (lsp-enable-on-type-formatting nil)
+    (lsp-enable-suggest-server-download nil)
+    (lsp-enable-symbol-highlighting nil)
+    (lsp-enable-text-document-color nil)
+    ;; completion
+    (lsp-completion-enable t)
+    (lsp-completion-enable-additional-text-edit nil)
+    (lsp-enable-snippet nil)
+    (lsp-completion-show-kind nil)
+    ;; headerline
+    (lsp-headerline-breadcrumb-enable nil)
+    (lsp-headerline-breadcrumb-enable-diagnostics nil)
+    (lsp-headerline-breadcrumb-enable-symbol-numbers nil)
+    (lsp-headerline-breadcrumb-icons-enable nil)
+    ;; modeline
+    (lsp-modeline-code-actions-enable nil)
+    (lsp-modeline-diagnostics-enable nil)
+    (lsp-modeline-workspace-status-enable nil)
+    (lsp-signature-doc-lines 1)
+    ;; lens
+    (lsp-lens-enable nil)
+    ;; semantic
+    (lsp-semantic-tokens-enable nil)
+    :init
+    (setq lsp-use-plists t))
+
+  (use-package lsp-ui
+    :commands lsp-ui-mode
+    :config
+    (setq lsp-ui-doc-enable nil)
+    (setq lsp-ui-doc-header t)
+    (setq lsp-ui-doc-include-signature t)
+    (setq lsp-ui-doc-border (face-foreground 'default))
+    (setq lsp-ui-sideline-show-code-actions t)
+    (setq lsp-ui-sideline-delay 0.05))
+
+  (use-package lsp-ivy :commands lsp-ivy-workspace-symbol)
+  (use-package lsp-treemacs :commands lsp-treemacs-errors-list)
+#+end_src
+
+*** Python
+#+begin_src emacs-lisp
+  (use-package lsp-pyright
+    :ensure t
+    :custom (lsp-pyright-langserver-command "pyright") ;; or basedpyright
+    :hook (python-mode . (lambda ()
+                           (require 'lsp-pyright)
+                           (lsp))))  ; or lsp-deferred
+#+end_src
+
+Install the pyright server
+#+begin_src shell
+  pip install pyright
+#+end_src
+** Debug Adapters
+#+begin_src emacs-lisp
+  (use-package dape
+    :preface
+    ;; By default dape shares the same keybinding prefix as `gud'
+    ;; If you do not want to use any prefix, set it to nil.
+    ;; (setq dape-key-prefix "\C-x\C-a")
+
+    :hook
+    ;; Save breakpoints on quit
+    ;; (kill-emacs . dape-breakpoint-save)
+    ;; Load breakpoints on startup
+    ;; (after-init . dape-breakpoint-load)
+
+    :config
+    ;; Turn on global bindings for setting breakpoints with mouse
+    ;; (dape-breakpoint-global-mode)
+
+    ;; Info buffers to the right
+    ;; (setq dape-buffer-window-arrangement 'right)
+
+    ;; Info buffers like gud (gdb-mi)
+    ;; (setq dape-buffer-window-arrangement 'gud)
+    ;; (setq dape-info-hide-mode-line nil)
+
+    ;; Pulse source line (performance hit)
+    ;; (add-hook 'dape-display-source-hook 'pulse-momentary-highlight-one-line)
+
+    ;; Showing inlay hints
+    ;; (setq dape-inlay-hints t)
+
+    ;; Save buffers on startup, useful for interpreted languages
+    ;; (add-hook 'dape-start-hook (lambda () (save-some-buffers t t)))
+
+    ;; Kill compile buffer on build success
+    ;; (add-hook 'dape-compile-hook 'kill-buffer)
+
+    ;; Projectile users
+    ;; (setq dape-cwd-function 'projectile-project-root)
+    )
+#+end_src
+
+*** Python
+#+begin_src shell
+  pip install debugpy
+#+end_src
+
+** Magit
 #+BEGIN_SRC emacs-lisp
   (use-package magit
     :bind (("C-c g" . #'magit-status)))
@@ -2748,12 +2918,12 @@ code-cells and Jupytext
   (use-package aidermacs
     :bind (("C-c M-a" . aidermacs-transient-menu))
     :config
-    ; Set API_KEY in .bashrc, that will automatically picked up by aider or in elisp
+                                          ; Set API_KEY in .bashrc, that will automatically picked up by aider or in elisp
     ;;(setenv "ANTHROPIC_API_KEY" "sk-...")
-    ; defun my-get-openrouter-api-key yourself elsewhere for security reasons
+                                          ; defun my-get-openrouter-api-key yourself elsewhere for security reasons
     (setenv "OPENROUTER_API_KEY" (va/get-openrouter-api-key))
     :custom
-    ; See the Configuration section below
+                                          ; See the Configuration section below
     (aidermacs-use-architect-mode t)
     (aidermacs-default-model "openrouter/openai/o3-mini"))
 #+end_src
@@ -2807,7 +2977,7 @@ code-cells and Jupytext
     :after nov
     :config
     (define-key nov-mode-map (kbd "o") 'nov-xwidget-view)
-  (add-hook 'nov-mode-hook 'nov-xwidget-inject-all-files))
+    (add-hook 'nov-mode-hook 'nov-xwidget-inject-all-files))
 #+end_src
 
 *** COMMENT more config
@@ -2952,7 +3122,7 @@ code-cells and Jupytext
   (use-package gif-screencast
     :config
     (setq gif-screencast-program "/home/vanangamudi/.scripts/sway-contrib/grimshot")
-          gif-screencast-args '("savecopy area"))
+    gif-screencast-args '("savecopy area"))
   (global-set-key (kbd "<f8>") 'gif-screencast-start-or-stop)
 #+end_src
 
@@ -3287,9 +3457,7 @@ And after the capture is finalized or canceled, the frame will be closed.
        (emms-all)
        (emms-default-players)
        (setq emms-source-file-default-directory "~/music/"))
-
 #+end_src
-
 
 ** Org Music
 #+begin_src emacs-lisp
@@ -3430,8 +3598,6 @@ needs to imported from nongnu elpa. add the following to init.el
     ;; Break lines at 40 characters
     (add-hook 'subed-mode-hook (lambda () (setq-local fill-column 40))))
 #+end_src
-
-#+RESULTS:
 
 * Maps
 #+begin_src emacs-lisp
