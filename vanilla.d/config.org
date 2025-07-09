@@ -211,6 +211,7 @@ Do not use system open file dialog boxes, use minibuffer instead
     (proced-enable-color-flag t)
     (proced-tree-flag t))
 #+end_src
+
 ** Save shell buffers to =~/logs=
 
 #+begin_src emacs-lisp
@@ -338,6 +339,7 @@ Taken from [[https://blog.lambda.cx/posts/org-ssh-export/][How I Keep Track of M
 ** Tramp
 #+begin_src emacs-lisp
   (use-package tramp
+    :ensure nil
     :custom
     (tramp-inline-compress-start-size 1000)
     (tramp-copy-size-limit 10000)
@@ -1079,6 +1081,7 @@ When you want to add multiple cursors not based on continuous lines, but based o
   (use-package zygospore)
   (global-set-key (kbd "C-x 1") 'zygospore-toggle-delete-other-windows)
 #+end_src
+
 ** Avy
 #+begin_src emacs-lisp
   (use-package avy
@@ -1151,7 +1154,6 @@ install w3m via apt/dnf
   wget https://gitlab.com/protesilaos/dotfiles/-/raw/master/emacs/.emacs.d/prot-lisp/prot-eww.el?ref_type=heads -O ~/emacs/vanilla.d/lisp/prot-eww.el
   wget https://gitlab.com/protesilaos/dotfiles/-/raw/master/emacs/.emacs.d/prot-lisp/prot-common.el?ref_type=heads -O ~/emacs/vanilla.d/lisp/prot-common.el
 #+end_src
-
 
 #+begin_src emacs-lisp
   (require 'prot-common)
@@ -2219,12 +2221,12 @@ When fetching entries via Biblio, Ebib checks for duplicates based on the key of
     (setq python-shell-completion-native-enable nil))
 
   (use-package python
+    :ensure nil
     :hook ((python-mode . setup-python-shell)
            (python-mode . hs-minor-mode))
     :bind (:map python-mode-map
                 ("<f5>" . format-buffer)))
 #+end_src
-
 **** Blacken
 #+begin_src emacs-lisp
   (use-package blacken
@@ -2525,6 +2527,7 @@ Install the pyright server
 ** Magit
 #+BEGIN_SRC emacs-lisp
   (use-package magit
+    :ensure nil
     :bind (("C-c g" . #'magit-status)))
 
   ;; (use-package libgit)
