@@ -1492,6 +1492,7 @@ org-refile by default only targets current file and heading unless =org-refile-t
 ** Org-roam
 #+begin_src emacs-lisp
   (use-package org-roam
+    :ensure nil
     :init
     :defer
     (setq org-roam-v2-ack t)
@@ -1616,8 +1617,8 @@ Systemd is the supported method of running applications at startup on most Linux
 From https://emacs.stackexchange.com/questions/24095/bashrc-script-to-automatically-create-emacs-server-session-on-startup
 #+BEGIN_SRC bash
   export ALTERNATE_EDITOR=""
-  export VISUAL='emacsclient --alternate-editor='
-  export EDITOR='emacsclient --alternate-editor='
+  export VISUAL='emacsclient -c --alternate-editor='
+  export EDITOR='emacsclient -c --alternate-editor='
 #+END_SRC
 
 **** For windows add the following into =.emacs=
