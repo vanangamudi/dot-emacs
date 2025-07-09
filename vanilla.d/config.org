@@ -2354,28 +2354,10 @@ Emacs side of things
   (add-to-list 'auto-mode-alist '("\\.tsv\\'" . csv-mode))
 #+end_src
 
-*** COMMENT Java
-#+begin_src emacs-lisp
-  (use-package lsp-ui)
-  (use-package lsp-java :config (add-hook 'java-mode-hook 'lsp))
-  (use-package dap-mode :after lsp-mode :config (dap-auto-configure-mode))
-  (use-package dap-java :ensure nil)
-
-  (use-package dap-mode
-    :ensure t
-    :config
-    (dap-auto-configure-mode)
-    (require 'dap-java)
-    (dap-register-debug-providers '("java" . dap-java-debug-provider))
-    (dap-register-debug-templates
-     (list (list :type "java" :name "Java Attach"
-                 :request "attach"
-                 :host-name "localhost"
-                 :port 5005))))
-#+end_src
 ** Language Servers
 #+begin_src emacs-lisp
   (use-package lsp-mode
+    :ensure nil
     :hook ((c-mode          ; clangd
             c++-mode        ; clangd
             c-or-c++-mode   ; clangd
@@ -2477,6 +2459,25 @@ Install the pyright server
 #+begin_src shell
   pip install pyright
 #+end_src
+*** Java
+#+begin_src emacs-lisp
+  (use-package lsp-java :config (add-hook 'java-mode-hook 'lsp))
+  (use-package dap-mode :after lsp-mode :config (dap-auto-configure-mode))
+  (use-package dap-java :ensure nil)
+
+  (use-package dap-mode
+    :ensure t
+    :config
+    (dap-auto-configure-mode)
+    (require 'dap-java)
+    (dap-register-debug-providers '("java" . dap-java-debug-provider))
+    (dap-register-debug-templates
+     (list (list :type "java" :name "Java Attach"
+                 :request "attach"
+                 :host-name "localhost"
+                 :port 5005))))
+#+end_src
+
 ** Debug Adapters
 #+begin_src emacs-lisp
   (use-package dape
@@ -2815,7 +2816,11 @@ From [[https://news.ycombinator.com/item?id=34560604][I basically just slightly 
     (global-set-key (kbd "C-c C-r") 'ivy-resume)
     (global-set-key (kbd "<f6>") 'ivy-resume)
     (global-set-key (kbd "M-x") 'counsel-M-x))
+
+  (use-package prescient
+    :config (ivy-prescient-mode))
 #+end_src
+
 
 ** Align Non Space
 [[https://blog.lambda.cx/posts/emacs-align-columns/][Aligning columns in Emacs]]
