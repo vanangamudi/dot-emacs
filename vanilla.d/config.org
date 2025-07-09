@@ -3282,6 +3282,11 @@ code-cells and Jupytext
             ("/[Gmail]/All Mail"  . ?a))))
 
 #+end_src
+** Telegram
+#+begin_src emacs-lisp
+  (use-package telega
+    :commands (telega))
+#+end_src
 
 * Elfeed-org
 ** Installation
