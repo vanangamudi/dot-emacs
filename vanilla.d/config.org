@@ -2187,6 +2187,17 @@ When fetching entries via Biblio, Ebib checks for duplicates based on the key of
   (use-package dockerfile-mode)
   (use-package toml-mode)
 #+end_src
+*** Commonlisp
+#+begin_src emacs-lisp
+  (use-package sly
+    :ensure t
+    :init
+    (setq inferior-lisp-program "sbcl")
+    :hook (lisp-mode . 'sly-editing-mode)
+    :config
+    (use-package sly-mrepl
+      :ensure t))
+#+end_src
 
 *** Python
 **** Inspirations
