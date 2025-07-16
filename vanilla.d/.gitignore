@@ -13,3 +13,8 @@ session.*
 auto-save-list/*
 elpa/*
 transient/*
+elpaca/
+build/
+url-cache/
+backups/
+eln-cache/
