@@ -59,8 +59,6 @@ Use =macroexpand-1= like this inspect what is going on. There is also this [[mac
     (gcmh-mode 1))
 #+end_src
 
-
-
 ** Hydra
 #+begin_src emacs-lisp
   (use-package hydra
@@ -352,6 +350,34 @@ Taken from [[https://blog.lambda.cx/posts/org-ssh-export/][How I Keep Track of M
           (message "Copied converted Markdown to clipboard"))
       (message "No region selected")))
 
+#+end_src
+
+#+begin_src elisp
+(defun my-pandoc-to-org-buffer (file)
+  "Convert FILE to Org format via pandoc in a new buffer."
+  (interactive "fFile to convert: ")
+  (let ((output-buffer (generate-new-buffer
+                         (format "*pandoc: %s*" (file-name-nondirectory file)))))
+    (with-current-buffer output-buffer
+      (if (eq 0 (call-process "pandoc" file t nil "-t" "org"))
+          (org-mode)
+        (error "Pandoc conversion failed")))
+    (switch-to-buffer output-buffer)))
+#+end_src
+
+#+begin_src elisp
+(defun my-pandoc-to-org (input-file)
+  "Convert a file to Org mode via pandoc and open in a new buffer."
+  (interactive (list (read-file-name "File to convert: ")))
+  (let ((output-buffer (generate-new-buffer
+                        (concat (file-name-nondirectory input-file) ".org"))))
+    (with-current-buffer output-buffer
+      (call-process-shell-command
+       (format "pandoc -t org %s" (shell-quote-argument input-file))
+       nil t)
+      (org-mode)
+      (goto-char (point-min)))
+    (switch-to-buffer output-buffer)))
 #+end_src
 
 * Basic settings
@@ -1779,11 +1805,15 @@ The entry that is declared in the capture templates must exist in the file.  =Co
              (unless (executable-find "pandoc")
                    (error "The program pandoc does not exist."))
              (message "Transforming %s" url)
-             (shell-command (concat "pandoc -f html -t org  --extract-media=" dirimages " "  url) (current-buffer))
+             (shell-command (concat "pandoc -f html -t org  --extract-media=" dirimages " "  "\"" url "\"") (current-buffer))
              (org-mode)))
 #+end_src
 
 **** TODO Try [[https://github.com/alphapapa/org-web-tools][org-web-tools]]
+#+begin_src emacs-lisp
+  (use-package org-web-tools)
+#+end_src
+
 **** EWW and w3m org-web clipper from [[http://www.bobnewell.net/publish/35years/webclipper.html][Bob Newell]]
 #+begin_src emacs-lisp
 
