@@ -1405,6 +1405,7 @@ install w3m via apt/dnf
   (setq org-agenda-files
         '("~/org/personal.org"
           "~/org/w.org"
+          "~/org/w-market.org"
           ;;"~/org/gcal-developer.org"
           ;;"~/org/gcal-profession.org"
           "~/org/kaappagam.org"
@@ -1426,6 +1427,15 @@ install w3m via apt/dnf
   (setq org-agenda-span 10
         org-agenda-start-on-weekday nil
         org-agenda-start-day "-3d")
+
+  (setq org-agenda-custom-commands
+      '(("w" ""
+         ((agenda ""
+                  ((org-agenda-span 10)
+                   (org-agenda-start-on-weekday nil)
+                   (org-agenda-start-day "-3d")))
+          (todo "TODO"))
+         ((org-agenda-files '("~/org/w.org" "~/org/w-market.org"))))))
 
   (global-set-key (kbd "C-c a") 'org-agenda)
 #+end_src
@@ -1787,6 +1797,37 @@ https://sachachua.com/blog/2015/11/capturing-links-quickly-with-emacsclient-org-
 
 ******* [[https://github.com/sprig/org-capture-extension/issues/1#issuecomment-1817773442][Solution]]
 The entry that is declared in the capture templates must exist in the file.  =Collection=, =Note=, =Web Links= must exist in the respective files.
+*** Completing read
+The following snippet is from [[https://gist.github.com/amno1/4bfdb3087417fe7e49fc2b0b40a3eb03][Two different ideas for org-capture via completing read · GitHub]]. I don't use this often but servers as a reference
+#+begin_src emacs-lisp
+  (defun org-capture-complete (&optional goto)
+    "Call org-capture via completing read. GOTO as in `org-capture'"
+    (interactive)
+    (let* ((label (completing-read "Capture: "
+                                   (mapcar (lambda (s)
+                                             (cons (cadr s) (car s)))
+                                           org-capture-templates)))
+           (template
+            (catch 'found (dolist (tmpl org-capture-templates)
+                            (when (equal (cadr tmpl) label)
+                             (throw 'found (car tmpl)))))))
+      (condition-case error
+          (org-capture goto template)
+        ((error quit) (message "Capture aborted")))))
+
+  (defun org-capture-complete2 (&optional goto)
+    "Call org-capture via completing read. GOTO as in `org-capture'"
+    (interactive)
+    (let ((label (completing-read "Capture: "
+                                  (mapcar (lambda (s)
+                                            (concat (car s) " " (cadr s)))
+                                          org-capture-templates))))
+      (condition-case error
+          (org-capture goto (substring label 0 1))
+        ((error quit) (message "Capture aborted")))))
+
+  (provide 'org-capture-complete)
+#+end_src
 
 *** COMMENT html-capture
 **** [[https://torres.epv.uniovi.es/centon/eww-html-to-org.html][Emacs. Transform a html page to an Org file]]
