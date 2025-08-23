@@ -1516,13 +1516,16 @@ org-refile by default only targets current file and heading unless =org-refile-t
     :custom
     (org-roam-directory "~/org/roam/")
     (org-roam-completion-everywhere t)
+    (org-roam-node-display-template #'my--org-roam-node-display-format)
     :bind (("C-c n b" . org-roam-buffer-toggle)
            ("C-c n f" . org-roam-node-find)
            ("C-c n t" . va/org-roam-node-find-by-tag)
            ("C-c n i" . org-roam-node-insert)
            :map org-mode-map
-           ("C-M-i"    . completion-at-point))
-    :hook (after-init. org-roam-setup))
+           ("C-M-i"    . completion-at-point)
+           ("<f4>" . org-id-get-create)
+           ("<C-f5>" . org-roam-db-sync))
+    :hook (after-init . org-roam-setup))
 
   (setq org-roam-v2-ack t)
 
@@ -1535,6 +1538,14 @@ org-refile by default only targets current file and heading unless =org-refile-t
           :head "#+title: ${title}\n#+roam_key: ${ref}%?"
           :unnarrowed t))
 
+  (defun my--org-roam-node-display-format (node)
+    "formats the node"
+    (format "%-40s %s"
+            (if (org-roam-node-title node)
+                (propertize (org-roam-node-title node) 'face 'org-todo)
+              "")
+            (nth 1 (split-string (file-name-nondirectory (org-roam-node-file node)) "-"))))
+
   (defun va/org-roam-node-has-tag (node tag)
     "Filter function to check if the given NODE has the specified TAG."
     (member tag (org-roam-node-tags node)))
@@ -1544,6 +1555,7 @@ org-refile by default only targets current file and heading unless =org-refile-t
     (interactive)
     (let ((tag (read-string "Enter tag: ")))
       (org-roam-node-find nil nil (lambda (node) (va/org-roam-node-has-tag node tag)))))
+
 #+end_src
 
 ** Org Roam UI
