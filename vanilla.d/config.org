@@ -148,7 +148,7 @@ Hydra menu for opening the files. Add more files to the menu and you can open th
 #+begin_src emacs-lisp
   (defhydra hydra-open-stdfiles  (:color "pink")
     "Open File"
-    ("w" (find-file "~/org/w.org") "Work Tasks")
+    ("w" (find-file "~/kuri/naalniral/w.org") "Work Tasks")
     ("f" (find-file "~/emacs/elfeed-db/elfeed.org") "RSS Feeds")
     ("d" (find-file "~/org/downloads.org") "To Download")
     ("e" (find-file "~/emacs/vanilla.d/config.org") "Emacs Config"))
@@ -1403,19 +1403,11 @@ install w3m via apt/dnf
 ** Org-agenda
 #+begin_src emacs-lisp
   (setq org-agenda-files
-        '("~/org/personal.org"
-          "~/org/w.org"
-          "~/org/w-market.org"
-          ;;"~/org/gcal-developer.org"
-          ;;"~/org/gcal-profession.org"
+        '("~/kuri/naalniral/w.org"
+          "~/kuri/naalniral/w-market.org"
+          ;;"~/kuri/naalniral/gcal-developer.org"
+          ;;"~/kuri/naalniral/gcal-profession.org"
           "~/org/kaappagam.org"
-          "~/org/padi.org"
-          "~/org/kadamai-thani.org"
-          "~/org/kadamai-saama.org"
-          "~/org/kadamai-mtechcse.org"
-          "~/org/kadamai-yendravathu.org"
-          "~/org/thirattu.org"
-          "~/org/naadagam.org"
           ))
 
   (setq org-todo-keywords
@@ -1435,7 +1427,7 @@ install w3m via apt/dnf
                    (org-agenda-start-on-weekday nil)
                    (org-agenda-start-day "-3d")))
           (todo "TODO"))
-         ((org-agenda-files '("~/org/w.org" "~/org/w-market.org"))))))
+         ((org-agenda-files '("~/kuri/naalniral/w.org" "~/kuri/naalniral/w-market.org"))))))
 
   (global-set-key (kbd "C-c a") 'org-agenda)
 #+end_src
@@ -1774,8 +1766,8 @@ https://sachachua.com/blog/2015/11/capturing-links-quickly-with-emacsclient-org-
   (setq org-protocol-default-template-key "l")
   (setq org-capture-templates
         '(("t" "Todo" entry
-           (file+headline "~/org/pidi.org" "Tasks")
-           "* TODO %?\n  %i\n  %a")
+           (file+headline "~/kuri/naalniral/w.org" "Captures")
+           "** TODO %?\n  %i\n  %a")
 
           ("l" "Link" entry
            (file+olp "~/org/pidi.org" "Web Links")
