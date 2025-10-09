@@ -3121,6 +3121,13 @@ code-cells and Jupytext
     (add-hook 'LaTeX-mode-hook #'turn-on-cdlatex)
     (add-hook 'latex-mode-hook #'turn-on-cdlatex))
 
+  (setq TeX-view-program-selection '((output-pdf "PDF Tools"))
+        TeX-view-program-list '(("PDF Tools" TeX-pdf-tools-sync-view))
+        TeX-source-correlate-start-server t)
+
+  (add-hook 'TeX-after-compilation-finished-functions
+            #'TeX-revert-document-buffer)
+
   (use-package pdf-tools
     :pin manual
     :config
@@ -3130,14 +3137,9 @@ code-cells and Jupytext
     :custom
     (pdf-annot-activate-created-annotations t "automatically annotate highlights"))
 
-  (setq TeX-view-program-selection '((output-pdf "PDF Tools"))
-        TeX-view-program-list '(("PDF Tools" TeX-pdf-tools-sync-view))
-        TeX-source-correlate-start-server t)
-
-  (add-hook 'TeX-after-compilation-finished-functions
-            #'TeX-revert-document-buffer)
-
-  (add-hook 'pdf-view-mode-hook (lambda() (linum-mode -1)))
+  (add-hook 'pdf-view-mode-hook (lambda() (display-line-numbers-mode 0)))
+  (add-hook 'pdf-view-mode-hook #'pdf-view-themed-minor-mode)
+  (add-hook 'pdf-view-mode-hook #'pdf-view-auto-slice-minor-mode)
 
   (set-default 'preview-scale-function 1.2)
 
@@ -3167,6 +3169,15 @@ code-cells and Jupytext
             :scale (+ 1.0 (* 0.25 text-scale-mode-amount))))))
 
   (add-hook 'text-scale-mode-hook #'my/text-scale-adjust-latex-previews)
+
+#+end_src
+
+*** COMMENT continuous scrolling
+For continuous scrolling. it is not working
+#+begin_src emacs-lisp
+  (use-package image-roll
+    :elpaca (:host github :repo "dalanicolai/image-roll.el"))
+  (add-hook pdf-view-mode-hook #'image-roll-mode)
 #+end_src
 
 ** Screencast
