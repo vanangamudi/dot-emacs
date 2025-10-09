@@ -916,6 +916,27 @@ Look into this for starting emacs extension development
              (concat "%Y" separator "%m" separator "%d" "T" "%H" separator "%M")))))
   (global-set-key (kbd "M-I t") 'insert-datetime)
 #+end_src
+** Copy current buffer filepath to kill-ring
+#+begin_src emacs-lisp
+  (defun va/copy-file-path (&optional DirPathOnlyQ)
+    "Copy current buffer file path or dired path to the kill ring.
+  If `universal-argument' is called first, copy only the directory path."
+    (interactive "P")
+    (let ((xfpath
+           (if (eq major-mode 'dired-mode)
+               (let ((xresult (mapconcat #'identity (dired-get-marked-files) "\n")))
+                 (if (equal (length xresult) 0)
+                     default-directory
+                   xresult))
+             (if buffer-file-name
+                 buffer-file-name
+               (expand-file-name default-directory)))))
+      (kill-new (if DirPathOnlyQ
+                    (file-name-directory xfpath)
+                  xfpath))
+      (message "Copied file path: %s" xfpath)))
+#+end_src
+
 * Text Editing
 ** Unfill Paragraph
 #+begin_src emacs-lisp
