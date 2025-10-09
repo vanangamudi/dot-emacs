@@ -2046,7 +2046,7 @@ Capture latex equations from browser
 
 ** Treating webp as image
 #+begin_src emacs-lisp
-  (setq image-file-name-regexps "\\.\\(GIF\\|JP\\(?:E?G\\)\\|P\\(?:BM\\|GM\\|N[GM]\\|PM\\)\\|SVG\\|TIFF?\\|X\\(?:[BP]M\\)\\|gif\\|jp\\(?:e?g\\)\\|p\\(?:bm\\|gm\\|n[gm]\\|pm\\)\\|webp\\|svg\\|tiff?\\|x\\(?:[bp]m\\)\\)\\'")
+  (setq image-file-name-regexps "\\.\\(GIF\\|JP\\(?:E?G\\)\\|P\\(?:BM\\|GM\\|N[GM]\\|PM\\)\\|SVG\\|TIFF?\\|X\\(?:[BP]M\\)\\|gif\\|jp\\(?:e?g\\)\\|p\\(?:bm\\|gm\\|n[gm]\\|pm\\)\\|webp\\|svg\\|svg.gz\\|tiff?\\|x\\(?:[bp]m\\)\\)\\'")
 
   (setq org-html-inline-image-rules
         '(("file" . "\\(?:\\.\\(?:gif\\|\\(?:jpe?\\|pn\\|sv\\)g\\|webp\\)\\)")
