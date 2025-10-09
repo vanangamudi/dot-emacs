@@ -3108,6 +3108,30 @@ code-cells and Jupytext
     :config (add-hook 'org-mode-hook 'org-fragtog-mode))
   (setq org-format-latex-options (plist-put org-format-latex-options :scale 2.0))
 #+end_src
+*** Overleaf integration
+#+begin_src emacs-lisp
+  (use-package overleaf
+    :custom
+    (overleaf-use-nerdfont t "Use nerfont icons for the modeline.")
+    :config
+
+    ;; Example: load cookies from firefox
+    ;; (setq overleaf-cookies
+    ;;       (overleaf-read-cookies-from-firefox "~/.mozilla/firefox/[YOUR PROFILE].default/cookies.sqlite"))
+    ;; Example: load/save cookies from GPG encrypted file.
+    ;;          (remove the .gpg extension to save unencrypted)
+    (let ((cookie-file "~/.overleaf-cookies"))
+      (setq overleaf-save-cookies
+            (overleaf-save-cookies-to-file cookie-file))
+      (setq overleaf-cookies
+            (overleaf-read-cookies-from-file cookie-file))))
+#+end_src
+*** Snippets
+#+begin_src emacs-lisp
+  (use-package yasnippet
+    :ensure t
+    :config (yas-global-mode))
+#+end_src
 
 ** Latex and pdf-tools
 #+begin_src emacs-lisp
