@@ -3259,8 +3259,8 @@ For continuous scrolling. it is not working
 
 ** Email with mu4e
 
-*** Configure =mbsync= using =.mbsyncrc=
-#+begin_src conf :tangle ~/aalar/.mbsyncrc
+*** COMMENT Configure =mbsync= using =.mbsyncrc=
+#+begin_src conf
   IMAPAccount personal-gmail
   Host imap.gmail.com
   User selva.personals@gmail.com
@@ -3319,6 +3319,8 @@ For continuous scrolling. it is not working
 *** COMMENT mu4e
 ****  Load mu4e
 #+begin_src emacs-lisp
+  ;; Sometimes this might be missing
+  ;; look for .../site-lisp/elpa/mu4e-<version>  and link to .../site-lisp/mu4e
   (add-to-list 'load-path "/usr/share/emacs/site-lisp/mu4e")
 #+end_src
 
@@ -3368,22 +3370,39 @@ For continuous scrolling. it is not working
                     (mu4e-refile-folder  . "/gmail-profession/[Gmail]/All Mail")
                     (mu4e-trash-folder  . "/gmail-profession/[Gmail]/Trash")))
 
-           ;; personals account
+           ;; onporul account
            (make-mu4e-context
-            :name "personal"
+            :name "onporul"
             :match-func
             (lambda (msg)
               (when msg
-                (string-prefix-p "/personal-gmail" (mu4e-message-field msg :maildir))))
-            :vars '((user-mail-address . "selva.personal@gmail.com")
+                (string-prefix-p "/gmail-onporul" (mu4e-message-field msg :maildir))))
+            :vars '((user-mail-address . "onporul.kaazhppa@gmail.com")
+                    (user-full-name    . "Onporul Kaazhppa")
+                    (smtpmail-smtp-server  . "smtp.gmail.com")
+                    (smtpmail-smtp-service . 465)
+                    (smtpmail-stream-type  . ssl)
+                    (mu4e-drafts-folder  . "/gmail-onporul/[Gmail]/Drafts")
+                    (mu4e-sent-folder  . "/gmail-onporul/[Gmail]/Sent Mail")
+                    (mu4e-refile-folder  . "/gmail-onporul/[Gmail]/All Mail")
+                    (mu4e-trash-folder  . "/gmail-onporul/[Gmail]/Trash")))
+
+           ;; pmurugan account
+           (make-mu4e-context
+            :name "pmurugan"
+            :match-func
+            (lambda (msg)
+              (when msg
+                (string-prefix-p "/gmail-pmurugan" (mu4e-message-field msg :maildir))))
+            :vars '((user-mail-address . "selvakumar.pmurugan@gmail.com")
                     (user-full-name    . "Selvakumar Murugan")
                     (smtpmail-smtp-server  . "smtp.gmail.com")
                     (smtpmail-smtp-service . 465)
                     (smtpmail-stream-type  . ssl)
-                    (mu4e-drafts-folder  . "/personal-gmail/[Gmail]/Drafts")
-                    (mu4e-sent-folder  . "/personal-gmail/[Gmail]/Sent Mail")
-                    (mu4e-refile-folder  . "/personal-gmail/[Gmail]/All Mail")
-                    (mu4e-trash-folder  . "/personal-gmail/[Gmail]/Trash")))
+                    (mu4e-drafts-folder  . "/gmail-pmurugan/[Gmail]/Drafts")
+                    (mu4e-sent-folder  . "/gmail-pmurugan/[Gmail]/Sent Mail")
+                    (mu4e-refile-folder  . "/gmail-pmurugan/[Gmail]/All Mail")
+                    (mu4e-trash-folder  . "/gmail-pmurugan/[Gmail]/Trash")))
 
            ;; developer account
            (make-mu4e-context
@@ -3391,27 +3410,28 @@ For continuous scrolling. it is not working
             :match-func
             (lambda (msg)
               (when msg
-                (string-prefix-p "/developer-gmail" (mu4e-message-field msg :maildir))))
+                (string-prefix-p "/gmail-developer" (mu4e-message-field msg :maildir))))
             :vars '((user-mail-address . "selva.developer@gmail.com")
                     (user-full-name    . "Selvakumar Murugan")
                     (smtpmail-smtp-server  . "smtp.gmail.com")
                     (smtpmail-smtp-service . 465)
                     (smtpmail-stream-type  . ssl)
-                    (mu4e-drafts-folder  . "/developer-gmail/[Gmail]/Drafts")
-                    (mu4e-sent-folder  . "/developer-gmail/[Gmail]/Sent Mail")
-                    (mu4e-refile-folder  . "/developer-gmail/[Gmail]/All Mail")
-                    (mu4e-trash-folder  . "/developer-gmail/[Gmail]/Trash")))
+                    (mu4e-drafts-folder  . "/gmail-developer/[Gmail]/Drafts")
+                    (mu4e-sent-folder  . "/gmail-developer/[Gmail]/Sent Mail")
+                    (mu4e-refile-folder  . "/gmail-developer/[Gmail]/All Mail")
+                    (mu4e-trash-folder  . "/gmail-developer/[Gmail]/Trash")))
 
            ))
 
     (setq mu4e-maildir-shortcuts
-          '(("/Inbox"             . ?i)
-            ("/[Gmail]/Sent Mail" . ?s)
-            ("/[Gmail]/Trash"     . ?t)
-            ("/[Gmail]/Drafts"    . ?d)
-            ("/[Gmail]/All Mail"  . ?a))))
+          '(("/gmail-profession/Inbox"             . ?i)
+            ("/gmail-profession/[Gmail]/Sent Mail" . ?s)
+            ("/gmail-profession/[Gmail]/Trash"     . ?t)
+            ("/gmail-profession/[Gmail]/Drafts"    . ?d)
+            ("/gmail-profession/[Gmail]/All Mail"  . ?a))))
 
 #+end_src
+
 ** Telegram
 #+begin_src emacs-lisp
   (use-package telega
