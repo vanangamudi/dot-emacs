@@ -2468,7 +2468,8 @@ Emacs side of things
             web-mode        ; ts-ls/HTML/CSS
             haskell-mode    ; haskell-language-server
             ) . lsp-deferred)
-    ;; :hook ((lsp-mode . lsp-diagnostics-mode)
+    :hook ((lsp-mode . lsp-enable-which-key-integration))
+    ;; ((lsp-mode . lsp-diagnostics-mode)
     ;;        (lsp-mode . lsp-completion-mode-maybe))
     :commands lsp
     :preface
@@ -2558,23 +2559,47 @@ Install the pyright server
 #+begin_src shell
   pip install pyright
 #+end_src
-*** Java
+*** COMMENT Java
 #+begin_src emacs-lisp
   (use-package lsp-java :config (add-hook 'java-mode-hook 'lsp))
   (use-package dap-mode :after lsp-mode :config (dap-auto-configure-mode))
   (use-package dap-java :ensure nil)
-
   (use-package dap-mode
-    :ensure t
     :config
     (dap-auto-configure-mode)
     (require 'dap-java)
+    ;; Debugger entered--Lisp error: (void-function dap-register-debug-providers)
     (dap-register-debug-providers '("java" . dap-java-debug-provider))
     (dap-register-debug-templates
-     (list (list :type "java" :name "Java Attach"
-                 :request "attach"
-                 :host-name "localhost"
-                 :port 5005))))
+      (list (list :type "java" :name "Java Attach"
+                  :request "attach"
+                  :host-name "localhost"
+                  :port 5005))))
+
+
+#+end_src
+*** C/Cpp
+- [[https://cpp-lang.net/tools/standalone/editors/setup-emacs/][Emacs setup | C++ Programming Language]]
+#+begin_src emacs-lisp
+  (use-package ccls
+    :ensure t
+    :config
+    (setq ccls-executable "ccls")
+    (setq lsp-prefer-flymake nil)
+    (setq-default flycheck-disabled-checkers '(c/c++-clang c/c++-cppcheck c/c++-gcc))
+    :hook ((c-mode c++-mode objc-mode) .
+           (lambda () (require 'ccls) (lsp))))
+
+  (defun code-compile()
+    (interactive)
+    (unless (file-exists-p "Makefile")
+      (set (make-local-variable 'compile-command)
+           (let ((file (file-name-nondirectory buffer-file-name)))
+             (format "%s -o %s %s"
+                     (if (equal (file-name-extension file) "cpp") "g++" "gcc")
+                     (file-name-sans-extension file)
+                   file)))
+      (compile compile-command)))
 #+end_src
 
 ** Debug Adapters
@@ -2585,7 +2610,7 @@ Install the pyright server
     ;; If you do not want to use any prefix, set it to nil.
     ;; (setq dape-key-prefix "\C-x\C-a")
 
-    :hook
+    ;;:hook
     ;; Save breakpoints on quit
     ;; (kill-emacs . dape-breakpoint-save)
     ;; Load breakpoints on startup
@@ -3011,7 +3036,6 @@ code-cells and Jupytext
                         google/palm-2-codechat-bison-32k
                         google/gemini-2.5-pro)))
 #+end_src
-
 * Reading and Writing
 ** Distraction Free Editing
 #+begin_src emacs-lisp
@@ -3243,9 +3267,6 @@ For continuous scrolling. it is not working
     gif-screencast-args '("savecopy area"))
   (global-set-key (kbd "<f8>") 'gif-screencast-start-or-stop)
 #+end_src
-
-#+RESULTS:
-: gif-screencast-start-or-stop
 
 * Communication
 
