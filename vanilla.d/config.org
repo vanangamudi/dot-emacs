@@ -339,7 +339,9 @@ Taken from [[https://blog.lambda.cx/posts/org-ssh-export/][How I Keep Track of M
 ** Porcelain
 *** Pandoc
 #+begin_src emacs-lisp
-  (use-package pandoc)
+  (use-package pandoc
+    :custom
+    (pandoc-command "pandoc --wrap=none"))
 
   (defun va/convert-and-kill--org-to-md ()
     "Convert the selected region in Org mode to Markdown using Pandoc and copy it to the clipboard."
