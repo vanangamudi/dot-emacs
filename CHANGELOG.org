@@ -1,0 +1,2 @@
+* 2025-10-25
+- [[orgit-rev:~/emacs/::fa7429a45671b71424c3516108b5b1bbcbd061ef][fa7429a]]  pandoc cli arg to avoid too many line breaks in the output
